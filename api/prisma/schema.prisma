@@ -10,12 +10,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Auth {
-  id  Int @default(autoincrement()) @id
-  type AUTH_KEY_TYPE 
-  value String
+model AutomationRecord {
+  id       Int       @id @default(autoincrement())
+  name     String
+  triggers Trigger[]
+  actions  Action[]
 }
 
+model Trigger {
+  id                 Int               @id @default(autoincrement())
+  key                String
+  operator           TRIGGER_OPERATOR
+  value              String
+  AutomationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id])
+  automationRecordId Int?
+}
+
+model Action {
+  id                 Int               @id @default(autoincrement())
+  action             Json
+  AutomationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id])
+  automationRecordId Int?
+}
+
+enum TRIGGER_OPERATOR {
+  EQUALS
+  NOT_EQUALS
+}
+
+model Auth {
+  id    Int           @id @default(autoincrement())
+  type  AUTH_KEY_TYPE
+  value String
+}
 
 enum AUTH_KEY_TYPE {
   AUTH
