@@ -4,10 +4,7 @@ https://docs.nestjs.com/providers#services
 
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import {
-  Auth,
-  Prisma
-} from '@prisma/client';
+import { Auth, Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -25,10 +22,7 @@ export class AuthService {
     });
   }
 
-  async updateAuthRecord(params: {
-    where: Prisma.AuthWhereUniqueInput;
-    data: Prisma.AuthUpdateInput;
-  }): Promise<Auth> {
+  async updateAuthRecord(params: { where: Prisma.AuthWhereUniqueInput; data: Prisma.AuthUpdateInput }): Promise<Auth> {
     const { where, data } = params;
     return this.prisma.auth.update({
       data,

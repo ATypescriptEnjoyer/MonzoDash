@@ -39,12 +39,8 @@ enum TRIGGER_OPERATOR {
 }
 
 model Auth {
-  id    Int           @id @default(autoincrement())
-  type  AUTH_KEY_TYPE
-  value String
-}
-
-enum AUTH_KEY_TYPE {
-  AUTH
-  REFRESH
+  id        Int           @id @default(autoincrement())
+  authToken String
+  refreshToken String
+  expiresIn DateTime?
 }
