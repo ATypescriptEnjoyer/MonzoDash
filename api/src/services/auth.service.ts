@@ -6,6 +6,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { Auth, Prisma } from '@prisma/client';
 
+export interface AccessToken {
+  type: 'AUTH' | 'REFRESH';
+  value: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(private prisma: PrismaService) {}
@@ -14,6 +19,15 @@ export class AuthService {
     return this.prisma.auth.findUnique({
       where: userWhereUniqueInput,
     });
+  }
+
+  async getAccessToken(): Promise<AccessToken | null> {
+    const latestValid = await this.prisma.auth.findFirst({ where: { expiresIn: { gt: new Date() } } });
+    if (!latestValid?.id) {
+      const refreshToken = await this.prisma.auth.findFirst({ orderBy: { id: 'desc' } });
+      return { type: 'REFRESH', value: refreshToken.refreshToken };
+    }
+    return { type: 'AUTH', value: latestValid.authToken };
   }
 
   async createAuthRecord(data: Prisma.AuthCreateInput): Promise<Auth> {

@@ -9,7 +9,7 @@ import { firstValueFrom } from 'rxjs';
 export interface MonzoAuthResponse {
   access_token: string;
   refresh_token: string;
-  expires_in: string;
+  expires_in: number;
 }
 
 export interface AuthRequest {
@@ -22,7 +22,7 @@ export interface AuthRequest {
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
-  expiresIn: string;
+  expiresIn: number;
 }
 
 @Injectable()

@@ -3,7 +3,6 @@ https://docs.nestjs.com/controllers#controllers
 */
 
 import { Controller, Get, InternalServerErrorException, Query } from '@nestjs/common';
-import moment from 'moment';
 import { AuthService } from '../services/auth.service';
 import { MonzoService } from '../services/monzo.service';
 
@@ -31,11 +30,16 @@ export class AuthController {
         redirectUri,
         authCode: code,
       });
-      await this.authService.createAuthRecord({
+
+      const expiresIn = new Date();
+      expiresIn.setSeconds(+expiresIn.getSeconds() + authResponse.expiresIn);
+
+      const record = {
         authToken: authResponse.accessToken,
         refreshToken: authResponse.refreshToken,
-        expiresIn: moment().add(authResponse.expiresIn, 'seconds').toDate(),
-      });
+        expiresIn,
+      };
+      await this.authService.createAuthRecord(record);
     } catch (error) {
       throw new InternalServerErrorException(error.response.data);
     }
