@@ -1,10 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Setup, Dashboard } from './pages';
+import { StyledApp } from './App.styled';
 
-function App() {
+function App(): JSX.Element {
   return (
-    <div className="App">
+    <StyledApp className="App">
       <Router>
         <Routes>
           <Route path="/setup" element={<Setup />} />
@@ -12,7 +13,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
-    </div>
+    </StyledApp>
   );
 }
 

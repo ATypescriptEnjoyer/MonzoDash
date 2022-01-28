@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, Get, InternalServerErrorException, Query } from '@nestjs/common';
+import { Controller, Get, InternalServerErrorException, Post, Query, Res } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { MonzoService } from '../services/monzo.service';
 
@@ -10,14 +10,17 @@ import { MonzoService } from '../services/monzo.service';
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly monzoService: MonzoService) {}
 
-  @Get('redirectUri')
+  @Post('redirectUri')
   getRedirectUri(): string {
     const { MONZO_CLIENT_ID: clientId, MONZO_REDIRECT_URI: redirectUri } = process.env;
     return `https://auth.monzo.com?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
   }
 
   @Get('callback')
-  async handleCallback(@Query('code') code: string): Promise<void> {
+  async handleCallback(
+    @Res() response: { redirect: (uri: string) => void },
+    @Query('code') code: string,
+  ): Promise<void> {
     const {
       MONZO_CLIENT_ID: clientId,
       MONZO_CLIENT_SECRET: clientSecret,
@@ -40,6 +43,7 @@ export class AuthController {
         expiresIn,
       };
       await this.authService.createAuthRecord(record);
+      return response.redirect(process.env.MONZOMATION_FRONTEND_URL);
     } catch (error) {
       throw new InternalServerErrorException(error.response.data);
     }

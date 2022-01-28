@@ -1,0 +1,11 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["react-app", "react-app/jest", "plugin:@typescript-eslint/recommended"],
+  "rules": {
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "object-property-newline": "warn",
+    "@typescript-eslint/explicit-function-return-type": "error"
+  }
+}
