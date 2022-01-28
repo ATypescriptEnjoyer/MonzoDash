@@ -39,8 +39,9 @@ enum TRIGGER_OPERATOR {
 }
 
 model Auth {
-  id        Int           @id @default(autoincrement())
-  authToken String
+  id           Int       @id @default(autoincrement())
+  authToken    String
   refreshToken String
-  expiresIn DateTime?
+  expiresIn    DateTime?
+  createdAt    DateTime  @default(now())
 }

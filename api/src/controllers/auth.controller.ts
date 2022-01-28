@@ -48,4 +48,31 @@ export class AuthController {
       throw new InternalServerErrorException(error.response.data);
     }
   }
+
+  @Post('isAuthed')
+  async isAuthed(): Promise<boolean> {
+    const token = await this.authService.getAccessToken();
+    if (token.type === 'AUTH') {
+      return true;
+    } else if (token.type === 'REFRESH') {
+      const { MONZO_CLIENT_ID: clientId, MONZO_CLIENT_SECRET: clientSecret } = process.env;
+      const refreshedToken = await this.monzoService.refreshToken({
+        clientId,
+        clientSecret,
+        refreshToken: token.value,
+      });
+      if (refreshedToken) {
+        const expiresIn = new Date();
+        expiresIn.setSeconds(+expiresIn.getSeconds() + refreshedToken.expiresIn);
+        const record = {
+          authToken: refreshedToken.accessToken,
+          refreshToken: refreshedToken.refreshToken,
+          expiresIn,
+        };
+        await this.authService.createAuthRecord(record);
+        return true;
+      }
+    }
+    return false;
+  }
 }

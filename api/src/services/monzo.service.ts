@@ -47,4 +47,30 @@ export class MonzoService {
       refreshToken: data.refresh_token,
     };
   }
+
+  async refreshToken({
+    clientId,
+    clientSecret,
+    refreshToken,
+  }: {
+    clientId: string;
+    clientSecret: string;
+    refreshToken: string;
+  }): Promise<AuthResponse> {
+    const requestData = {
+      grant_type: 'refresh_token',
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+    };
+
+    const requestDataString = new URLSearchParams(requestData).toString();
+
+    const { data } = await firstValueFrom(this.httpService.post<MonzoAuthResponse>('oauth2/token', requestDataString));
+    return {
+      accessToken: data.access_token,
+      expiresIn: data.expires_in, //Expires in is in seconds
+      refreshToken: data.refresh_token,
+    };
+  }
 }
