@@ -1,3 +1,4 @@
+import { MonzoController } from './controllers/monzo.controller';
 import { MonzoService } from './services/monzo.service';
 import { AuthController } from './controllers/auth.controller';
 import { PrismaService } from './services/prisma.service';
@@ -12,7 +13,7 @@ import { HttpModule } from '@nestjs/axios';
     ConfigModule.forRoot({ envFilePath: '../.env' }),
     HttpModule.register({ baseURL: 'https://api.monzo.com/' }),
   ],
-  controllers: [AuthController],
+  controllers: [MonzoController, AuthController],
   providers: [MonzoService, AuthService, PrismaService, AutomationRecordService],
 })
 export class AppModule {}

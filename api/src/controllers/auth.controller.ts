@@ -10,7 +10,7 @@ import { MonzoService } from '../services/monzo.service';
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly monzoService: MonzoService) {}
 
-  @Post('redirectUri')
+  @Get('redirectUri')
   getRedirectUri(): string {
     const { MONZO_CLIENT_ID: clientId, MONZO_REDIRECT_URI: redirectUri } = process.env;
     return `https://auth.monzo.com?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
@@ -21,16 +21,8 @@ export class AuthController {
     @Res() response: { redirect: (uri: string) => void },
     @Query('code') code: string,
   ): Promise<void> {
-    const {
-      MONZO_CLIENT_ID: clientId,
-      MONZO_CLIENT_SECRET: clientSecret,
-      MONZO_REDIRECT_URI: redirectUri,
-    } = process.env;
     try {
       const authResponse = await this.monzoService.usingAuthCode({
-        clientId,
-        clientSecret,
-        redirectUri,
         authCode: code,
       });
 
@@ -42,6 +34,7 @@ export class AuthController {
         refreshToken: authResponse.refreshToken,
         expiresIn,
       };
+      console.log('Record', record);
       await this.authService.createAuthRecord(record);
       return response.redirect(process.env.MONZOMATION_FRONTEND_URL);
     } catch (error) {
@@ -52,27 +45,6 @@ export class AuthController {
   @Post('isAuthed')
   async isAuthed(): Promise<boolean> {
     const token = await this.authService.getAccessToken();
-    if (token.type === 'AUTH') {
-      return true;
-    } else if (token.type === 'REFRESH') {
-      const { MONZO_CLIENT_ID: clientId, MONZO_CLIENT_SECRET: clientSecret } = process.env;
-      const refreshedToken = await this.monzoService.refreshToken({
-        clientId,
-        clientSecret,
-        refreshToken: token.value,
-      });
-      if (refreshedToken) {
-        const expiresIn = new Date();
-        expiresIn.setSeconds(+expiresIn.getSeconds() + refreshedToken.expiresIn);
-        const record = {
-          authToken: refreshedToken.accessToken,
-          refreshToken: refreshedToken.refreshToken,
-          expiresIn,
-        };
-        await this.authService.createAuthRecord(record);
-        return true;
-      }
-    }
-    return false;
+    return !!token;
   }
 }

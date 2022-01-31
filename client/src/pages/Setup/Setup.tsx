@@ -7,7 +7,7 @@ export const Setup = (): JSX.Element => {
 
   useEffect(() => {
     const getMonzoUrl = async (): Promise<void> => {
-      const { data: urlString } = await ApiConnector.post<string>('/auth/redirectUri');
+      const { data: urlString } = await ApiConnector.get<string>('/auth/redirectUri');
       setMonzoUrl(urlString);
     };
     getMonzoUrl();

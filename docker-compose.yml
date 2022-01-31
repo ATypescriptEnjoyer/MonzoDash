@@ -7,8 +7,9 @@ services:
     ports:
       - 81:5000
     volumes:
-      - ./api:/app
-    working_dir: /app
+      - ./shared:/app/shared
+      - ./api:/app/api
+    working_dir: /app/api
     command: >
       bash -c "yarn install && yarn start:dev"
   client:
@@ -17,8 +18,9 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./client:/app
-    working_dir: /app
+      - ./shared:/app/shared
+      - ./client:/app/client
+    working_dir: /app/client
     command: >
       bash -c "yarn install && yarn start"
   postgres:
@@ -32,6 +34,7 @@ services:
       - 5432:5432
     volumes:
       - ./db:/var/lib/postgresql/data
+    user: "${UID}:${GID}"
 
 networks:
   default:

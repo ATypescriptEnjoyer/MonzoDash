@@ -5,7 +5,7 @@ import { GetAppName, GetAppVersion } from '../../utils';
 import { UnselectableTypography } from '../';
 
 export const AppBar = (): JSX.Element => (
-  <MaterialAppBar>
+  <MaterialAppBar position="relative">
     <Toolbar>
       <SmartToy sx={{ mr: 2 }} />
       <UnselectableTypography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>

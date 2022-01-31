@@ -4,7 +4,10 @@ https://docs.nestjs.com/providers#services
 
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { AxiosRequestHeaders } from 'axios';
+import { ISetupCache, setupCache } from 'axios-cache-adapter';
 import { firstValueFrom } from 'rxjs';
+import { Owner, Account } from '../../../shared/interfaces/monzo';
 
 export interface MonzoAuthResponse {
   access_token: string;
@@ -13,9 +16,6 @@ export interface MonzoAuthResponse {
 }
 
 export interface AuthRequest {
-  clientId: string;
-  clientSecret: string;
-  redirectUri: string;
   authCode: string;
 }
 
@@ -27,9 +27,21 @@ export interface AuthResponse {
 
 @Injectable()
 export class MonzoService {
-  constructor(private httpService: HttpService) {}
+  private cache: ISetupCache = null;
 
-  async usingAuthCode({ clientId, clientSecret, redirectUri, authCode }: AuthRequest): Promise<AuthResponse> {
+  constructor(private httpService: HttpService) {
+    this.cache = setupCache({
+      maxAge: 3600 * 1000, // 60 minutes,
+    });
+  }
+
+  async usingAuthCode({ authCode }: AuthRequest): Promise<AuthResponse> {
+    const {
+      MONZO_CLIENT_ID: clientId,
+      MONZO_CLIENT_SECRET: clientSecret,
+      MONZO_REDIRECT_URI: redirectUri,
+    } = process.env;
+
     const requestData = {
       grant_type: 'authorization_code',
       client_id: clientId,
@@ -41,6 +53,7 @@ export class MonzoService {
     const requestDataString = new URLSearchParams(requestData).toString();
 
     const { data } = await firstValueFrom(this.httpService.post<MonzoAuthResponse>('oauth2/token', requestDataString));
+
     return {
       accessToken: data.access_token,
       expiresIn: data.expires_in, //Expires in is in seconds
@@ -48,15 +61,9 @@ export class MonzoService {
     };
   }
 
-  async refreshToken({
-    clientId,
-    clientSecret,
-    refreshToken,
-  }: {
-    clientId: string;
-    clientSecret: string;
-    refreshToken: string;
-  }): Promise<AuthResponse> {
+  async refreshToken({ refreshToken }: { refreshToken: string }): Promise<AuthResponse> {
+    const { MONZO_CLIENT_ID: clientId, MONZO_CLIENT_SECRET: clientSecret } = process.env;
+
     const requestData = {
       grant_type: 'refresh_token',
       client_id: clientId,
@@ -72,5 +79,17 @@ export class MonzoService {
       expiresIn: data.expires_in, //Expires in is in seconds
       refreshToken: data.refresh_token,
     };
+  }
+
+  async getUserInfo({ authToken }: { authToken: string }): Promise<Owner> {
+    const headers: AxiosRequestHeaders = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', { headers }),
+    );
+
+    return data.accounts[0].owners[0];
   }
 }
