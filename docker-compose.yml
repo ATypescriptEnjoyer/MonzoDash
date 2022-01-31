@@ -12,6 +12,9 @@ services:
     working_dir: /app/api
     command: >
       bash -c "yarn install && yarn start:dev"
+    links:
+      - redis
+      - postgres
   client:
     image: node:16.13.2
     restart: always
@@ -35,6 +38,17 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
     user: "${UID}:${GID}"
+  redis:
+    image: redis:6.2.6-alpine
+    environment:
+      - PGID=1000
+      - PUID=1000
+    ports:
+      - 6379:6379
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ./redis:/data
+    restart: always
 
 networks:
   default:
