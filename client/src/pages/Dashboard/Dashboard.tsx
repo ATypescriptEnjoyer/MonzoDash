@@ -1,5 +1,11 @@
 import React from 'react';
+import { AppBar } from '../../components';
+import { DashboardContainer } from './Dashboard.styled';
 
 export const Dashboard = (): JSX.Element => {
-  return <div>Hi</div>;
+  return (
+    <DashboardContainer>
+      <AppBar />
+    </DashboardContainer>
+  );
 };
