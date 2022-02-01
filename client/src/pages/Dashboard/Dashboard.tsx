@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AppBar, UnselectableTypography } from '../../components';
-import { DashboardContainer, DashboardContent } from './Dashboard.styled';
+import { DashboardContainer, DashboardContent, TableContainer } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { ApiConnector } from '../../network';
+import { ActionsTable } from './ActionsTable';
 
 export const Dashboard = (): JSX.Element => {
   const [name, setName] = useState('');
@@ -26,6 +27,9 @@ export const Dashboard = (): JSX.Element => {
         <UnselectableTypography variant="h4" fontWeight="300" color="inherit">
           Welcome Back, {name}
         </UnselectableTypography>
+        <TableContainer>
+          <ActionsTable />
+        </TableContainer>
       </DashboardContent>
     </DashboardContainer>
   );
