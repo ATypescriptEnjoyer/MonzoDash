@@ -10,11 +10,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model AutomationRecordHistory {
+  id                 Int               @id @default(autoincrement())
+  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
+  automationRecordId Int?
+  success            Boolean           @default(false)
+  createdAt          DateTime          @default(now())
+}
+
 model AutomationRecord {
-  id       Int       @id @default(autoincrement())
-  name     String
-  triggers Trigger[]
-  actions  Action[]
+  id        Int                       @id @default(autoincrement())
+  name      String
+  triggers  Trigger[]
+  actions   Action[]
+  history   AutomationRecordHistory[]
+  createdAt DateTime                  @default(now())
 }
 
 model Trigger {
@@ -22,15 +32,19 @@ model Trigger {
   key                String
   operator           TRIGGER_OPERATOR
   value              String
-  AutomationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id])
+  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
   automationRecordId Int?
+  createdAt          DateTime          @default(now())
+
 }
 
 model Action {
   id                 Int               @id @default(autoincrement())
   action             Json
-  AutomationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id])
+  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
   automationRecordId Int?
+  createdAt          DateTime          @default(now())
+
 }
 
 enum TRIGGER_OPERATOR {

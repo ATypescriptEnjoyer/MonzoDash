@@ -17,13 +17,7 @@ import Add from '@mui/icons-material/Add';
 import { visuallyHidden } from '@mui/utils';
 import { StyledTable, StyledTableContainer, TableBox, TablePaper, TableTitle } from './ActionsTable.styled';
 import moment from 'moment';
-
-interface Data {
-  id: number;
-  name: string;
-  last_ran: Date;
-  created_at: Date;
-}
+import { AutomationRecord } from '../../../interfaces';
 
 type SortResult = 0 | 1 | -1;
 
@@ -50,7 +44,7 @@ function getComparator<Key extends keyof never>(
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Data;
+  id: keyof AutomationRecord;
   label: string;
   numeric: boolean;
   date: boolean;
@@ -72,14 +66,14 @@ const headCells: readonly HeadCell[] = [
     label: 'Action Name',
   },
   {
-    id: 'last_ran',
+    id: 'lastRan',
     numeric: false,
     date: true,
     disablePadding: false,
     label: 'Last Ran',
   },
   {
-    id: 'created_at',
+    id: 'createdAt',
     numeric: false,
     date: true,
     disablePadding: false,
@@ -89,7 +83,7 @@ const headCells: readonly HeadCell[] = [
 
 interface EnhancedTableProps {
   numSelected: number;
-  onRequestSort: (event: MouseEvent<unknown>, property: keyof Data) => void;
+  onRequestSort: (event: MouseEvent<unknown>, property: keyof AutomationRecord) => void;
   onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
   order: Order;
   orderBy: string;
@@ -98,7 +92,7 @@ interface EnhancedTableProps {
 
 function EnhancedTableHead(props: EnhancedTableProps): JSX.Element {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-  const createSortHandler = (property: keyof Data) => (event: MouseEvent<unknown>) => {
+  const createSortHandler = (property: keyof AutomationRecord) => (event: MouseEvent<unknown>) => {
     onRequestSort(event, property);
   };
 
@@ -146,20 +140,27 @@ interface EnhancedTableToolbarProps {
   numSelected: number;
 }
 
-export const ActionsTable = (): JSX.Element => {
+export const ActionsTable = ({
+  actions,
+  onDeleteRecords,
+}: {
+  actions: AutomationRecord[];
+  onDeleteRecords: (ids: number[]) => Promise<boolean>;
+}): JSX.Element => {
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('id');
-  const [selected, setSelected] = useState<readonly number[]>([]);
+  const [orderBy, setOrderBy] = useState<keyof AutomationRecord>('id');
+  const [selected, setSelected] = useState<number[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [rows, setRows] = useState([{ id: 0, created_at: new Date(), last_ran: new Date(), name: 'Test' }]);
 
   const EnhancedTableToolbar = (props: EnhancedTableToolbarProps): JSX.Element => {
     const { numSelected } = props;
 
-    const handleDelete = (): void => {
-      setRows(rows.filter(({ id }) => !selected.includes(id)));
-      setSelected([]);
+    const handleDelete = async (): Promise<void> => {
+      const successDelete = await onDeleteRecords(selected);
+      if (successDelete) {
+        setSelected([]);
+      }
     };
 
     return (
@@ -198,7 +199,7 @@ export const ActionsTable = (): JSX.Element => {
     );
   };
 
-  const handleRequestSort = (event: MouseEvent<unknown>, property: keyof Data): void => {
+  const handleRequestSort = (event: MouseEvent<unknown>, property: keyof AutomationRecord): void => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
@@ -206,7 +207,7 @@ export const ActionsTable = (): JSX.Element => {
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>): void => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
+      const newSelecteds = actions.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -215,7 +216,7 @@ export const ActionsTable = (): JSX.Element => {
 
   const handleClick = (event: MouseEvent<unknown>, id: number): void => {
     const selectedIndex = selected.indexOf(id);
-    let newSelected: readonly number[] = [];
+    let newSelected: number[] = [];
 
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id);
@@ -242,9 +243,9 @@ export const ActionsTable = (): JSX.Element => {
   const isSelected = (id: number): boolean => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - actions.length) : 0;
 
-  const renderRow = (row: Data, index: number): JSX.Element => {
+  const renderRow = (row: AutomationRecord, index: number): JSX.Element => {
     const isItemSelected = isSelected(row.id);
     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -293,10 +294,10 @@ export const ActionsTable = (): JSX.Element => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={actions.length}
             />
             <TableBody>
-              {rows
+              {actions
                 .slice()
                 .sort(getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -316,7 +317,7 @@ export const ActionsTable = (): JSX.Element => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={actions.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

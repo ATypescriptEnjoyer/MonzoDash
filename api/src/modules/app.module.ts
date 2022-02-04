@@ -1,3 +1,4 @@
+import { ActionController } from './../controllers/action.controller';
 import { MonzoController } from '../controllers/monzo.controller';
 import { MonzoService } from '../services/monzo.service';
 import { AuthController } from '../controllers/auth.controller';
@@ -10,7 +11,7 @@ import { generateHttpModule } from './generateHttpModule';
 
 @Module({
   imports: [ConfigModule.forRoot({ envFilePath: '../.env' }), generateHttpModule()],
-  controllers: [MonzoController, AuthController],
+  controllers: [ActionController, MonzoController, AuthController],
   providers: [MonzoService, AuthService, PrismaService, AutomationRecordService],
 })
 export class AppModule {}

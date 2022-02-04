@@ -37,7 +37,6 @@ services:
       - 5432:5432
     volumes:
       - ./db:/var/lib/postgresql/data
-    user: "${UID}:${GID}"
   redis:
     image: redis:6.2.6-alpine
     environment:
