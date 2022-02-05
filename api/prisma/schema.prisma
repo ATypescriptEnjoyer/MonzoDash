@@ -29,27 +29,34 @@ model AutomationRecord {
 
 model Trigger {
   id                 Int               @id @default(autoincrement())
-  key                String
+  triggerOptionId    Int
+  automationRecordId Int?
   operator           TRIGGER_OPERATOR
   value              String
-  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
-  automationRecordId Int?
   createdAt          DateTime          @default(now())
-
+  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
+  triggerOption      TriggerOption     @relation(fields: [triggerOptionId], references: [id])
 }
 
 model Action {
   id                 Int               @id @default(autoincrement())
   action             Json
-  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
   automationRecordId Int?
   createdAt          DateTime          @default(now())
+  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
+}
 
+model TriggerOption {
+  id      Int       @id @default(autoincrement())
+  key     String
+  Trigger Trigger[]
 }
 
 enum TRIGGER_OPERATOR {
   EQUALS
   NOT_EQUALS
+  GREATER_THAN
+  LESS_THAN
 }
 
 model Auth {
