@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Setup, Dashboard } from './pages';
+import { Setup, Dashboard, AddAction } from './pages';
 import { StyledApp } from './App.styled';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
@@ -18,6 +18,7 @@ function App(): JSX.Element {
           <Routes>
             <Route path="/setup" element={<Setup />} />
             <Route path="/" element={<Dashboard />} />
+            <Route path="/actions/add" element={<AddAction />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </Router>

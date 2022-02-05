@@ -1,4 +1,5 @@
+import { AddAction } from './AddAction';
 import { Dashboard } from './Dashboard';
 import { Setup } from './Setup';
 
-export { Dashboard, Setup };
+export { AddAction, Dashboard, Setup };

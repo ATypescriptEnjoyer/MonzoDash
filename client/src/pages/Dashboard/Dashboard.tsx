@@ -5,10 +5,12 @@ import { Owner } from '../../../../shared/interfaces/monzo';
 import { ApiConnector } from '../../network';
 import { ActionsTable } from './ActionsTable';
 import { AutomationRecord } from '../../interfaces/AutomationRecord';
+import { useNavigate } from 'react-router-dom';
 
 export const Dashboard = (): JSX.Element => {
   const [name, setName] = useState('');
   const [actions, setActions] = useState<AutomationRecord[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getName = async (): Promise<void> => {
@@ -43,6 +45,10 @@ export const Dashboard = (): JSX.Element => {
     return !finishedPromises.some((value) => !value.result);
   };
 
+  const handleAddRecord = async (): Promise<void> => {
+    navigate('/actions/add');
+  };
+
   return (
     <DashboardContainer>
       <AppBar />
@@ -51,7 +57,7 @@ export const Dashboard = (): JSX.Element => {
           Welcome Back, {name}
         </UnselectableTypography>
         <TableContainer>
-          <ActionsTable actions={actions} onDeleteRecords={handleDeleteRecords} />
+          <ActionsTable onAddRecord={handleAddRecord} actions={actions} onDeleteRecords={handleDeleteRecords} />
         </TableContainer>
       </DashboardContent>
     </DashboardContainer>

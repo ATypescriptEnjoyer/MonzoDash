@@ -1,6 +1,5 @@
 import { Box, Paper, Table, TableContainer } from '@mui/material';
 import styled from 'styled-components';
-import { styled as muiStyled } from '@mui/material';
 import { UnselectableTypography } from '../../../components';
 
 export const TableBox = styled(Box)`

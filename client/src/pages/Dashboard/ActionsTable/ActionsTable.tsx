@@ -143,9 +143,11 @@ interface EnhancedTableToolbarProps {
 export const ActionsTable = ({
   actions,
   onDeleteRecords,
+  onAddRecord,
 }: {
   actions: AutomationRecord[];
   onDeleteRecords: (ids: number[]) => Promise<boolean>;
+  onAddRecord: () => void;
 }): JSX.Element => {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof AutomationRecord>('id');
@@ -190,7 +192,7 @@ export const ActionsTable = ({
           </Tooltip>
         ) : (
           <Tooltip title="Add">
-            <IconButton>
+            <IconButton onClick={onAddRecord}>
               <Add />
             </IconButton>
           </Tooltip>
