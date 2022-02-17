@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, UnselectableTypography } from '../../components';
-import { DashboardContainer, DashboardContent, TableContainer } from './Dashboard.styled';
+import { UnselectableTypography } from '../../components';
+import { DashboardContent, TableContainer } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { ApiConnector } from '../../network';
 import { ActionsTable } from './ActionsTable';
@@ -46,20 +46,17 @@ export const Dashboard = (): JSX.Element => {
   };
 
   const handleAddRecord = async (): Promise<void> => {
-    navigate('/actions/add');
+    navigate('/app/actions/add');
   };
 
   return (
-    <DashboardContainer>
-      <AppBar />
-      <DashboardContent>
-        <UnselectableTypography variant="h4" fontWeight="300" color="inherit">
-          Welcome Back, {name}
-        </UnselectableTypography>
-        <TableContainer>
-          <ActionsTable onAddRecord={handleAddRecord} actions={actions} onDeleteRecords={handleDeleteRecords} />
-        </TableContainer>
-      </DashboardContent>
-    </DashboardContainer>
+    <DashboardContent>
+      <UnselectableTypography variant="h4" fontWeight="300" color="inherit">
+        Welcome Back, {name}
+      </UnselectableTypography>
+      <TableContainer>
+        <ActionsTable onAddRecord={handleAddRecord} actions={actions} onDeleteRecords={handleDeleteRecords} />
+      </TableContainer>
+    </DashboardContent>
   );
 };

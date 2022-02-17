@@ -3,7 +3,7 @@ version: "3.4"
 services:
   api:
     image: node:16.13.2
-    restart: always
+    #restart: always
     ports:
       - 81:5000
     volumes:
@@ -17,7 +17,7 @@ services:
       - postgres
   client:
     image: node:16.13.2
-    restart: always
+    #restart: always
     ports:
       - 3000:3000
     volumes:
@@ -28,7 +28,7 @@ services:
       bash -c "yarn install && yarn start"
   postgres:
     image: postgres
-    restart: always
+    #restart: always
     environment:
       - POSTGRES_USER=${POSTGRESQL_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
@@ -47,7 +47,7 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - ./redis:/data
-    restart: always
+    #restart: always
 
 networks:
   default:

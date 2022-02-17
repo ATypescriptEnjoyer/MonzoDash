@@ -34,7 +34,7 @@ export class AuthService {
         return auth.accessToken;
       }
     }
-    return latestValid.authToken;
+    return latestValid?.authToken;
   }
 
   async createAuthRecord(data: Prisma.AuthCreateInput): Promise<Auth> {

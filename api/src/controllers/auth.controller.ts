@@ -42,7 +42,7 @@ export class AuthController {
     }
   }
 
-  @Post('isAuthed')
+  @Get('isAuthed')
   async isAuthed(): Promise<boolean> {
     const token = await this.authService.getAccessToken();
     return !!token;
