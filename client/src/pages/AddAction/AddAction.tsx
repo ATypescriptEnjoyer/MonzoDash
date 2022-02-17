@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, UnselectableTypography } from '../../components';
+import { UnselectableTypography } from '../../components';
 import {
-  DashboardContainer,
   DashboardContent,
   ActionContainer,
   ActionSection,
@@ -60,44 +59,41 @@ export const AddAction = (): JSX.Element => {
   };
 
   return (
-    <DashboardContainer>
-      <AppBar />
-      <DashboardContent>
-        <UnselectableTypography variant="h4" fontWeight="300" color="inherit">
-          New Action
-        </UnselectableTypography>
-        <ActionContainer>
-          <ActionSection>
-            <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
-              When
-            </UnselectableTypography>
-            <TriggerActionContainer>
-              {rows.map((row, index) => (
-                <>
-                  {index > 0 && (
-                    <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
-                      And
-                    </UnselectableTypography>
-                  )}
-                  <TriggerRow data={row} key={index} keys={keys} onUpdate={handleUpdate(index)} />
-                </>
-              ))}
-              <AddButton onClick={handleAddTrigger}>
-                <AddContainer>
-                  <Add />
-                  <UnselectableTypography>Add Trigger</UnselectableTypography>
-                </AddContainer>
-              </AddButton>
-            </TriggerActionContainer>
-          </ActionSection>
-          <ActionSection>
-            <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
-              Action (do this)
-            </UnselectableTypography>
-            <TriggerActionContainer></TriggerActionContainer>
-          </ActionSection>
-        </ActionContainer>
-      </DashboardContent>
-    </DashboardContainer>
+    <DashboardContent>
+      <UnselectableTypography variant="h4" fontWeight="300" color="inherit">
+        New Action
+      </UnselectableTypography>
+      <ActionContainer>
+        <ActionSection>
+          <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
+            When
+          </UnselectableTypography>
+          <TriggerActionContainer>
+            {rows.map((row, index) => (
+              <>
+                {index > 0 && (
+                  <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
+                    And
+                  </UnselectableTypography>
+                )}
+                <TriggerRow data={row} key={index} keys={keys} onUpdate={handleUpdate(index)} />
+              </>
+            ))}
+            <AddButton onClick={handleAddTrigger}>
+              <AddContainer>
+                <Add />
+                <UnselectableTypography>Add Trigger</UnselectableTypography>
+              </AddContainer>
+            </AddButton>
+          </TriggerActionContainer>
+        </ActionSection>
+        <ActionSection>
+          <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
+            Action (do this)
+          </UnselectableTypography>
+          <TriggerActionContainer></TriggerActionContainer>
+        </ActionSection>
+      </ActionContainer>
+    </DashboardContent>
   );
 };
