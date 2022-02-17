@@ -1,6 +1,5 @@
-import { FormControl, InputLabel, MenuItem } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Paper, Input } from '@mui/material';
 import React from 'react';
-import { TablePaper } from '../../Dashboard/ActionsTable/ActionsTable.styled';
 import { TriggerKey } from '../AddAction';
 import { StyledSelect, StyledTriggerRow } from './TriggerRow.styled';
 
@@ -16,6 +15,25 @@ interface Props {
   onUpdate: ({ keyId, operator, value }: RowData) => void;
 }
 
+const Operators: { key: string; value: string }[] = [
+  {
+    key: 'EQUALS',
+    value: 'Equals',
+  },
+  {
+    key: 'NOT_EQUALS',
+    value: 'Is Not',
+  },
+  {
+    key: 'GREATER_THAN',
+    value: 'Greater Than',
+  },
+  {
+    key: 'LESS_THAN',
+    value: 'Less Than',
+  },
+];
+
 export const TriggerRow = ({ keys, data, onUpdate }: Props): JSX.Element => {
   const handleChange = (key: string, value: string): void => {
     onUpdate({
@@ -26,7 +44,7 @@ export const TriggerRow = ({ keys, data, onUpdate }: Props): JSX.Element => {
 
   return (
     <StyledTriggerRow>
-      <TablePaper>
+      <Paper>
         <FormControl
           variant="standard"
           sx={{
@@ -34,7 +52,9 @@ export const TriggerRow = ({ keys, data, onUpdate }: Props): JSX.Element => {
             minWidth: 120,
           }}
         >
-          <InputLabel id="select-key">Trigger Key</InputLabel>
+          <InputLabel shrink id="select-key">
+            Trigger Key
+          </InputLabel>
           <StyledSelect
             labelId="select-key"
             id="key"
@@ -56,7 +76,60 @@ export const TriggerRow = ({ keys, data, onUpdate }: Props): JSX.Element => {
             ))}
           </StyledSelect>
         </FormControl>
-      </TablePaper>
+      </Paper>
+      <Paper>
+        <FormControl
+          variant="standard"
+          sx={{
+            m: 1,
+            minWidth: 120,
+          }}
+        >
+          <InputLabel shrink id="select-operator">
+            Operator
+          </InputLabel>
+          <StyledSelect
+            labelId="select-operator"
+            id="operator"
+            name="operator"
+            value={data.operator}
+            label="Operator"
+            onChange={(event): void => handleChange(event.target.name, event.target.value as string)}
+          >
+            {[
+              {
+                key: '',
+                value: '',
+              },
+              ...Operators,
+            ].map(({ key, value }) => (
+              <MenuItem key={key} value={value}>
+                {value}
+              </MenuItem>
+            ))}
+          </StyledSelect>
+        </FormControl>
+      </Paper>
+      <Paper>
+        <FormControl
+          variant="standard"
+          sx={{
+            m: 1,
+            minWidth: 120,
+          }}
+        >
+          <InputLabel shrink id="value">
+            Value
+          </InputLabel>
+          <Input
+            aria-labelledby="value"
+            id="value"
+            name="value"
+            value={data.value}
+            onChange={(event): void => handleChange(event.target.name, event.target.value as string)}
+          />
+        </FormControl>
+      </Paper>
     </StyledTriggerRow>
   );
 };

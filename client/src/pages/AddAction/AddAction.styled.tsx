@@ -1,3 +1,4 @@
+import { Button, Paper, styled as muiStyled } from '@mui/material';
 import styled from 'styled-components';
 
 export const DashboardContainer = styled.div`
@@ -18,6 +19,7 @@ export const ActionContainer = styled.div`
   flex: 1;
   display: flex;
   flex-direction: row;
+  gap: 60px;
 `;
 
 export const ActionSection = styled.div`
@@ -28,4 +30,17 @@ export const ActionSection = styled.div`
 
 export const TriggerActionContainer = styled.div`
   margin-top: 36px;
+`;
+
+export const AddButton = styled(Button)`
+  && {
+    padding: 0;
+  }
+`;
+
+export const AddContainer = muiStyled(Paper)`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 6px 8px;
 `;

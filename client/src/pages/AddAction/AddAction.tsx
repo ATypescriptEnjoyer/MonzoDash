@@ -6,9 +6,12 @@ import {
   ActionContainer,
   ActionSection,
   TriggerActionContainer,
+  AddContainer,
+  AddButton,
 } from './AddAction.styled';
 import { ApiConnector } from '../../network';
 import { TriggerRow } from './TriggerRow';
+import { Add } from '@mui/icons-material';
 
 export interface TriggerKey {
   id: number;
@@ -45,6 +48,17 @@ export const AddAction = (): JSX.Element => {
     setRows(updatedRows);
   };
 
+  const handleAddTrigger = (): void => {
+    setRows([
+      ...rows,
+      {
+        keyId: 0,
+        operator: '',
+        value: '',
+      },
+    ]);
+  };
+
   return (
     <DashboardContainer>
       <AppBar />
@@ -55,12 +69,25 @@ export const AddAction = (): JSX.Element => {
         <ActionContainer>
           <ActionSection>
             <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
-              Trigger (when this criteria is met)
+              When
             </UnselectableTypography>
             <TriggerActionContainer>
               {rows.map((row, index) => (
-                <TriggerRow data={row} key={index} keys={keys} onUpdate={handleUpdate(index)} />
+                <>
+                  {index > 0 && (
+                    <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
+                      And
+                    </UnselectableTypography>
+                  )}
+                  <TriggerRow data={row} key={index} keys={keys} onUpdate={handleUpdate(index)} />
+                </>
               ))}
+              <AddButton onClick={handleAddTrigger}>
+                <AddContainer>
+                  <Add />
+                  <UnselectableTypography>Add Trigger</UnselectableTypography>
+                </AddContainer>
+              </AddButton>
             </TriggerActionContainer>
           </ActionSection>
           <ActionSection>
