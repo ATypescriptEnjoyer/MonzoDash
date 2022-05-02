@@ -5,7 +5,6 @@ https://docs.nestjs.com/providers#services
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosRequestHeaders } from 'axios';
-import { ISetupCache, setupCache } from 'axios-cache-adapter';
 import { firstValueFrom } from 'rxjs';
 import { Owner, Account } from '../../../shared/interfaces/monzo';
 
@@ -27,13 +26,7 @@ export interface AuthResponse {
 
 @Injectable()
 export class MonzoService {
-  private cache: ISetupCache = null;
-
-  constructor(private httpService: HttpService) {
-    this.cache = setupCache({
-      maxAge: 3600 * 1000, // 60 minutes,
-    });
-  }
+  constructor(private httpService: HttpService) { }
 
   async usingAuthCode({ authCode }: AuthRequest): Promise<AuthResponse> {
     const {
@@ -81,6 +74,18 @@ export class MonzoService {
     };
   }
 
+  async getAccountId({ authToken }: { authToken: string }): Promise<string> {
+    const headers: AxiosRequestHeaders = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', { headers }),
+    );
+
+    return data.accounts.find((acc) => !acc.closed).id;
+  }
+
   async getUserInfo({ authToken }: { authToken: string }): Promise<Owner> {
     const headers: AxiosRequestHeaders = {
       Authorization: `Bearer ${authToken}`,
@@ -91,5 +96,26 @@ export class MonzoService {
     );
 
     return data.accounts[0].owners[0];
+  }
+
+  async configureWebhooks({
+    authToken,
+    accountId,
+    webhookUrl,
+  }: {
+    authToken: string;
+    accountId: string;
+    webhookUrl: string;
+  }): Promise<boolean> {
+    const headers: AxiosRequestHeaders = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    try {
+      await firstValueFrom(this.httpService.post('webhooks', { account_id: accountId, url: webhookUrl }, { headers }));
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 }

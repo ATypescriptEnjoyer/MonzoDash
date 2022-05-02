@@ -6,10 +6,16 @@ import { Controller, Get, InternalServerErrorException, Post, Query, Res } from 
 import { Prisma } from '@prisma/client';
 import { AuthService } from '../services/auth.service';
 import { MonzoService } from '../services/monzo.service';
+import { HttpService } from '@nestjs/axios';
+import * as redis from 'redis';
 
 @Controller('Auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly monzoService: MonzoService) { }
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly authService: AuthService,
+    private readonly monzoService: MonzoService,
+  ) { }
 
   @Get('redirectUri')
   getRedirectUri(): string {
@@ -53,13 +59,26 @@ export class AuthController {
   @Post('signout')
   async signOut(): Promise<void> {
     await this.authService.clearAuthRecords();
+    const client = redis.createClient({
+      url: process.env.REDIS_URL,
+    });
+
+    client.flushall('ASYNC');
   }
 
   @Get('checkTwoFactor')
   async checkTwoFactor(): Promise<boolean> {
     const token = await this.authService.getAccessToken();
     try {
-      await this.monzoService.getUserInfo({ authToken: token.authToken });
+      if (token.twoFactored) {
+        return true;
+      }
+      const userInfo = await this.monzoService.getAccountId({ authToken: token.authToken });
+      await this.monzoService.configureWebhooks({
+        authToken: token.authToken,
+        accountId: userInfo,
+        webhookUrl: process.env.MONZO_WEBHOOK_URI,
+      });
       await this.authService.updateAuthRecord({
         data: {
           twoFactored: true,
