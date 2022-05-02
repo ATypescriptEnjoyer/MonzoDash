@@ -38,8 +38,10 @@ function getComparator<Key extends keyof never>(
   orderBy: Key,
 ): (a: { [key in Key]: number | string | Date }, b: { [key in Key]: number | string | Date }) => number {
   return order === 'desc'
-    ? (a, b): SortResult => descendingComparator(a, b, orderBy)
-    : (a, b): SortResult => -descendingComparator(a, b, orderBy) as SortResult;
+    ? // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      (a, b) => descendingComparator(a, b, orderBy) as SortResult
+    : // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      (a, b) => descendingComparator(a, b, orderBy) as SortResult;
 }
 
 interface HeadCell {
@@ -144,10 +146,12 @@ export const ActionsTable = ({
   actions,
   onDeleteRecords,
   onAddRecord,
+  title,
 }: {
   actions: AutomationRecord[];
   onDeleteRecords: (ids: number[]) => Promise<boolean>;
   onAddRecord: () => void;
+  title: string;
 }): JSX.Element => {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof AutomationRecord>('id');
@@ -181,7 +185,7 @@ export const ActionsTable = ({
           </TableTitle>
         ) : (
           <TableTitle variant="h6" id="tableTitle">
-            Actions
+            {title}
           </TableTitle>
         )}
         {numSelected > 0 ? (

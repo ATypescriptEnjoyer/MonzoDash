@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { UnselectableTypography } from '../../components';
+import { Tabs, UnselectableTypography } from '../../components';
 import { DashboardContent, TableContainer } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { ApiConnector } from '../../network';
@@ -49,14 +49,41 @@ export const Dashboard = (): JSX.Element => {
     navigate('/app/actions/add');
   };
 
+  const tabs = [
+    {
+      title: 'Triggers',
+      component: (
+        <TableContainer>
+          <ActionsTable
+            onAddRecord={handleAddRecord}
+            actions={actions}
+            onDeleteRecords={handleDeleteRecords}
+            title="Triggers"
+          />
+        </TableContainer>
+      ),
+    },
+    {
+      title: 'Actions',
+      component: (
+        <TableContainer>
+          <ActionsTable
+            onAddRecord={handleAddRecord}
+            actions={actions}
+            onDeleteRecords={handleDeleteRecords}
+            title="Actions"
+          />
+        </TableContainer>
+      ),
+    },
+  ];
+
   return (
     <DashboardContent>
-      <UnselectableTypography variant="h4" fontWeight="300" color="inherit">
+      <UnselectableTypography sx={{ marginBottom: '20px' }} variant="h4" fontWeight="300" color="inherit">
         Welcome Back, {name}
       </UnselectableTypography>
-      <TableContainer>
-        <ActionsTable onAddRecord={handleAddRecord} actions={actions} onDeleteRecords={handleDeleteRecords} />
-      </TableContainer>
+      <Tabs Tabs={tabs} />
     </DashboardContent>
   );
 };
