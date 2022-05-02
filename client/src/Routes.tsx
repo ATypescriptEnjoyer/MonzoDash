@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 import { AppLayout } from './layouts';
-import { AddAction, Dashboard, Setup } from './pages';
+import { AddAction, Dashboard, Setup, TwoFactor } from './pages';
 
 const routes = (isMonzoAuthed: boolean): RouteObject[] => [
   {
@@ -41,7 +41,7 @@ const routes = (isMonzoAuthed: boolean): RouteObject[] => [
     children: [
       {
         path: '/setup/two-factor',
-        element: <Outlet />,
+        element: <TwoFactor />,
       },
       {
         path: '/setup',

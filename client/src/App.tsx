@@ -10,9 +10,14 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const checkAuth = async (): Promise<void> => {
-      const { data } = await ApiConnector.get<boolean>('/auth/isauthed');
-      setIsMonzoAuthed(data);
-      setCheckedAuth(true);
+      const { data } = await ApiConnector.get<boolean | string>('/auth/isauthed');
+      if (data === '2FA pending') {
+        setIsMonzoAuthed(false);
+        setCheckedAuth(true);
+      } else {
+        setIsMonzoAuthed(data as boolean);
+        setCheckedAuth(true);
+      }
     };
     checkAuth();
   }, []);

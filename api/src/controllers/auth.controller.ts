@@ -3,12 +3,13 @@ https://docs.nestjs.com/controllers#controllers
 */
 
 import { Controller, Get, InternalServerErrorException, Post, Query, Res } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { AuthService } from '../services/auth.service';
 import { MonzoService } from '../services/monzo.service';
 
 @Controller('Auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly monzoService: MonzoService) {}
+  constructor(private readonly authService: AuthService, private readonly monzoService: MonzoService) { }
 
   @Get('redirectUri')
   getRedirectUri(): string {
@@ -29,12 +30,13 @@ export class AuthController {
       const expiresIn = new Date();
       expiresIn.setSeconds(+expiresIn.getSeconds() + authResponse.expiresIn);
 
-      const record = {
+      const record: Prisma.AuthCreateInput = {
         authToken: authResponse.accessToken,
         refreshToken: authResponse.refreshToken,
         expiresIn,
+        twoFactored: false,
       };
-      console.log('Record', record);
+      await this.authService.clearAuthRecords();
       await this.authService.createAuthRecord(record);
       return response.redirect(process.env.MONZOMATION_FRONTEND_URL);
     } catch (error) {
@@ -45,6 +47,31 @@ export class AuthController {
   @Get('isAuthed')
   async isAuthed(): Promise<boolean> {
     const token = await this.authService.getAccessToken();
-    return !!token;
+    return token?.twoFactored ? !!token : false;
+  }
+
+  @Post('signout')
+  async signOut(): Promise<void> {
+    await this.authService.clearAuthRecords();
+  }
+
+  @Get('checkTwoFactor')
+  async checkTwoFactor(): Promise<boolean> {
+    const token = await this.authService.getAccessToken();
+    try {
+      await this.monzoService.getUserInfo({ authToken: token.authToken });
+      await this.authService.updateAuthRecord({
+        data: {
+          twoFactored: true,
+        },
+        where: {
+          authToken: token.authToken,
+        },
+      });
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
 }

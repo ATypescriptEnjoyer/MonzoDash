@@ -9,7 +9,7 @@ import { MonzoService } from './monzo.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService, private monzo: MonzoService) {}
+  constructor(private prisma: PrismaService, private monzo: MonzoService) { }
 
   async authRecord(userWhereUniqueInput: Prisma.AuthWhereUniqueInput): Promise<Auth | null> {
     return this.prisma.auth.findUnique({
@@ -17,7 +17,7 @@ export class AuthService {
     });
   }
 
-  async getAccessToken(): Promise<string | null> {
+  async getAccessToken(): Promise<Auth> {
     const latestValid = await this.prisma.auth.findFirst({ where: { expiresIn: { gt: new Date() } } });
     if (!latestValid?.id) {
       const refreshToken = await this.prisma.auth.findFirst({ orderBy: { id: 'desc' } });
@@ -25,16 +25,17 @@ export class AuthService {
         const auth = await this.monzo.refreshToken({ refreshToken: refreshToken.refreshToken });
         const expiresIn = new Date();
         expiresIn.setSeconds(+expiresIn.getSeconds() + auth.expiresIn);
-        const record = {
+        const record: Prisma.AuthCreateInput = {
           authToken: auth.accessToken,
           refreshToken: auth.refreshToken,
           expiresIn,
+          twoFactored: true,
         };
-        this.createAuthRecord(record);
-        return auth.accessToken;
+        const authRec = this.createAuthRecord(record);
+        return authRec;
       }
     }
-    return latestValid?.authToken;
+    return latestValid;
   }
 
   async createAuthRecord(data: Prisma.AuthCreateInput): Promise<Auth> {
@@ -55,5 +56,9 @@ export class AuthService {
     return this.prisma.auth.delete({
       where,
     });
+  }
+
+  async clearAuthRecords(): Promise<Prisma.BatchPayload> {
+    return this.prisma.auth.deleteMany();
   }
 }
