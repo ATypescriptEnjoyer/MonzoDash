@@ -275,7 +275,7 @@ export const ActionsTable = ({
           />
         </TableCell>
         {headCells.map((cell, index) => {
-          const cellData = cell.date ? moment(row[cell.id]).format('DD-MM-YYYY HH:mm:ss') : row[cell.id];
+          const cellData = (cell.date ? moment(row[cell.id]).format('DD-MM-YYYY HH:mm:ss') : row[cell.id]).toString();
           return index === 0 ? (
             <TableCell key={cell.id} component="th" id={labelId} scope="row" padding="none">
               {cellData}
