@@ -15,7 +15,7 @@ export class AuthController {
     private readonly httpService: HttpService,
     private readonly authService: AuthService,
     private readonly monzoService: MonzoService,
-  ) { }
+  ) {}
 
   @Get('redirectUri')
   getRedirectUri(): string {
@@ -44,7 +44,7 @@ export class AuthController {
       };
       await this.authService.clearAuthRecords();
       await this.authService.createAuthRecord(record);
-      return response.redirect(process.env.MONZOMATION_FRONTEND_URL);
+      return response.redirect(process.env.MONZODASH_FRONTEND_URL);
     } catch (error) {
       throw new InternalServerErrorException(error.response.data);
     }

@@ -20,8 +20,8 @@ export const Setup = (): JSX.Element => {
   return (
     <StyledContainer>
       <StyledActionBox>
-        <StyledTitle>Monzomation</StyledTitle>
-        <StyledSubtitle>The Ultimate Monzo Automation</StyledSubtitle>
+        <StyledTitle>MonzoDash</StyledTitle>
+        <StyledSubtitle>The Ultimate Monzo Web Dashboard</StyledSubtitle>
         <StyledButton disabled={!monzoUrl} variant="contained" onClick={handleMonzoLogin}>
           Login With Monzo
         </StyledButton>

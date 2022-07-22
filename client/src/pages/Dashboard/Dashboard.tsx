@@ -45,8 +45,12 @@ export const Dashboard = (): JSX.Element => {
     return !finishedPromises.some((value) => !value.result);
   };
 
-  const handleAddRecord = async (): Promise<void> => {
+  const handleNewAction = (): void => {
     navigate('/app/actions/add');
+  };
+
+  const handleNewTrigger = (): void => {
+    navigate('/app/triggers/add');
   };
 
   const tabs = [
@@ -55,7 +59,7 @@ export const Dashboard = (): JSX.Element => {
       component: (
         <TableContainer>
           <ActionsTable
-            onAddRecord={handleAddRecord}
+            onAddRecord={handleNewTrigger}
             actions={actions}
             onDeleteRecords={handleDeleteRecords}
             title="Triggers"
@@ -68,7 +72,7 @@ export const Dashboard = (): JSX.Element => {
       component: (
         <TableContainer>
           <ActionsTable
-            onAddRecord={handleAddRecord}
+            onAddRecord={handleNewAction}
             actions={actions}
             onDeleteRecords={handleDeleteRecords}
             title="Actions"

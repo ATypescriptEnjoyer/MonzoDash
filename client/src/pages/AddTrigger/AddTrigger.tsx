@@ -7,10 +7,11 @@ import {
   TriggerActionContainer,
   AddContainer,
   AddButton,
-} from './AddAction.styled';
+} from './AddTrigger.styled';
 import { ApiConnector } from '../../network';
 import { TriggerRow } from './TriggerRow';
 import { Add } from '@mui/icons-material';
+import { FormControl, Input, InputLabel, Paper } from '@mui/material';
 
 export interface TriggerKey {
   id: number;
@@ -23,8 +24,10 @@ export interface RowData {
   value: string;
 }
 
-export const AddAction = (): JSX.Element => {
+export const AddTrigger = (): JSX.Element => {
   const [keys, setKeys] = useState<TriggerKey[]>([]);
+  const [triggerName, setTriggerName] = useState('');
+
   const [rows, setRows] = useState<{ keyId: number; operator: string; value: string }[]>([
     {
       keyId: 0,
@@ -61,12 +64,37 @@ export const AddAction = (): JSX.Element => {
   return (
     <DashboardContent>
       <UnselectableTypography variant="h4" fontWeight="300" color="inherit">
-        New Action
+        New Trigger
       </UnselectableTypography>
+      <Paper
+        sx={{
+          width: 240,
+          marginTop: 2,
+        }}
+      >
+        <FormControl
+          variant="standard"
+          sx={{
+            m: 1,
+            width: 220,
+          }}
+        >
+          <InputLabel shrink id="value">
+            Trigger Name
+          </InputLabel>
+          <Input
+            aria-labelledby="value"
+            id="value"
+            name="value"
+            value={triggerName}
+            onChange={(event): void => setTriggerName(event.target.value as string)}
+          />
+        </FormControl>
+      </Paper>
       <ActionContainer>
         <ActionSection>
           <UnselectableTypography variant="h5" fontWeight="300" color="inherit">
-            When
+            Conditions
           </UnselectableTypography>
           <TriggerActionContainer>
             {rows.map((row, index) => (

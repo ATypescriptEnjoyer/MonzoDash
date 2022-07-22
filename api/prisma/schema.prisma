@@ -12,10 +12,10 @@ datasource db {
 
 model AutomationRecordHistory {
   id                 Int               @id @default(autoincrement())
-  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
   automationRecordId Int?
   success            Boolean           @default(false)
   createdAt          DateTime          @default(now())
+  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
 }
 
 model AutomationRecord {

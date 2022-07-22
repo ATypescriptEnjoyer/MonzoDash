@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 import { AppLayout } from './layouts';
-import { AddAction, Dashboard, Setup, TwoFactor } from './pages';
+import { AddAction, AddTrigger, Dashboard, Setup, TwoFactor } from './pages';
 
 const routes = (isMonzoAuthed: boolean): RouteObject[] => [
   {
@@ -28,6 +28,10 @@ const routes = (isMonzoAuthed: boolean): RouteObject[] => [
       {
         path: '/app/actions/add',
         element: <AddAction />,
+      },
+      {
+        path: '/app/triggers/add',
+        element: <AddTrigger />,
       },
       {
         path: '/app',

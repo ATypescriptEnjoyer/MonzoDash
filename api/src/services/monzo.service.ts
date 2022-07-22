@@ -26,7 +26,7 @@ export interface AuthResponse {
 
 @Injectable()
 export class MonzoService {
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpService) {}
 
   async usingAuthCode({ authCode }: AuthRequest): Promise<AuthResponse> {
     const {
