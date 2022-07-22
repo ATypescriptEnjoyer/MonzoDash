@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 import { AppLayout } from './layouts';
-import { AddAction, AddTrigger, Dashboard, Setup, TwoFactor } from './pages';
+import { AddAction, AddTrigger, Dashboard, Login, TwoFactor } from './pages';
 
 const routes = (isMonzoAuthed: boolean): RouteObject[] => [
   {
@@ -18,7 +18,7 @@ const routes = (isMonzoAuthed: boolean): RouteObject[] => [
         <Outlet />
       </div>
     ) : (
-      <Navigate to="/setup" />
+      <Navigate to="/login" />
     ),
     children: [
       {
@@ -44,16 +44,20 @@ const routes = (isMonzoAuthed: boolean): RouteObject[] => [
     element: !isMonzoAuthed ? <Outlet /> : <Navigate to="/app/dashboard" />,
     children: [
       {
-        path: '/setup/two-factor',
+        path: '/login/verify',
         element: <TwoFactor />,
       },
       {
-        path: '/setup',
-        element: <Setup />,
+        path: '/login',
+        element: <Login />,
       },
       {
         path: '',
-        element: <Navigate to="/setup" />,
+        element: <Navigate to="/login" />,
+      },
+      {
+        path: '/*',
+        element: <Navigate to="/login" />,
       },
     ],
   },

@@ -10,55 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model AutomationRecordHistory {
-  id                 Int               @id @default(autoincrement())
-  automationRecordId Int?
-  success            Boolean           @default(false)
-  createdAt          DateTime          @default(now())
-  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
-}
-
-model AutomationRecord {
-  id        Int                       @id @default(autoincrement())
-  name      String
-  triggers  Trigger[]
-  actions   Action[]
-  history   AutomationRecordHistory[]
-  createdAt DateTime                  @default(now())
-}
-
-model Trigger {
-  id                 Int               @id @default(autoincrement())
-  triggerOptionId    Int
-  automationRecordId Int?
-  operator           TRIGGER_OPERATOR
-  value              String
-  createdAt          DateTime          @default(now())
-  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
-  triggerOption      TriggerOption     @relation(fields: [triggerOptionId], references: [id])
-}
-
-model Action {
-  id                 Int               @id @default(autoincrement())
-  action             Json
-  automationRecordId Int?
-  createdAt          DateTime          @default(now())
-  automationRecord   AutomationRecord? @relation(fields: [automationRecordId], references: [id], onDelete: Cascade)
-}
-
-model TriggerOption {
-  id      Int       @id @default(autoincrement())
-  key     String
-  Trigger Trigger[]
-}
-
-enum TRIGGER_OPERATOR {
-  EQUALS
-  NOT_EQUALS
-  GREATER_THAN
-  LESS_THAN
-}
-
 model Auth {
   id           Int       @id @default(autoincrement())
   authToken    String    @unique

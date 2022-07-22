@@ -66,8 +66,8 @@ export class AuthController {
     client.flushall('ASYNC');
   }
 
-  @Get('checkTwoFactor')
-  async checkTwoFactor(): Promise<boolean> {
+  @Get('verified')
+  async verified(): Promise<boolean> {
     const token = await this.authService.getAccessToken();
     try {
       if (token.twoFactored) {

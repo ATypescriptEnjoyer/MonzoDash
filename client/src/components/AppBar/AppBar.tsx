@@ -13,7 +13,7 @@ export const AppBar = (): JSX.Element => {
     } catch (error) {
       console.error(error);
     }
-    window.location.href = '/setup';
+    window.location.href = '/login';
   };
 
   return (

@@ -5,7 +5,7 @@ import { ApiConnector } from '../../network';
 export const TwoFactor = (): JSX.Element => {
   useEffect(() => {
     const interval = setInterval(async () => {
-      const { data } = await ApiConnector.get<boolean>('/auth/checkTwoFactor');
+      const { data } = await ApiConnector.get<boolean>('/auth/verified');
       if (data) {
         window.location.href = '/app/dashboard';
       }

@@ -6,10 +6,10 @@ import {
   StyledTitle,
   StyledButton,
   StyledColourBox,
-} from './Setup.styled';
+} from './Login.styled';
 import { ApiConnector } from '../../network';
 
-export const Setup = (): JSX.Element => {
+export const Login = (): JSX.Element => {
   const [monzoUrl, setMonzoUrl] = useState('');
 
   useEffect(() => {

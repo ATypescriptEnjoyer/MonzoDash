@@ -10,7 +10,7 @@ import { UnauthorizedException } from '../exceptions/unauthorized.exception';
 
 @Controller('monzo')
 export class MonzoController {
-  constructor(private readonly authService: AuthService, private readonly monzoService: MonzoService) { }
+  constructor(private readonly authService: AuthService, private readonly monzoService: MonzoService) {}
 
   @Get('getUser')
   async getUser(): Promise<Owner> {
