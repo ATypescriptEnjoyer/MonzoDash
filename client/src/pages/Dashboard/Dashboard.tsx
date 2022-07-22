@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, UnselectableTypography } from '../../components';
-import { DashboardContent, TableContainer } from './Dashboard.styled';
+import { UnselectableTypography } from '../../components';
+import { DashboardContent } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { ApiConnector } from '../../network';
-import { ActionsTable } from './ActionsTable';
-import { AutomationRecord } from '../../interfaces/AutomationRecord';
-import { useNavigate } from 'react-router-dom';
-
 export const Dashboard = (): JSX.Element => {
   const [name, setName] = useState('');
-  const [actions, setActions] = useState<AutomationRecord[]>([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const getName = async (): Promise<void> => {
@@ -21,73 +15,11 @@ export const Dashboard = (): JSX.Element => {
     getName();
   }, []);
 
-  useEffect(() => {
-    const getActions = async (): Promise<void> => {
-      const { data } = await ApiConnector.get<AutomationRecord[]>('/actions/getAll');
-      setActions(data);
-    };
-    getActions();
-  }, []);
-
-  const handleDeleteRecords = async (ids: number[]): Promise<boolean> => {
-    const promises = ids.map(async (id) => {
-      return {
-        id,
-        result: (await ApiConnector.delete<{ success: boolean }>(`/actions/delete/${id}`)).data.success,
-      };
-    });
-    const finishedPromises = await Promise.all(promises);
-    const filterDeletedActions = actions.filter((action) => {
-      const deletedRecord = finishedPromises.find((promise) => promise.id === action.id);
-      return !deletedRecord || !deletedRecord.result;
-    });
-    setActions(filterDeletedActions);
-    return !finishedPromises.some((value) => !value.result);
-  };
-
-  const handleNewAction = (): void => {
-    navigate('/app/actions/add');
-  };
-
-  const handleNewTrigger = (): void => {
-    navigate('/app/triggers/add');
-  };
-
-  const tabs = [
-    {
-      title: 'Triggers',
-      component: (
-        <TableContainer>
-          <ActionsTable
-            onAddRecord={handleNewTrigger}
-            actions={actions}
-            onDeleteRecords={handleDeleteRecords}
-            title="Triggers"
-          />
-        </TableContainer>
-      ),
-    },
-    {
-      title: 'Actions',
-      component: (
-        <TableContainer>
-          <ActionsTable
-            onAddRecord={handleNewAction}
-            actions={actions}
-            onDeleteRecords={handleDeleteRecords}
-            title="Actions"
-          />
-        </TableContainer>
-      ),
-    },
-  ];
-
   return (
     <DashboardContent>
       <UnselectableTypography sx={{ marginBottom: '20px' }} variant="h4" fontWeight="300" color="inherit">
         Welcome Back, {name}
       </UnselectableTypography>
-      <Tabs Tabs={tabs} />
     </DashboardContent>
   );
 };
