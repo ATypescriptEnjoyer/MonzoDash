@@ -3,19 +3,20 @@ import { Button } from '@mui/material';
 
 export const StyledContainer = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex: 1;
 `;
 
+export const StyledColourBox = styled.div`
+  background-color: #1f2022;
+  flex: 0.4;
+`;
+
 export const StyledActionBox = styled.div`
-  max-width: 400px;
-  max-height: 600px;
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
+  justify-content: center;
+  flex: 0.6;
 `;
 
 export const StyledTitle = styled.h1`

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyledActionBox, StyledContainer, StyledSubtitle, StyledTitle, StyledButton } from './Setup.styled';
+import {
+  StyledActionBox,
+  StyledContainer,
+  StyledSubtitle,
+  StyledTitle,
+  StyledButton,
+  StyledColourBox,
+} from './Setup.styled';
 import { ApiConnector } from '../../network';
 
 export const Setup = (): JSX.Element => {
@@ -19,6 +26,7 @@ export const Setup = (): JSX.Element => {
 
   return (
     <StyledContainer>
+      <StyledColourBox />
       <StyledActionBox>
         <StyledTitle>MonzoDash</StyledTitle>
         <StyledSubtitle>The Ultimate Monzo Web Dashboard</StyledSubtitle>
