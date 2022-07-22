@@ -9,8 +9,7 @@ export const Dashboard = (): JSX.Element => {
   useEffect(() => {
     const getName = async (): Promise<void> => {
       const { data } = await ApiConnector.get<Owner>('/monzo/getUser');
-      const firstName = (data as Owner).preferred_first_name;
-      setName(firstName);
+      setName(data.preferred_first_name);
     };
     getName();
   }, []);

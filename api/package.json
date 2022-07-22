@@ -21,7 +21,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:migrate:dev": "npx dotenv -e .env.local -- npx prisma migrate dev",
     "prisma:migrate:reset": "npx dotenv -e .env.local -- npx prisma migrate reset --force",
-    "prisma:studio": "npx dotenv -e .env.local -- npx prisma studio"
+    "prisma:studio": "npx dotenv -e .env.local -- npx prisma studio",
+    "prisma:db:seed": "npx dotenv -e .env.local -- npx prisma db seed"
   },
   "dependencies": {
     "@nestjs/axios": "^0.0.5",
@@ -77,5 +78,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seeds/seed.ts"
   }
 }

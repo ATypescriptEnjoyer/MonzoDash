@@ -18,3 +18,8 @@ model Auth {
   expiresIn    DateTime?
   createdAt    DateTime  @default(now())
 }
+
+model Settings {
+  name  String  @unique
+  value String
+}
