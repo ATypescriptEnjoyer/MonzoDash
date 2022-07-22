@@ -20,7 +20,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:migrate:dev": "npx dotenv -e .env.local -- npx prisma migrate dev",
-    "prisma:migrate:reset": "npx dotenv -e .env.local -- npx prisma migrate reset --force"
+    "prisma:migrate:reset": "npx dotenv -e .env.local -- npx prisma migrate reset --force",
+    "prisma:studio": "npx dotenv -e .env.local -- npx prisma studio"
   },
   "dependencies": {
     "@nestjs/axios": "^0.0.5",

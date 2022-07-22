@@ -69,6 +69,9 @@ export class AuthController {
   @Get('verified')
   async verified(): Promise<boolean> {
     const token = await this.authService.getAccessToken();
+    if (!token) {
+      return false;
+    }
     try {
       if (token.twoFactored) {
         return true;
