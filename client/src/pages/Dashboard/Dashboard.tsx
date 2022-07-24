@@ -16,9 +16,11 @@ export const Dashboard = (): JSX.Element => {
 
   return (
     <DashboardContent>
-      <UnselectableTypography sx={{ marginBottom: '20px' }} variant="h4" fontWeight="300" color="inherit">
-        Welcome Back, {name}
-      </UnselectableTypography>
+      {name && (
+        <UnselectableTypography sx={{ marginBottom: '20px' }} variant="h4" fontWeight="300" color="inherit">
+          Welcome Back, {name}
+        </UnselectableTypography>
+      )}
     </DashboardContent>
   );
 };
