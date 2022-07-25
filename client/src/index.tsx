@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -12,7 +12,11 @@ const theme = createTheme({
   },
 });
 
-ReactDOM.render(
+const root = document.getElementById('root');
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const rootContainer = createRoot(root!);
+
+rootContainer.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Router>
@@ -20,7 +24,6 @@ ReactDOM.render(
       </Router>
     </ThemeProvider>
   </React.StrictMode>,
-  document.getElementById('root'),
 );
 
 // If you want to start measuring performance in your app, pass a function

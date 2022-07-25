@@ -5,7 +5,7 @@
   "rules": {
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
-    "object-property-newline": "warn",
+    "object-property-newline": "off",
     "@typescript-eslint/explicit-function-return-type": "error"
   }
 }
