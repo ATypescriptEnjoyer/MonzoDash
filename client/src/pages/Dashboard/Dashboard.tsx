@@ -49,11 +49,9 @@ export const Dashboard = (): JSX.Element => {
         </UnselectableTypography>
       )}
       <Modules>
-        <Module HeaderText="Empty Module"></Module>
         <Module HeaderText="Dedicated Spending">
           <StyledDedicatedSpendingPie data={data} options={opts} />
         </Module>
-        <Module HeaderText="Empty Module"></Module>
         <Module HeaderText="Recent Transactions">
           <ModuleList>
             <TransactionItem Merchant="Test Merchant" Type="Income" Amount={100} />
