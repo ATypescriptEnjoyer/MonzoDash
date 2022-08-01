@@ -22,4 +22,8 @@ export const ModuleBody = styled.div`
   flex: 1;
   overflow-y: auto;
   padding-right: 16px;
+
+  @media screen and (max-width: 900px) {
+    padding: 0;
+  }
 `;
