@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Module, UnselectableTypography } from '../../components';
-import { DashContainer, Modules, StyledDedicatedSpendingPie } from './Dashboard.styled';
+import { DashContainer, Modules, StyledDedicatedSpendingPie, ModuleList } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { ApiConnector } from '../../network';
+import { ChartOptions } from 'chart.js';
+import { TransactionItem } from '../../components/TransactionItem';
 
 export const Dashboard = (): JSX.Element => {
   const [name, setName] = useState('Sasha');
@@ -19,12 +21,24 @@ export const Dashboard = (): JSX.Element => {
     labels: ['Red', 'Blue', 'Yellow'],
     datasets: [
       {
-        label: 'My First Dataset',
         data: [300, 50, 100],
         backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
-        hoverOffset: 4,
       },
     ],
+  };
+
+  const opts: ChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'left',
+        align: 'start',
+        labels: {
+          color: 'white',
+        },
+      },
+    },
   };
 
   return (
@@ -37,31 +51,19 @@ export const Dashboard = (): JSX.Element => {
       <Modules>
         <Module HeaderText="Empty Module"></Module>
         <Module HeaderText="Dedicated Spending">
-          <StyledDedicatedSpendingPie data={data} options={{ maintainAspectRatio: false }} />
+          <StyledDedicatedSpendingPie data={data} options={opts} />
         </Module>
         <Module HeaderText="Empty Module"></Module>
         <Module HeaderText="Recent Transactions">
-          <table>
-            <thead>
-              <tr>
-                <th>Company</th>
-                <th>Contact</th>
-                <th>Country</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Alfreds Futterkiste</td>
-                <td>Maria Anders</td>
-                <td>Germany</td>
-              </tr>
-              <tr>
-                <td>Centro comercial Moctezuma</td>
-                <td>Francisco Chang</td>
-                <td>Mexico</td>
-              </tr>
-            </tbody>
-          </table>
+          <ModuleList>
+            <TransactionItem Merchant="Test Merchant" Type="Income" Amount={100} />
+            <TransactionItem Merchant="Test Merchant" Type="Outgoing" Amount={200} />
+            <TransactionItem Merchant="Test Merchant" Type="Income" Amount={300} />
+            <TransactionItem Merchant="Test Merchant" Type="Outgoing" Amount={400} />
+            <TransactionItem Merchant="Test Merchant" Type="Income" Amount={500} />
+            <TransactionItem Merchant="Test Merchant" Type="Outgoing" Amount={600} />
+            <TransactionItem Merchant="Test Merchant" Type="Income" Amount={700} />
+          </ModuleList>
         </Module>
       </Modules>
     </DashContainer>

@@ -2,21 +2,16 @@ import React from 'react';
 import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 import { AppLayout } from './layouts';
 import { Dashboard, Login, TwoFactor } from './pages';
+import { StyledAppRoute } from './Routes.styled';
 
 const routes = (isMonzoAuthed: boolean): RouteObject[] => [
   {
     path: '/app',
     element: isMonzoAuthed ? (
-      <div
-        style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <StyledAppRoute>
         <AppLayout />
         <Outlet />
-      </div>
+      </StyledAppRoute>
     ) : (
       <Navigate to="/login" />
     ),
