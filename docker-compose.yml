@@ -14,7 +14,7 @@ services:
       bash -c "yarn install && yarn start:dev"
     links:
       - redis
-      - postgres
+      - mongo
   client:
     image: node:16.13.2
     #restart: always
@@ -26,18 +26,15 @@ services:
     working_dir: /app/client
     command: >
       bash -c "yarn install && yarn start"
-  postgres:
-    image: postgres
-    #restart: always
+  mongo:
+    image: mongo
     environment:
-      - POSTGRES_USER=${POSTGRESQL_USERNAME}
-      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
-      - POSTGRES_DB=monzodash
-      - PGDATA=/data/postgres
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     ports:
-      - 5432:5432
+      - 27017:27017
     volumes:
-      - postgres:/data/postgres
+      - ./db:/data/db
   redis:
     image: redis:6.2.6-alpine
     environment:
@@ -49,10 +46,6 @@ services:
     volumes:
       - ./redis:/data
     #restart: always
-
-volumes:
-  postgres:
-
 networks:
   default:
     name: docker_default

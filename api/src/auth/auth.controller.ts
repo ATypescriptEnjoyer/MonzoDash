@@ -2,19 +2,17 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, Get, InternalServerErrorException, Post, Query, Res } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { AuthService } from '../services/auth.service';
-import { MonzoService } from '../services/monzo.service';
-import { HttpService } from '@nestjs/axios';
+import { Controller, forwardRef, Get, Inject, InternalServerErrorException, Post, Query, Res } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { MonzoService } from '../monzo/monzo.service';
 import * as redis from 'redis';
+import { Auth } from './schemas/auth.schema';
 
 @Controller('Auth')
 export class AuthController {
   constructor(
-    private readonly httpService: HttpService,
     private readonly authService: AuthService,
-    private readonly monzoService: MonzoService,
+    @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
   ) {}
 
   @Get('redirectUri')
@@ -36,14 +34,15 @@ export class AuthController {
       const expiresIn = new Date();
       expiresIn.setSeconds(+expiresIn.getSeconds() + authResponse.expiresIn);
 
-      const record: Prisma.AuthCreateInput = {
+      const record: Auth = {
         authToken: authResponse.accessToken,
         refreshToken: authResponse.refreshToken,
+        createdAt: new Date(),
         expiresIn,
         twoFactored: false,
       };
-      await this.authService.clearAuthRecords();
-      await this.authService.createAuthRecord(record);
+      await this.authService.deleteAll();
+      await this.authService.create(record);
       return response.redirect(process.env.MONZODASH_FRONTEND_URL);
     } catch (error) {
       throw new InternalServerErrorException(error.response.data);
@@ -52,13 +51,13 @@ export class AuthController {
 
   @Get('isAuthed')
   async isAuthed(): Promise<boolean> {
-    const token = await this.authService.getAccessToken();
+    const token = await this.authService.getLatestToken();
     return token?.twoFactored ? !!token : false;
   }
 
   @Post('signout')
   async signOut(): Promise<void> {
-    await this.authService.clearAuthRecords();
+    await this.authService.deleteAll();
     const client = redis.createClient({
       url: process.env.REDIS_URL,
     });
@@ -68,7 +67,7 @@ export class AuthController {
 
   @Get('verified')
   async verified(): Promise<boolean> {
-    const token = await this.authService.getAccessToken();
+    const token = await this.authService.getLatestToken();
     if (!token) {
       return false;
     }
@@ -82,14 +81,7 @@ export class AuthController {
         accountId: userInfo,
         webhookUrl: process.env.MONZO_WEBHOOK_URI,
       });
-      await this.authService.updateAuthRecord({
-        data: {
-          twoFactored: true,
-        },
-        where: {
-          authToken: token.authToken,
-        },
-      });
+      await this.authService.save({ ...token, twoFactored: true });
       return true;
     } catch (error) {
       console.log(error);

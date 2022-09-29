@@ -1,15 +1,25 @@
-import { MonzoController } from '../controllers/monzo.controller';
-import { MonzoService } from '../services/monzo.service';
-import { AuthController } from '../controllers/auth.controller';
-import { PrismaService } from '../services/prisma.service';
-import { AuthService } from '../services/auth.service';
-import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
-import { generateHttpModule } from './generateHttpModule';
+import { AuthModule } from '../auth/auth.module';
+import { MonzoModule } from '../monzo/monzo.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ envFilePath: '../.env' }), generateHttpModule()],
-  controllers: [MonzoController, AuthController],
-  providers: [MonzoService, AuthService, PrismaService],
+  imports: [
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const username = configService.get<string>('MONGO_USERNAME');
+        const password = configService.get<string>('MONGO_PASSWORD');
+        return {
+          uri: `mongodb://${username}:${password}@mongo/monzodash?authSource=admin`,
+        };
+      },
+      inject: [ConfigService],
+    }),
+    AuthModule,
+    MonzoModule,
+  ],
 })
 export class AppModule {}
