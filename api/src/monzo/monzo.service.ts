@@ -6,9 +6,9 @@ import { RedisService } from '@liaoliaots/nestjs-redis';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { AxiosRequestHeaders } from 'axios';
-import { setupCache, RedisStore, ISetupCache } from 'axios-cache-adapter';
 import { firstValueFrom } from 'rxjs';
 import { Owner, Account } from '../../../shared/interfaces/monzo';
+import { buildStorage, setupCache } from 'axios-cache-interceptor';
 
 export interface MonzoAuthResponse {
   access_token: string;
@@ -31,16 +31,25 @@ export class MonzoService {
   //cache: ISetupCache;
 
   constructor(private httpService: HttpService, private redisService: RedisService) {
-    // const client = redisService.getClient();
-    // const store = new RedisStore(client);
-    // const excludeOAuthRegex = new RegExp('oauth2');
-    // const cache = setupCache({
-    //   maxAge: 15 * 60 * 1000,
-    //   store: store,
-    //   exclude: { query: false, paths: [excludeOAuthRegex] },
-    // });
-    // this.cache = cache;
-    // TODO: Build my own axios cache adapter
+    const client = redisService.getClient();
+    const redisStorage = buildStorage({
+      async find(key) {
+        const result = await client.get(`axios-cache:${key}`);
+        return JSON.parse(result);
+      },
+
+      async set(key, value) {
+        await client.set(`axios-cache:${key}`, JSON.stringify(value));
+      },
+
+      async remove(key) {
+        await client.del(`axios-cache:${key}`);
+      },
+    });
+
+    setupCache(httpService.axiosRef, {
+      storage: redisStorage,
+    });
   }
 
   async usingAuthCode({ authCode }: AuthRequest): Promise<AuthResponse> {
@@ -111,6 +120,10 @@ export class MonzoService {
     );
 
     return data.accounts[0].owners[0];
+  }
+
+  async signOut(): Promise<string> {
+    return this.redisService.getClient().flushall();
   }
 
   async configureWebhooks({

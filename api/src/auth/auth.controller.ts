@@ -5,7 +5,6 @@ https://docs.nestjs.com/controllers#controllers
 import { Controller, forwardRef, Get, Inject, InternalServerErrorException, Post, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MonzoService } from '../monzo/monzo.service';
-import * as redis from 'redis';
 import { Auth } from './schemas/auth.schema';
 
 @Controller('Auth')
@@ -58,11 +57,7 @@ export class AuthController {
   @Post('signout')
   async signOut(): Promise<void> {
     await this.authService.deleteAll();
-    const client = redis.createClient({
-      url: process.env.REDIS_URL,
-    });
-
-    client.flushall('ASYNC');
+    await this.monzoService.signOut();
   }
 
   @Get('verified')

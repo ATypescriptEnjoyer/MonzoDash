@@ -23,7 +23,7 @@ export class AuthService {
 
   async getLatestToken(): Promise<Auth> {
     const query = await this.authModel.findOne().sort({ createdAt: 'descending' }).exec();
-    return query.toObject();
+    return query?.toObject();
   }
 
   async save(saveAuthDoc: Auth): Promise<Auth> {
