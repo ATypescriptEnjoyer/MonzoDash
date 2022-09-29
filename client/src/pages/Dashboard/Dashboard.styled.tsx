@@ -36,3 +36,14 @@ export const ModuleList = styled.div`
   grid-template-columns: auto;
   grid-template-rows: auto;
 `;
+
+export const EmployerInfoContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  margin-bottom: 24px;
+`;
+
+export const EmployerInfoChild = styled.div`
+  flex: 1;
+`;

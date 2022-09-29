@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { MonzoModule } from '../monzo/monzo.module';
+import { DashModule } from '../dash/dash.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MonzoModule } from '../monzo/monzo.module';
     }),
     AuthModule,
     MonzoModule,
+    DashModule,
   ],
 })
 export class AppModule {}
