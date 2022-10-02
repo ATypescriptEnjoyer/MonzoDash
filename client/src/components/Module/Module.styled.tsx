@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
 
 export const ModuleContainer = styled.div`
@@ -7,11 +8,15 @@ export const ModuleContainer = styled.div`
   overflow: hidden;
 `;
 
-export const ModuleHeader = styled.p`
-  font-size: 24px;
-  line-height: 150%;
-  font-weight: bold;
+export const ModuleHeader = styled(Typography)`
   color: white;
+  display: block;
+  text-align: center;
+
+  && {
+    margin-bottom: 24px;
+    font-weight: bold;
+  }
 
   @media screen and (max-width: 900px) {
     text-align: center;

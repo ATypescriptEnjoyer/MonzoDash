@@ -6,6 +6,9 @@ import { Body, Controller, forwardRef, Get, Inject, Put } from '@nestjs/common';
 import { DashService } from './dash.service';
 import { MonzoService } from '../monzo/monzo.service';
 import { Employer } from './schemas/employer.schema';
+import { CurrentFinances } from './dash.interfaces';
+import { calculatePayDay } from '../../util/calculatePayDay';
+import * as moment from 'moment';
 
 @Controller('Dash')
 export class DashController {
@@ -22,5 +25,20 @@ export class DashController {
   @Put('employer')
   async putEmployer(@Body() employerDto: Employer) {
     return this.dashService.setEmployer(employerDto);
+  }
+
+  @Get('currentFinances')
+  async currentFinances(): Promise<CurrentFinances> {
+    const balance = await this.monzoService.getBalance();
+    const employer = await this.dashService.getEmployer();
+    const payDate = await calculatePayDay(employer.payDay);
+
+    const daysUntil = moment(payDate).diff(moment(), 'days');
+
+    return {
+      balancePence: balance,
+      daysTilPay: daysUntil,
+      perDayPence: balance / daysUntil,
+    };
   }
 }

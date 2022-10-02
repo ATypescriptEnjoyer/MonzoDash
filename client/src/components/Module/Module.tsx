@@ -3,13 +3,14 @@ import { ModuleContainer, ModuleHeader, ModuleBody } from './Module.styled';
 
 interface Props {
   children?: React.ReactNode;
-  HeaderText: string;
+  HeaderText?: string;
+  space?: number;
 }
 
-export const Module = ({ HeaderText, children }: Props): JSX.Element => {
+export const Module = ({ HeaderText, children, space = 1 }: Props): JSX.Element => {
   return (
-    <ModuleContainer>
-      <ModuleHeader>{HeaderText}</ModuleHeader>
+    <ModuleContainer style={{ gridColumn: `span ${space}` }}>
+      <ModuleHeader variant="h4">{HeaderText}</ModuleHeader>
       <ModuleBody>{children}</ModuleBody>
     </ModuleContainer>
   );

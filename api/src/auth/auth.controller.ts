@@ -70,9 +70,8 @@ export class AuthController {
       if (token.twoFactored) {
         return true;
       }
-      const userInfo = await this.monzoService.getAccountId({ authToken: token.authToken });
+      const userInfo = await this.monzoService.getAccountId();
       await this.monzoService.configureWebhooks({
-        authToken: token.authToken,
         accountId: userInfo,
         webhookUrl: process.env.MONZO_WEBHOOK_URI,
       });

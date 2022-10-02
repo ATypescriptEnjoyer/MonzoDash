@@ -12,17 +12,24 @@ import { Owner } from '../../../../shared/interfaces/monzo';
 import { ApiConnector } from '../../network';
 import { ChartOptions } from 'chart.js';
 import { TransactionItem } from '../../components/TransactionItem';
-import { Button, FormControl, Input, InputLabel, MenuItem, Select } from '@mui/material';
+import { Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 
 interface Employer {
   name: string;
   payDay: number;
 }
 
+interface CurrentFinances {
+  balancePence: number;
+  daysTilPay: number;
+  perDayPence: number;
+}
+
 export const Dashboard = (): JSX.Element => {
   const [name, setName] = useState<string>();
   const [employerInfoExists, setEmployerInfoExists] = useState(false);
   const [employerInfo, setEmployerInfo] = useState<Employer>({ name: '', payDay: 1 });
+  const [currentFinances, setCurrentFinances] = useState<CurrentFinances>();
 
   useEffect(() => {
     const getName = async (): Promise<void> => {
@@ -36,8 +43,15 @@ export const Dashboard = (): JSX.Element => {
         setEmployerInfoExists(true);
       }
     };
+    const getCurrentFinances = async (): Promise<void> => {
+      const { data } = await ApiConnector.get<CurrentFinances>('/dash/currentfinances');
+      if (data.balancePence > 0) {
+        setCurrentFinances(data);
+      }
+    };
     getName();
     getEmployer();
+    getCurrentFinances();
   }, []);
 
   const data = {
@@ -55,7 +69,7 @@ export const Dashboard = (): JSX.Element => {
     responsive: true,
     plugins: {
       legend: {
-        position: 'left',
+        position: 'chartArea',
         align: 'start',
         labels: {
           color: 'white',
@@ -116,7 +130,9 @@ export const Dashboard = (): JSX.Element => {
                     }
                   >
                     {Array.from(Array(31).keys()).map((value) => (
-                      <MenuItem value={value + 1}>{value + 1}</MenuItem>
+                      <MenuItem key={value + 1} value={value + 1}>
+                        {value + 1}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
@@ -125,6 +141,16 @@ export const Dashboard = (): JSX.Element => {
             <Button variant="contained" onClick={submitEmployerInformation}>
               Save Employer Information
             </Button>
+          </Module>
+        )}
+        {currentFinances && (
+          <Module space={2} HeaderText="Current Finances">
+            <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '10px' }}>
+              £{(currentFinances.balancePence / 100).toFixed(2)} left for {currentFinances.daysTilPay} days
+            </Typography>
+            <Typography variant="h5" style={{ textAlign: 'center' }}>
+              That's £{(currentFinances.perDayPence / 100).toFixed(2)} per day!
+            </Typography>
           </Module>
         )}
         <Module HeaderText="Dedicated Spending">

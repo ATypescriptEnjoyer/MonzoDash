@@ -4,11 +4,12 @@ https://docs.nestjs.com/providers#services
 
 import { RedisService } from '@liaoliaots/nestjs-redis';
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { AxiosRequestHeaders } from 'axios';
 import { firstValueFrom } from 'rxjs';
 import { Owner, Account } from '../../../shared/interfaces/monzo';
 import { buildStorage, setupCache } from 'axios-cache-interceptor';
+import { AuthService } from '../auth/auth.service';
 
 export interface MonzoAuthResponse {
   access_token: string;
@@ -26,11 +27,20 @@ export interface AuthResponse {
   expiresIn: number;
 }
 
+export interface Balances {
+  balance: number;
+  total_balance: number;
+  currency: string;
+  spend_today: number;
+}
+
 @Injectable()
 export class MonzoService {
-  //cache: ISetupCache;
-
-  constructor(private httpService: HttpService, private redisService: RedisService) {
+  constructor(
+    private httpService: HttpService,
+    private redisService: RedisService,
+    @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService,
+  ) {
     const client = redisService.getClient();
     const redisStorage = buildStorage({
       async find(key) {
@@ -98,7 +108,9 @@ export class MonzoService {
     };
   }
 
-  async getAccountId({ authToken }: { authToken: string }): Promise<string> {
+  async getAccountId(): Promise<string> {
+    const authToken = (await this.authService.getLatestToken()).authToken;
+
     const headers: AxiosRequestHeaders = {
       Authorization: `Bearer ${authToken}`,
     };
@@ -110,7 +122,9 @@ export class MonzoService {
     return data.accounts.find((acc) => !acc.closed).id;
   }
 
-  async getUserInfo({ authToken }: { authToken: string }): Promise<Owner> {
+  async getUserInfo(): Promise<Owner> {
+    const authToken = (await this.authService.getLatestToken()).authToken;
+
     const headers: AxiosRequestHeaders = {
       Authorization: `Bearer ${authToken}`,
     };
@@ -122,19 +136,29 @@ export class MonzoService {
     return data.accounts[0].owners[0];
   }
 
+  async getBalance(): Promise<number> {
+    const authToken = (await this.authService.getLatestToken()).authToken;
+
+    const headers: AxiosRequestHeaders = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    const accountId = await this.getAccountId();
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<Balances>(`balance?account_id=${accountId}`, { headers }),
+    );
+
+    return data.balance;
+  }
+
   async signOut(): Promise<string> {
     return this.redisService.getClient().flushall();
   }
 
-  async configureWebhooks({
-    authToken,
-    accountId,
-    webhookUrl,
-  }: {
-    authToken: string;
-    accountId: string;
-    webhookUrl: string;
-  }): Promise<boolean> {
+  async configureWebhooks({ accountId, webhookUrl }: { accountId: string; webhookUrl: string }): Promise<boolean> {
+    const authToken = (await this.authService.getLatestToken()).authToken;
+
     const headers: AxiosRequestHeaders = {
       Authorization: `Bearer ${authToken}`,
     };
