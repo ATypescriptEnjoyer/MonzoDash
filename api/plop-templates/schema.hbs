@@ -1,0 +1,12 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+export type {{pascalCase name}}Document = {{pascalCase name}} & Document;
+
+@Schema()
+export class {{pascalCase name}} {
+  @Prop()
+  prop: string;
+}
+
+export const {{pascalCase name}}Schema = SchemaFactory.createForClass({{pascalCase name}});
