@@ -75,7 +75,8 @@ export class AuthController {
         accountId: userInfo,
         webhookUrl: process.env.MONZO_WEBHOOK_URI,
       });
-      await this.authService.save({ ...token, twoFactored: true });
+      token.twoFactored = true;
+      await this.authService.save(token);
       return true;
     } catch (error) {
       console.log(error);

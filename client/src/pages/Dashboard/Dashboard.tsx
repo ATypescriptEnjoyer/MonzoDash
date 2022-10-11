@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Module, UnselectableTypography } from '../../components';
+import { Module, SpendingRow, UnselectableTypography } from '../../components';
 import {
   DashContainer,
   Modules,
@@ -9,6 +9,7 @@ import {
   EmployerInfoContainer,
 } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
+import { DedicatedFinance } from '../../../../shared/interfaces/finances';
 import { ApiConnector } from '../../network';
 import { ChartOptions } from 'chart.js';
 import { TransactionItem } from '../../components/TransactionItem';
@@ -30,6 +31,10 @@ export const Dashboard = (): JSX.Element => {
   const [employerInfoExists, setEmployerInfoExists] = useState(false);
   const [employerInfo, setEmployerInfo] = useState<Employer>({ name: '', payDay: 1 });
   const [currentFinances, setCurrentFinances] = useState<CurrentFinances>();
+  const [spendingData, setSpendingData] = useState<{ status: boolean; data: DedicatedFinance[] }>({
+    status: false,
+    data: [{ name: 'Monthly Take Home', amount: 0, colour: '#FFFFFF' }],
+  });
 
   useEffect(() => {
     const getName = async (): Promise<void> => {
@@ -49,9 +54,14 @@ export const Dashboard = (): JSX.Element => {
         setCurrentFinances(data);
       }
     };
+    const getDedicatedSpending = async (): Promise<void> => {
+      const { data } = await ApiConnector.get<{ status: boolean; data: DedicatedFinance[] }>('/dash/dedicatedspending');
+      setSpendingData(data);
+    };
     getName();
     getEmployer();
     getCurrentFinances();
+    getDedicatedSpending();
   }, []);
 
   const data = {
@@ -81,6 +91,19 @@ export const Dashboard = (): JSX.Element => {
   const submitEmployerInformation = async (): Promise<void> => {
     await ApiConnector.put('/dash/employer', employerInfo);
     setEmployerInfoExists(true);
+  };
+
+  const onDedicatedFinanceUpdate = (dedicatedFinance: DedicatedFinance): void => {
+    const currFinances = spendingData.data;
+    const currIndex = currFinances.findIndex((value) => value.name === dedicatedFinance.name);
+    if (currIndex > -1) {
+      currFinances[currIndex] = dedicatedFinance;
+    }
+    setSpendingData({ status: false, data: currFinances });
+  };
+
+  const submitSpendingData = async (): Promise<void> => {
+    //test
   };
 
   return (
@@ -154,7 +177,23 @@ export const Dashboard = (): JSX.Element => {
           </Module>
         )}
         <Module HeaderText="Dedicated Spending">
-          <StyledDedicatedSpendingPie data={data} options={opts} />
+          {spendingData.status && <StyledDedicatedSpendingPie data={data} options={opts} />}
+          {!spendingData.status && (
+            <>
+              {spendingData.data.map((value) => (
+                <SpendingRow
+                  name={value.name}
+                  amount={value.amount}
+                  colour={value.colour}
+                  onRowUpdate={onDedicatedFinanceUpdate}
+                />
+              ))}
+
+              <Button variant="contained" onClick={submitSpendingData}>
+                Save Dedicated Spending
+              </Button>
+            </>
+          )}
         </Module>
         <Module HeaderText="Recent Transactions">
           <ModuleList>

@@ -3,10 +3,14 @@ import { DeleteResult } from 'mongodb';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Employer, EmployerDocument } from './schemas/employer.schema';
+import { Spending, SpendingDocument } from './schemas/spending.schema';
 
 @Injectable()
 export class DashService {
-  constructor(@InjectModel(Employer.name) private employerModel: Model<EmployerDocument>) {}
+  constructor(
+    @InjectModel(Employer.name) private employerModel: Model<EmployerDocument>,
+    @InjectModel(Spending.name) private spendingModel: Model<SpendingDocument>,
+  ) {}
 
   async setEmployer(createEmployerDoc: Employer): Promise<Employer> {
     const createdEmployer = new this.employerModel(createEmployerDoc);

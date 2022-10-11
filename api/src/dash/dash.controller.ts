@@ -8,6 +8,7 @@ import { MonzoService } from '../monzo/monzo.service';
 import { Employer } from './schemas/employer.schema';
 import { CurrentFinances } from './dash.interfaces';
 import { calculatePayDay } from '../../util/calculatePayDay';
+import { DedicatedFinance } from '../../../shared/interfaces/finances';
 import * as moment from 'moment';
 
 @Controller('Dash')
@@ -41,4 +42,7 @@ export class DashController {
       perDayPence: balance / daysUntil,
     };
   }
+
+  @Get('dedicatedspending')
+  async dedicatedSpending(): Promise<{ status: boolean; data: DedicatedFinance[] }> {}
 }
