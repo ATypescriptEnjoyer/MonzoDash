@@ -3,7 +3,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Auth, AuthDocument } from './schemas/auth.schema';
 import { MonzoService } from '../monzo/monzo.service';
-import moment from 'moment';
+import * as moment from 'moment';
 import { StorageService } from '../storageService';
 
 @Injectable()

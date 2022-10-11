@@ -3,7 +3,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { MonzoModule } from '../monzo/monzo.module';
-import { DashModule } from '../dash/dash.module';
+import { EmployerModule } from '../employer/employer.module';
+import { FinancesModule } from '../finances/finances.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { DashModule } from '../dash/dash.module';
     }),
     AuthModule,
     MonzoModule,
-    DashModule,
+    EmployerModule,
+    FinancesModule,
   ],
 })
 export class AppModule {}

@@ -9,7 +9,7 @@ import {
   EmployerInfoContainer,
 } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
-import { DedicatedFinance } from '../../../../shared/interfaces/finances';
+import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
 import { ApiConnector } from '../../network';
 import { ChartOptions } from 'chart.js';
 import { TransactionItem } from '../../components/TransactionItem';
@@ -18,12 +18,6 @@ import { Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } 
 interface Employer {
   name: string;
   payDay: number;
-}
-
-interface CurrentFinances {
-  balancePence: number;
-  daysTilPay: number;
-  perDayPence: number;
 }
 
 export const Dashboard = (): JSX.Element => {
@@ -42,20 +36,20 @@ export const Dashboard = (): JSX.Element => {
       setName(data.preferred_first_name);
     };
     const getEmployer = async (): Promise<void> => {
-      const { data } = await ApiConnector.get<Employer>('/dash/employer');
+      const { data } = await ApiConnector.get<Employer>('/employer');
       if (data.name) {
         setEmployerInfo(data);
         setEmployerInfoExists(true);
       }
     };
     const getCurrentFinances = async (): Promise<void> => {
-      const { data } = await ApiConnector.get<CurrentFinances>('/dash/currentfinances');
+      const { data } = await ApiConnector.get<CurrentFinances>('/finances/current');
       if (data.balancePence > 0) {
         setCurrentFinances(data);
       }
     };
     const getDedicatedSpending = async (): Promise<void> => {
-      const { data } = await ApiConnector.get<{ status: boolean; data: DedicatedFinance[] }>('/dash/dedicatedspending');
+      const { data } = await ApiConnector.get<{ status: boolean; data: DedicatedFinance[] }>('/finances/dedicated');
       setSpendingData(data);
     };
     getName();
@@ -89,7 +83,7 @@ export const Dashboard = (): JSX.Element => {
   };
 
   const submitEmployerInformation = async (): Promise<void> => {
-    await ApiConnector.put('/dash/employer', employerInfo);
+    await ApiConnector.put('/employer', employerInfo);
     setEmployerInfoExists(true);
   };
 
@@ -182,6 +176,7 @@ export const Dashboard = (): JSX.Element => {
             <>
               {spendingData.data.map((value) => (
                 <SpendingRow
+                  key={value.name}
                   name={value.name}
                   amount={value.amount}
                   colour={value.colour}

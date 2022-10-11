@@ -2,7 +2,17 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, forwardRef, Get, Inject, InternalServerErrorException, Post, Query, Res } from '@nestjs/common';
+import {
+  Controller,
+  forwardRef,
+  Get,
+  HttpException,
+  Inject,
+  InternalServerErrorException,
+  Post,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MonzoService } from '../monzo/monzo.service';
 import { Auth } from './schemas/auth.schema';
@@ -50,8 +60,15 @@ export class AuthController {
 
   @Get('isAuthed')
   async isAuthed(): Promise<boolean> {
-    const token = await this.authService.getLatestToken();
-    return token?.twoFactored ? !!token : false;
+    try {
+      const token = await this.authService.getLatestToken();
+      return token?.twoFactored ? !!token : false;
+    } catch (error) {
+      if (error instanceof HttpException) {
+        await this.authService.deleteAll();
+        throw new HttpException('Auth Failure', error.getStatus());
+      }
+    }
   }
 
   @Post('signout')

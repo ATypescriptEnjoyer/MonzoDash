@@ -2,10 +2,10 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { DedicatedFinance } from '../../../../shared/interfaces/finances';
 
-export type SpendingDocument = DedicatedFinance & Document;
+export type FinancesDocument = DedicatedFinance & Document;
 
 @Schema()
-export class Spending {
+export class Finances {
   @Prop()
   name: string;
 
@@ -16,4 +16,4 @@ export class Spending {
   amount: number;
 }
 
-export const SpendingSchema = SchemaFactory.createForClass(Spending);
+export const FinancesSchema = SchemaFactory.createForClass(Finances);
