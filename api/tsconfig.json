@@ -17,5 +17,6 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true
-  }
+  },
+  "exclude": ["plop-templates/**"]
 }
