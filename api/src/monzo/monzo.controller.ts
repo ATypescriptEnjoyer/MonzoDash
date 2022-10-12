@@ -32,7 +32,7 @@ export class MonzoController {
     if (transaction.type === 'transaction.created') {
       const description = transaction.data.merchant?.name || transaction.data.counterparty?.name;
       const amount = Math.abs(transaction.data.amount) / 100;
-      const modelTransaction = await this.transactionService.create({
+      await this.transactionService.create({
         id: transaction.data.id,
         amount,
         created: transaction.data.created,
@@ -44,7 +44,7 @@ export class MonzoController {
       if (employer && employer.name === description) {
         const finances = await this.financesService.getAll();
         const totalDedicatedSpending = finances.reduce((prev, curr) => (prev += curr.amount), 0);
-        if (modelTransaction.amount >= totalDedicatedSpending - 100) {
+        if (amount >= totalDedicatedSpending - 100) {
           await async.eachSeries(finances, async (potInfo: Finances) => {
             if (potInfo.id !== '0') {
               await this.monzoService.depositToPot(potInfo.id, potInfo.amount * 100);

@@ -23,8 +23,8 @@ export class AuthService extends StorageService<Auth> {
         query.authToken = newTokenInfo.accessToken;
         query.refreshToken = newTokenInfo.refreshToken;
         query.expiresIn = moment().add(newTokenInfo.expiresIn, 'seconds').toDate();
+        await this.save(query);
       }
-      await this.save(query);
       return query;
     }
     return null;

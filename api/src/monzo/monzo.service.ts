@@ -188,12 +188,11 @@ export class MonzoService {
 
     const accountId = await this.getAccountId();
 
+    const requestData = { source_account_id: accountId, amount: valuePence.toString(), dedupe_id: potId };
+    const requestDataString = new URLSearchParams(requestData).toString();
+
     const { data } = await firstValueFrom(
-      this.httpService.put<Pot>(
-        `pots/${potId}/deposit`,
-        { source_account_id: accountId, amount: valuePence, dedupe_id: potId },
-        { headers },
-      ),
+      this.httpService.put<Pot>(`pots/${potId}/deposit`, requestDataString, { headers }),
     );
 
     return data;
