@@ -17,13 +17,11 @@ const root = document.getElementById('root');
 const rootContainer = createRoot(root!);
 
 rootContainer.render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <Router>
-        <App />
-      </Router>
-    </ThemeProvider>
-  </React.StrictMode>,
+  <ThemeProvider theme={theme}>
+    <Router>
+      <App />
+    </Router>
+  </ThemeProvider>,
 );
 
 // If you want to start measuring performance in your app, pass a function

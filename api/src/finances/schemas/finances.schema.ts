@@ -7,6 +7,9 @@ export type FinancesDocument = DedicatedFinance & Document;
 @Schema()
 export class Finances {
   @Prop()
+  id: string;
+
+  @Prop()
   name: string;
 
   @Prop()

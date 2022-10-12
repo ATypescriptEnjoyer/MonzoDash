@@ -34,6 +34,15 @@ export interface Balances {
   spend_today: number;
 }
 
+export interface Pot {
+  id: string;
+  name: string;
+}
+
+export interface PotsResponse {
+  pots: (Pot & { deleted: boolean })[];
+}
+
 @Injectable()
 export class MonzoService {
   constructor(
@@ -49,7 +58,7 @@ export class MonzoService {
       },
 
       async set(key, value) {
-        await client.set(`axios-cache:${key}`, JSON.stringify(value));
+        await client.set(`axios-cache:${key}`, JSON.stringify(value), 'EX', 5 * 60); //5 min expiration
       },
 
       async remove(key) {
@@ -59,6 +68,7 @@ export class MonzoService {
 
     setupCache(httpService.axiosRef, {
       storage: redisStorage,
+      methods: ['get'],
     });
   }
 
@@ -150,6 +160,22 @@ export class MonzoService {
     );
 
     return data.balance;
+  }
+
+  async getPots(): Promise<Pot[]> {
+    const authToken = (await this.authService.getLatestToken()).authToken;
+
+    const headers: AxiosRequestHeaders = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    const accountId = await this.getAccountId();
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<PotsResponse>(`pots?current_account_id=${accountId}`, { headers }),
+    );
+
+    return data.pots.filter((pot) => !pot.deleted).map(({ id, name }) => ({ id, name }));
   }
 
   async signOut(): Promise<string> {

@@ -8,7 +8,7 @@ interface SpendingRowProps extends DedicatedFinance {
   onRowUpdate: (update: DedicatedFinance) => void;
 }
 
-export const SpendingRow = ({ name, amount, colour, onRowUpdate }: SpendingRowProps): JSX.Element => {
+export const SpendingRow = ({ id, name, amount, colour, onRowUpdate }: SpendingRowProps): JSX.Element => {
   const onSpendingRowUpdate = (finance: DedicatedFinance): void => {
     onRowUpdate && onRowUpdate(finance);
   };
@@ -34,6 +34,7 @@ export const SpendingRow = ({ name, amount, colour, onRowUpdate }: SpendingRowPr
             value={amount}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
               onSpendingRowUpdate({
+                id,
                 name,
                 amount: event.target.valueAsNumber,
                 colour,
@@ -52,6 +53,7 @@ export const SpendingRow = ({ name, amount, colour, onRowUpdate }: SpendingRowPr
             value={colour}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
               onSpendingRowUpdate({
+                id,
                 name,
                 amount,
                 colour: event.target.value,

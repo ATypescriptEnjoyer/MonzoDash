@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, forwardRef, Get, Inject } from '@nestjs/common';
+import { Body, Controller, forwardRef, Get, Inject, Put } from '@nestjs/common';
 import * as moment from 'moment';
 import { CurrentFinances, DedicatedFinance } from '../../../shared/interfaces/finances';
 import { calculatePayDay } from '../../util/calculatePayDay';
@@ -21,16 +21,41 @@ export class FinancesController {
 
   @Get('dedicated')
   async dedicatedFinances(): Promise<{ status: boolean; data: DedicatedFinance[] }> {
-    const dedicated = await this.financesService.getAll();
+    let dedicated = await this.financesService.getAll();
     if (dedicated.length > 0) {
       return {
-        status: false,
+        status: true,
         data: dedicated,
       };
     }
+    const monzoPots = await this.monzoService.getPots();
+    return {
+      status: false,
+      data: monzoPots.map(({ id, name }) => ({ id, name, amount: 0, colour: '#FFFFFF' })),
+    };
+  }
+
+  @Put('dedicated')
+  async putDedicatedFinances(
+    @Body() dedicatedDto: DedicatedFinance[],
+  ): Promise<{ status: boolean; data: DedicatedFinance[] }> {
+    const takeHomeRemaining = dedicatedDto
+      .filter((finance) => finance.id !== '0')
+      .reduce((prev, curr) => (prev += curr.amount), 0);
+    const takeHomeIndex = dedicatedDto.findIndex((finance) => finance.id === '0');
+    if (takeHomeIndex !== -1) {
+      const finalValue = dedicatedDto[takeHomeIndex].amount - takeHomeRemaining;
+      dedicatedDto[takeHomeIndex].amount = parseFloat(finalValue.toFixed(2));
+    }
+    const financePromises = dedicatedDto.map(async (value) => {
+      return this.financesService.create(value);
+    });
+
+    const finances = await Promise.all(financePromises);
+
     return {
       status: true,
-      data: dedicated,
+      data: finances,
     };
   }
 

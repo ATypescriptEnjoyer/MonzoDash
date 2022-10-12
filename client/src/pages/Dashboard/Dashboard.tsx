@@ -11,7 +11,7 @@ import {
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
 import { ApiConnector } from '../../network';
-import { ChartOptions } from 'chart.js';
+import { ChartData, ChartOptions } from 'chart.js';
 import { TransactionItem } from '../../components/TransactionItem';
 import { Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 
@@ -27,7 +27,7 @@ export const Dashboard = (): JSX.Element => {
   const [currentFinances, setCurrentFinances] = useState<CurrentFinances>();
   const [spendingData, setSpendingData] = useState<{ status: boolean; data: DedicatedFinance[] }>({
     status: false,
-    data: [{ name: 'Monthly Take Home', amount: 0, colour: '#FFFFFF' }],
+    data: [{ id: '0', name: 'Monthly Take Home', amount: 0, colour: '#FFFFFF' }],
   });
 
   useEffect(() => {
@@ -50,7 +50,11 @@ export const Dashboard = (): JSX.Element => {
     };
     const getDedicatedSpending = async (): Promise<void> => {
       const { data } = await ApiConnector.get<{ status: boolean; data: DedicatedFinance[] }>('/finances/dedicated');
-      setSpendingData(data);
+      if (!data.status) {
+        setSpendingData((baseObject) => ({ status: data.status, data: [...baseObject.data, ...data.data] }));
+      } else {
+        setSpendingData(data);
+      }
     };
     getName();
     getEmployer();
@@ -58,14 +62,16 @@ export const Dashboard = (): JSX.Element => {
     getDedicatedSpending();
   }, []);
 
-  const data = {
-    labels: ['Red', 'Blue', 'Yellow'],
-    datasets: [
-      {
-        data: [300, 50, 100],
-        backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
-      },
-    ],
+  const createPieData = (): ChartData<'pie'> => {
+    return {
+      labels: spendingData.data.map((data) => data.name),
+      datasets: [
+        {
+          data: spendingData.data.map((data) => data.amount),
+          backgroundColor: spendingData.data.map((data) => data.colour),
+        },
+      ],
+    };
   };
 
   const opts: ChartOptions = {
@@ -97,7 +103,11 @@ export const Dashboard = (): JSX.Element => {
   };
 
   const submitSpendingData = async (): Promise<void> => {
-    //test
+    const { data } = await ApiConnector.put<{ status: boolean; data: DedicatedFinance[] }>(
+      '/finances/dedicated',
+      spendingData.data.filter((data) => data.amount > 0),
+    );
+    setSpendingData(data);
   };
 
   return (
@@ -171,12 +181,13 @@ export const Dashboard = (): JSX.Element => {
           </Module>
         )}
         <Module HeaderText="Dedicated Spending">
-          {spendingData.status && <StyledDedicatedSpendingPie data={data} options={opts} />}
+          {spendingData.status && <StyledDedicatedSpendingPie data={createPieData()} options={opts} />}
           {!spendingData.status && (
             <>
               {spendingData.data.map((value) => (
                 <SpendingRow
-                  key={value.name}
+                  id={value.id}
+                  key={value.id}
                   name={value.name}
                   amount={value.amount}
                   colour={value.colour}
