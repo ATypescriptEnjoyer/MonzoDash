@@ -5,6 +5,9 @@ import { MonzoController } from './monzo.controller';
 import { MonzoService } from './monzo.service';
 import { RedisModule, RedisModuleOptions } from '@liaoliaots/nestjs-redis';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TransactionsModule } from '../transactions/transactions.module';
+import { FinancesModule } from '../finances/finances.module';
+import { EmployerModule } from '../employer/employer.module';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     HttpModule.register({ baseURL: 'https://api.monzo.com/' }),
     forwardRef(() => AuthModule),
+    TransactionsModule,
+    FinancesModule,
+    EmployerModule,
   ],
   controllers: [MonzoController],
   providers: [MonzoService],

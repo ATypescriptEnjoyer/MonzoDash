@@ -28,12 +28,13 @@ export const StyledInfo = styled.div`
   display: flex;
   justify-content: space-between;
   flex: 1;
+  align-items: center;
 `;
 
-export const StyledCurrency = styled.span<{ Type: 'Income' | 'Outgoing' }>`
+export const StyledCurrency = styled.span<{ Type: 'incoming' | 'outgoing' }>`
   font-weight: bold;
-  color: ${({ Type }): string => (Type === 'Income' ? '#80d195' : '#121212')};
+  color: ${({ Type }): string => (Type === 'incoming' ? '#80d195' : '#121212')};
   ::before {
-    content: '${({ Type }): string => (Type === 'Income' ? '+' : '-')} £';
+    content: '${({ Type }): string => (Type === 'incoming' ? '+' : '-')} £';
   }
 `;

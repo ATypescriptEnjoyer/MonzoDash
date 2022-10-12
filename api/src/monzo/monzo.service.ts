@@ -10,6 +10,7 @@ import { firstValueFrom } from 'rxjs';
 import { Owner, Account } from '../../../shared/interfaces/monzo';
 import { buildStorage, setupCache } from 'axios-cache-interceptor';
 import { AuthService } from '../auth/auth.service';
+import async from 'async';
 
 export interface MonzoAuthResponse {
   access_token: string;
@@ -178,6 +179,26 @@ export class MonzoService {
     return data.pots.filter((pot) => !pot.deleted).map(({ id, name }) => ({ id, name }));
   }
 
+  async depositToPot(potId: string, valuePence: number): Promise<Pot> {
+    const authToken = (await this.authService.getLatestToken()).authToken;
+
+    const headers: AxiosRequestHeaders = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    const accountId = await this.getAccountId();
+
+    const { data } = await firstValueFrom(
+      this.httpService.put<Pot>(
+        `pots/${potId}/deposit`,
+        { source_account_id: accountId, amount: valuePence, dedupe_id: potId },
+        { headers },
+      ),
+    );
+
+    return data;
+  }
+
   async signOut(): Promise<string> {
     return this.redisService.getClient().flushall();
   }
@@ -190,7 +211,21 @@ export class MonzoService {
     };
 
     try {
-      await firstValueFrom(this.httpService.post('webhooks', { account_id: accountId, url: webhookUrl }, { headers }));
+      const { data } = await firstValueFrom(this.httpService.get(`webhooks?account_id=${accountId}`, { headers }));
+      const hooks: { webhooks: { id: string; url: string }[] } = data;
+      let hookExists = false;
+      await async.eachSeries(hooks.webhooks, async (hook) => {
+        if (hook.url === webhookUrl) {
+          hookExists = true;
+        } else {
+          await firstValueFrom(this.httpService.delete(`webhooks/${hook.id}`, { headers }));
+        }
+      });
+      if (!hookExists) {
+        await firstValueFrom(
+          this.httpService.post('webhooks', { account_id: accountId, url: webhookUrl }, { headers }),
+        );
+      }
       return true;
     } catch (error) {
       return false;

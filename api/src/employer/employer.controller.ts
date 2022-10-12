@@ -11,13 +11,13 @@ export class EmployerController {
   constructor(private readonly employerService: EmployerService) {}
 
   @Get()
-  async get(): Promise<Employer> {
+  async getEmployer(): Promise<Employer> {
     const employers = await this.employerService.getAll();
     return employers.length > 0 ? employers[0] : null;
   }
 
   @Put()
-  async put(@Body() employerDto: Employer): Promise<Employer> {
+  async putEmployer(@Body() employerDto: Employer): Promise<Employer> {
     const employer = await this.employerService.create(employerDto);
     return employer;
   }

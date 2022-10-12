@@ -10,6 +10,7 @@ import {
 } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
+import { Transaction } from '../../../../shared/interfaces/transaction';
 import { ApiConnector } from '../../network';
 import { ChartData, ChartOptions } from 'chart.js';
 import { TransactionItem } from '../../components/TransactionItem';
@@ -29,6 +30,7 @@ export const Dashboard = (): JSX.Element => {
     status: false,
     data: [{ id: '0', name: 'Monthly Take Home', amount: 0, colour: '#FFFFFF' }],
   });
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
     const getName = async (): Promise<void> => {
@@ -56,10 +58,15 @@ export const Dashboard = (): JSX.Element => {
         setSpendingData(data);
       }
     };
+    const getTransactions = async (): Promise<void> => {
+      const { data } = await ApiConnector.get<Transaction[]>('/transactions');
+      setTransactions(data);
+    };
     getName();
     getEmployer();
     getCurrentFinances();
     getDedicatedSpending();
+    getTransactions();
   }, []);
 
   const createPieData = (): ChartData<'pie'> => {
@@ -203,13 +210,15 @@ export const Dashboard = (): JSX.Element => {
         </Module>
         <Module HeaderText="Recent Transactions">
           <ModuleList>
-            <TransactionItem Merchant="Test Merchant" Type="Income" Amount={100} />
-            <TransactionItem Merchant="Test Merchant" Type="Outgoing" Amount={200} />
-            <TransactionItem Merchant="Test Merchant" Type="Income" Amount={300} />
-            <TransactionItem Merchant="Test Merchant" Type="Outgoing" Amount={400} />
-            <TransactionItem Merchant="Test Merchant" Type="Income" Amount={500} />
-            <TransactionItem Merchant="Test Merchant" Type="Outgoing" Amount={600} />
-            <TransactionItem Merchant="Test Merchant" Type="Income" Amount={700} />
+            {transactions.map((transaction) => (
+              <TransactionItem
+                Merchant={transaction.description}
+                key={transaction.id}
+                Icon={transaction.logoUrl}
+                Amount={transaction.amount}
+                Type={transaction.type}
+              />
+            ))}
           </ModuleList>
         </Module>
       </Modules>

@@ -4,7 +4,7 @@ import { StyledHeader, StyledIcon, StyledMerchant, StyledInfo, StyledCurrency } 
 interface Props {
   Merchant: string;
   Icon?: string;
-  Type: 'Income' | 'Outgoing';
+  Type: 'incoming' | 'outgoing';
   Amount: number;
 }
 
