@@ -31,6 +31,7 @@ export const Dashboard = (): JSX.Element => {
     data: [{ id: '0', name: 'Monthly Take Home', amount: 0, colour: '#FFFFFF' }],
   });
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getName = async (): Promise<void> => {
@@ -62,11 +63,9 @@ export const Dashboard = (): JSX.Element => {
       const { data } = await ApiConnector.get<Transaction[]>('/transactions');
       setTransactions(data);
     };
-    getName();
-    getEmployer();
-    getCurrentFinances();
-    getDedicatedSpending();
-    getTransactions();
+    Promise.all([getName(), getEmployer(), getCurrentFinances(), getDedicatedSpending(), getTransactions()]).then(() =>
+      setLoading(false),
+    );
   }, []);
 
   const createPieData = (): ChartData<'pie'> => {
@@ -124,104 +123,106 @@ export const Dashboard = (): JSX.Element => {
           Welcome Back, {name}
         </UnselectableTypography>
       )}
-      <Modules>
-        {!employerInfoExists && (
-          <Module HeaderText="Employer Information">
-            <EmployerInfoContainer>
-              <EmployerInfoChild>
-                <UnselectableTypography
-                  sx={{ marginBottom: '20px' }}
-                  variant="subtitle1"
-                  fontWeight="300"
-                  color="inherit"
-                >
-                  Employer Name (As is on Monzo!):
-                </UnselectableTypography>
-                <FormControl fullWidth>
-                  <Input
-                    value={employerInfo?.name}
-                    onChange={(event): void => setEmployerInfo({ ...employerInfo, name: event.currentTarget.value })}
-                  />
-                </FormControl>
-              </EmployerInfoChild>
-              <EmployerInfoChild>
-                <UnselectableTypography
-                  sx={{ marginBottom: '20px' }}
-                  variant="subtitle1"
-                  fontWeight="300"
-                  color="inherit"
-                >
-                  Pay Day:
-                </UnselectableTypography>
-                <FormControl fullWidth>
-                  <InputLabel id="payday-label">Pay Day</InputLabel>
-                  <Select
-                    value={employerInfo.payDay}
-                    labelId="payday-label"
-                    label="Pay Day"
-                    onChange={(value): void =>
-                      setEmployerInfo({ ...employerInfo, payDay: value.target.value as number })
-                    }
+      {!loading && (
+        <Modules>
+          {!employerInfoExists && (
+            <Module HeaderText="Employer Information">
+              <EmployerInfoContainer>
+                <EmployerInfoChild>
+                  <UnselectableTypography
+                    sx={{ marginBottom: '20px' }}
+                    variant="subtitle1"
+                    fontWeight="300"
+                    color="inherit"
                   >
-                    {Array.from(Array(31).keys()).map((value) => (
-                      <MenuItem key={value + 1} value={value + 1}>
-                        {value + 1}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </EmployerInfoChild>
-            </EmployerInfoContainer>
-            <Button variant="contained" onClick={submitEmployerInformation}>
-              Save Employer Information
-            </Button>
+                    Employer Name (As is on Monzo!):
+                  </UnselectableTypography>
+                  <FormControl fullWidth>
+                    <Input
+                      value={employerInfo?.name}
+                      onChange={(event): void => setEmployerInfo({ ...employerInfo, name: event.currentTarget.value })}
+                    />
+                  </FormControl>
+                </EmployerInfoChild>
+                <EmployerInfoChild>
+                  <UnselectableTypography
+                    sx={{ marginBottom: '20px' }}
+                    variant="subtitle1"
+                    fontWeight="300"
+                    color="inherit"
+                  >
+                    Pay Day:
+                  </UnselectableTypography>
+                  <FormControl fullWidth>
+                    <InputLabel id="payday-label">Pay Day</InputLabel>
+                    <Select
+                      value={employerInfo.payDay}
+                      labelId="payday-label"
+                      label="Pay Day"
+                      onChange={(value): void =>
+                        setEmployerInfo({ ...employerInfo, payDay: value.target.value as number })
+                      }
+                    >
+                      {Array.from(Array(31).keys()).map((value) => (
+                        <MenuItem key={value + 1} value={value + 1}>
+                          {value + 1}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </EmployerInfoChild>
+              </EmployerInfoContainer>
+              <Button variant="contained" onClick={submitEmployerInformation}>
+                Save Employer Information
+              </Button>
+            </Module>
+          )}
+          {currentFinances && (
+            <Module space={2} HeaderText="Current Finances">
+              <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '10px' }}>
+                £{(currentFinances.balancePence / 100).toFixed(2)} left for {currentFinances.daysTilPay} days
+              </Typography>
+              <Typography variant="h5" style={{ textAlign: 'center' }}>
+                That's £{(currentFinances.perDayPence / 100).toFixed(2)} per day!
+              </Typography>
+            </Module>
+          )}
+          <Module HeaderText="Dedicated Spending">
+            {spendingData.status && <StyledDedicatedSpendingPie data={createPieData()} options={opts} />}
+            {!spendingData.status && (
+              <>
+                {spendingData.data.map((value) => (
+                  <SpendingRow
+                    id={value.id}
+                    key={value.id}
+                    name={value.name}
+                    amount={value.amount}
+                    colour={value.colour}
+                    onRowUpdate={onDedicatedFinanceUpdate}
+                  />
+                ))}
+
+                <Button variant="contained" onClick={submitSpendingData}>
+                  Save Dedicated Spending
+                </Button>
+              </>
+            )}
           </Module>
-        )}
-        {currentFinances && (
-          <Module space={2} HeaderText="Current Finances">
-            <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '10px' }}>
-              £{(currentFinances.balancePence / 100).toFixed(2)} left for {currentFinances.daysTilPay} days
-            </Typography>
-            <Typography variant="h5" style={{ textAlign: 'center' }}>
-              That's £{(currentFinances.perDayPence / 100).toFixed(2)} per day!
-            </Typography>
-          </Module>
-        )}
-        <Module HeaderText="Dedicated Spending">
-          {spendingData.status && <StyledDedicatedSpendingPie data={createPieData()} options={opts} />}
-          {!spendingData.status && (
-            <>
-              {spendingData.data.map((value) => (
-                <SpendingRow
-                  id={value.id}
-                  key={value.id}
-                  name={value.name}
-                  amount={value.amount}
-                  colour={value.colour}
-                  onRowUpdate={onDedicatedFinanceUpdate}
+          <Module HeaderText="Recent Transactions">
+            <ModuleList>
+              {transactions.map((transaction) => (
+                <TransactionItem
+                  Merchant={transaction.description}
+                  key={transaction.id}
+                  Icon={transaction.logoUrl}
+                  Amount={transaction.amount}
+                  Type={transaction.type}
                 />
               ))}
-
-              <Button variant="contained" onClick={submitSpendingData}>
-                Save Dedicated Spending
-              </Button>
-            </>
-          )}
-        </Module>
-        <Module HeaderText="Recent Transactions">
-          <ModuleList>
-            {transactions.map((transaction) => (
-              <TransactionItem
-                Merchant={transaction.description}
-                key={transaction.id}
-                Icon={transaction.logoUrl}
-                Amount={transaction.amount}
-                Type={transaction.type}
-              />
-            ))}
-          </ModuleList>
-        </Module>
-      </Modules>
+            </ModuleList>
+          </Module>
+        </Modules>
+      )}
     </DashContainer>
   );
 };
