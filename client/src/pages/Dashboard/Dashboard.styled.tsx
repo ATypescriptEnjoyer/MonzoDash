@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import 'chart.js/auto';
-import { Pie } from 'react-chartjs-2';
+import { Doughnut, Pie } from 'react-chartjs-2';
 
 export const DashContainer = styled.div`
   margin: 70px;
@@ -28,7 +28,7 @@ export const Modules = styled.div`
   }
 `;
 
-export const StyledDedicatedSpendingPie = styled(Pie)``;
+export const StyledDedicatedSpendingPie = styled(Doughnut)``;
 
 export const ModuleList = styled.div`
   gap: 16px;

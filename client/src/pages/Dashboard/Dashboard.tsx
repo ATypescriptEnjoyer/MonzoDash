@@ -68,7 +68,7 @@ export const Dashboard = (): JSX.Element => {
     );
   }, []);
 
-  const createPieData = (): ChartData<'pie'> => {
+  const createDoughnutData = (): ChartData<'doughnut'> => {
     return {
       labels: spendingData.data.map((data) => data.name),
       datasets: [
@@ -188,7 +188,7 @@ export const Dashboard = (): JSX.Element => {
             </Module>
           )}
           <Module HeaderText="Dedicated Spending">
-            {spendingData.status && <StyledDedicatedSpendingPie data={createPieData()} options={opts} />}
+            {spendingData.status && <StyledDedicatedSpendingPie data={createDoughnutData()} options={opts} />}
             {!spendingData.status && (
               <>
                 {spendingData.data.map((value) => (

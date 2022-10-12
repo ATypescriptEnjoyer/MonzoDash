@@ -51,8 +51,9 @@ export class MonzoController {
             }
           });
         }
+      } else {
+        //TODO: Dynamic Pots for none standing orders (eg: Hetzner).
       }
     }
-    return;
   }
 }
