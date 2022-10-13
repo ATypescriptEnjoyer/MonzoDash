@@ -14,8 +14,9 @@ import { FinancesModule } from '../finances/finances.module';
       useFactory: (configService: ConfigService) => {
         const username = configService.get<string>('MONGO_USERNAME');
         const password = configService.get<string>('MONGO_PASSWORD');
+        const hostname = configService.get<string>('MONGO_HOST');
         return {
-          uri: `mongodb://${username}:${password}@mongo/monzodash?authSource=admin`,
+          uri: `mongodb://${username}:${password}@${hostname}/monzodash?authSource=admin`,
         };
       },
       inject: [ConfigService],
