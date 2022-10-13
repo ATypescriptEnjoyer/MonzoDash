@@ -17,6 +17,9 @@ export class Finances {
 
   @Prop()
   amount: number;
+
+  @Prop()
+  dynamicPot?: boolean = false;
 }
 
 export const FinancesSchema = SchemaFactory.createForClass(Finances);

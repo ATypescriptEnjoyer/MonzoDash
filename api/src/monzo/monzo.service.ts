@@ -198,6 +198,25 @@ export class MonzoService {
     return data;
   }
 
+  async withdrawFromPot(potId: string, valuePence: number): Promise<Pot> {
+    const authToken = (await this.authService.getLatestToken()).authToken;
+
+    const headers: AxiosRequestHeaders = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    const accountId = await this.getAccountId();
+
+    const requestData = { destination_account_id: accountId, amount: valuePence.toString(), dedupe_id: potId };
+    const requestDataString = new URLSearchParams(requestData).toString();
+
+    const { data } = await firstValueFrom(
+      this.httpService.put<Pot>(`pots/${potId}/withdraw`, requestDataString, { headers }),
+    );
+
+    return data;
+  }
+
   async signOut(): Promise<string> {
     return this.redisService.getClient().flushall();
   }

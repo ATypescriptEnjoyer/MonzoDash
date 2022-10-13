@@ -41,8 +41,8 @@ export class MonzoController {
         description,
       });
       const employer = (await this.employerService.getAll())[0];
+      const finances = await this.financesService.getAll();
       if (employer && employer.name === description) {
-        const finances = await this.financesService.getAll();
         const totalDedicatedSpending = finances.reduce((prev, curr) => (prev += curr.amount), 0);
         if (amount >= totalDedicatedSpending - 100) {
           await async.eachSeries(finances, async (potInfo: Finances) => {
@@ -52,7 +52,10 @@ export class MonzoController {
           });
         }
       } else {
-        //TODO: Dynamic Pots for none standing orders (eg: Hetzner).
+        const dynamicPot = finances.find((finance) => finance.dynamicPot && finance.name === description);
+        if (dynamicPot) {
+          await this.monzoService.withdrawFromPot(dynamicPot.id, dynamicPot.amount * 100);
+        }
       }
     }
   }

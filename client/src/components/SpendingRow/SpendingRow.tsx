@@ -8,7 +8,7 @@ interface SpendingRowProps extends DedicatedFinance {
   onRowUpdate: (update: DedicatedFinance) => void;
 }
 
-export const SpendingRow = ({ id, name, amount, colour, onRowUpdate }: SpendingRowProps): JSX.Element => {
+export const SpendingRow = ({ id, name, amount, colour, dynamicPot, onRowUpdate }: SpendingRowProps): JSX.Element => {
   const onSpendingRowUpdate = (finance: DedicatedFinance): void => {
     onRowUpdate && onRowUpdate(finance);
   };
@@ -38,6 +38,7 @@ export const SpendingRow = ({ id, name, amount, colour, onRowUpdate }: SpendingR
                 name,
                 amount: event.target.valueAsNumber,
                 colour,
+                dynamicPot,
               })
             }
           />
@@ -50,6 +51,7 @@ export const SpendingRow = ({ id, name, amount, colour, onRowUpdate }: SpendingR
         <FormControl fullWidth>
           <Input
             type="color"
+            disableUnderline
             value={colour}
             onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
               onSpendingRowUpdate({
@@ -57,6 +59,28 @@ export const SpendingRow = ({ id, name, amount, colour, onRowUpdate }: SpendingR
                 name,
                 amount,
                 colour: event.target.value,
+                dynamicPot,
+              })
+            }
+          />
+        </FormControl>
+      </SpendingRowItem>
+      <SpendingRowItem>
+        <UnselectableTypography sx={{ marginBottom: '20px' }} variant="subtitle1" fontWeight="300" color="inherit">
+          Is Dynamic Pot
+        </UnselectableTypography>
+        <FormControl fullWidth>
+          <Input
+            type="checkbox"
+            disableUnderline
+            value={dynamicPot}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>): void =>
+              onSpendingRowUpdate({
+                id,
+                name,
+                amount,
+                colour,
+                dynamicPot: event.target.checked,
               })
             }
           />

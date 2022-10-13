@@ -101,7 +101,7 @@ export const Dashboard = (): JSX.Element => {
 
   const onDedicatedFinanceUpdate = (dedicatedFinance: DedicatedFinance): void => {
     const currFinances = spendingData.data;
-    const currIndex = currFinances.findIndex((value) => value.name === dedicatedFinance.name);
+    const currIndex = currFinances.findIndex((value) => value.id === dedicatedFinance.id);
     if (currIndex > -1) {
       currFinances[currIndex] = dedicatedFinance;
     }
@@ -198,6 +198,7 @@ export const Dashboard = (): JSX.Element => {
                     name={value.name}
                     amount={value.amount}
                     colour={value.colour}
+                    dynamicPot={value.dynamicPot}
                     onRowUpdate={onDedicatedFinanceUpdate}
                   />
                 ))}

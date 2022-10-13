@@ -21,7 +21,7 @@ export class FinancesController {
 
   @Get('dedicated')
   async dedicatedFinances(): Promise<{ status: boolean; data: DedicatedFinance[] }> {
-    let dedicated = await this.financesService.getAll();
+    const dedicated = await this.financesService.getAll();
     if (dedicated.length > 0) {
       return {
         status: true,
@@ -31,7 +31,7 @@ export class FinancesController {
     const monzoPots = await this.monzoService.getPots();
     return {
       status: false,
-      data: monzoPots.map(({ id, name }) => ({ id, name, amount: 0, colour: '#FFFFFF' })),
+      data: monzoPots.map(({ id, name }) => ({ id, name, amount: 0, colour: '#FFFFFF', dynamicPot: false })),
     };
   }
 
