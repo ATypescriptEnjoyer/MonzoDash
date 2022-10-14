@@ -74,11 +74,9 @@ export class MonzoService {
   }
 
   async usingAuthCode({ authCode }: AuthRequest): Promise<AuthResponse> {
-    const {
-      MONZO_CLIENT_ID: clientId,
-      MONZO_CLIENT_SECRET: clientSecret,
-      MONZO_REDIRECT_URI: redirectUri,
-    } = process.env;
+    const { MONZO_CLIENT_ID: clientId, MONZO_CLIENT_SECRET: clientSecret, MONZODASH_DOMAIN } = process.env;
+
+    const redirectUri = `${MONZODASH_DOMAIN}/api/auth/callback`;
 
     const requestData = {
       grant_type: 'authorization_code',

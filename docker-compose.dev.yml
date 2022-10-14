@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   api:
-    image: node:16.13.2
+    image: node:16.18.0
     #restart: always
     ports:
       - 81:5000

@@ -26,7 +26,8 @@ export class AuthController {
 
   @Get('redirectUri')
   getRedirectUri(): string {
-    const { MONZO_CLIENT_ID: clientId, MONZO_REDIRECT_URI: redirectUri } = process.env;
+    const { MONZO_CLIENT_ID: clientId, MONZODASH_DOMAIN } = process.env;
+    const redirectUri = `${MONZODASH_DOMAIN}/api/auth/callback`;
     return `https://auth.monzo.com?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
   }
 
@@ -52,7 +53,7 @@ export class AuthController {
       };
       await this.authService.deleteAll();
       await this.authService.create(record);
-      return response.redirect(process.env.MONZODASH_FRONTEND_URL);
+      return response.redirect('/login/verify');
     } catch (error) {
       throw new InternalServerErrorException(error.response.data);
     }
@@ -90,7 +91,7 @@ export class AuthController {
       const userInfo = await this.monzoService.getAccountId();
       await this.monzoService.configureWebhooks({
         accountId: userInfo,
-        webhookUrl: process.env.MONZO_WEBHOOK_URI,
+        webhookUrl: `${process.env.MONZODASH_WEBHOOK_DOMAIN}/api/monzo/webhook`,
       });
       token.twoFactored = true;
       await this.authService.save(token);

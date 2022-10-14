@@ -5,6 +5,10 @@ import { AuthModule } from '../auth/auth.module';
 import { MonzoModule } from '../monzo/monzo.module';
 import { EmployerModule } from '../employer/employer.module';
 import { FinancesModule } from '../finances/finances.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
+console.log(join(__dirname, '..', 'client'));
 
 @Module({
   imports: [
@@ -20,6 +24,9 @@ import { FinancesModule } from '../finances/finances.module';
         };
       },
       inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
     }),
     AuthModule,
     MonzoModule,
