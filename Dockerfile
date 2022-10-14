@@ -13,7 +13,7 @@ COPY client /app/client
 COPY shared /app/shared
 WORKDIR /app/client
 RUN yarn install
-RUN REACT_APP_VERSION=$(npm pkg get version) REACT_APP_NAME=$(npm pkg get name) yarn build
+RUN REACT_APP_VERSION=$(npm pkg get version | tr -d '"') REACT_APP_NAME=$(npm pkg get name | tr -d '"') yarn build
 
 FROM node:16.18.0 AS build
 
