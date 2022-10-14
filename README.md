@@ -27,12 +27,22 @@ MonzoDash is a dockerised web app for monitoring and managing your Monzo bank ac
 You need to use [docker](https://docs.docker.com/get-started/) and [docker compose](https://docs.docker.com/compose/) to spin up MonzoDash!
 
 ```bash
-cd api/
-docker compose up -d
-#Don't worry! This will spin  up everything, we do it inside /api to use it's .env file :)
+chmod +x run.sh
+
+# Run In Development Mode
+./run.sh dev start
+
+# View Development Mode Logs
+./run.sh dev logs
+
+# Run In Production Mode
+./run.sh prod start
+
+# View Production Mode Logs
+./run.sh prod logs
 ```
 
-Before doing this, configure api/.env.example!
+Before doing this, configure `.env.example`
 
 - You can get `MONZO_CLIENT_ID` and `MONZO_CLIENT_SECRET` from `https://developers.monzo.com/`
 - Set `MONZODASH_DOMAIN` to `https://YOUR_DOMAIN`
