@@ -4,8 +4,6 @@ services:
   monzodash:
     build:
       dockerfile: Dockerfile
-    ports:
-      - 5000:5000
     restart: unless-stopped
     links:
       - redis
