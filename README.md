@@ -24,29 +24,51 @@ MonzoDash is a dockerised web app for monitoring and managing your Monzo bank ac
 
 ## Installation
 
-You need to use [docker](https://docs.docker.com/get-started/) and [docker compose](https://docs.docker.com/compose/) to spin up MonzoDash!
+You need to use [docker](https://docs.docker.com/get-started/), and I recommend using [docker compose](https://docs.docker.com/compose/) to spin up MonzoDash!
 
-```bash
-chmod +x run.sh
+### Example docker-compose.yml
 
-# Run In Development Mode
-./run.sh dev start
+```
+version: "3.4"
 
-# View Development Mode Logs
-./run.sh dev logs
+services:
+  monzodash:
+    image: ghcr.io/sasharyder/monzodash:latest
+    restart: unless-stopped
+    links:
+      - redis
+      - mongo
+    environment:
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_HOST=${MONGO_HOST}
+      - REDIS_URL=${REDIS_URL}
+      - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
+      - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
+      - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
+      - MONZODASH_WEBHOOK_DOMAIN=${MONZODASH_WEBHOOK_DOMAIN}
 
-# Run In Production Mode
-./run.sh prod start
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - ./db:/data/db
 
-# View Production Mode Logs
-./run.sh prod logs
+  redis:
+    image: redis:6.2.6-alpine
+    restart: unless-stopped
+    environment:
+      - PGID=1000
+      - PUID=1000
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ./redis:/data
 ```
 
-Before doing this, configure `.env.example`
-
-- You can get `MONZO_CLIENT_ID` and `MONZO_CLIENT_SECRET` from `https://developers.monzo.com/`
-- Set `MONZODASH_DOMAIN` to `https://YOUR_DOMAIN`
-- Set `MONZO_WEBHOOK_URI` to `https://YOUR_WEBHOOK_DOMAIN`
+Before doing this, create a `.env` file along side your `docker-compose.yml` file.
 
 ```
 MONGO_USERNAME=monzodash
@@ -55,9 +77,13 @@ MONGO_HOST=mongo
 REDIS_URL=redis://redis
 MONZO_CLIENT_ID=
 MONZO_CLIENT_SECRET=
-MONZODASH_DOMAIN=http://localhost:5000
-MONZODASH_WEBHOOK_DOMAIN=http://localhost:5000
+MONZODASH_DOMAIN=http://localhost
+MONZODASH_WEBHOOK_DOMAIN=http://localhost
 ```
+
+- You can get `MONZO_CLIENT_ID` and `MONZO_CLIENT_SECRET` from `https://developers.monzo.com/`
+- Set `MONZODASH_DOMAIN` to `https://YOUR_DOMAIN` (Where you'll setup nginx ect to access the frontend, or access directly)
+- Set `MONZO_WEBHOOK_URI` to `https://YOUR_WEBHOOK_DOMAIN` (Where you'll process webhooks, I added this because I don't expose the MonzoDash frontend via NGINX, only the webhook endpoint.)
 
 ## Usage
 
