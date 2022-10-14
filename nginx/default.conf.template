@@ -1,0 +1,21 @@
+server {
+        listen        ${NGINX_PORT};
+        server_name   ${NGINX_HOST};
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+
+        location /api {
+                resolver 127.0.0.11 valid=30s;
+                set $upstream_url api;
+                proxy_pass http://$upstream_url:5000;
+        }
+
+        location / {
+                resolver 127.0.0.11 valid=30s;
+                set $upstream_url client;
+                proxy_pass http://$upstream_url;
+        }
+}

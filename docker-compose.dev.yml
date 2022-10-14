@@ -1,14 +1,14 @@
 version: "3.4"
 
 services:
-  monzodash:
-    build:
-      dockerfile: Dockerfile
-    ports:
-      - 5000:5000
-    links:
-      - redis
-      - mongo
+  api:
+    image: node:16.18.0
+    volumes:
+      - ./shared:/app/shared
+      - ./api:/app/api
+    working_dir: /app/api
+    command: >
+      bash -c "yarn install && yarn start:dev"
     environment:
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
@@ -18,7 +18,20 @@ services:
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
       - MONZODASH_WEBHOOK_DOMAIN=${MONZODASH_WEBHOOK_DOMAIN}
-
+    links:
+      - redis
+      - mongo
+  client:
+    image: node:16.18.0
+    volumes:
+      - ./shared:/app/shared
+      - ./client:/app/client
+    working_dir: /app/client
+    environment:
+      - REACT_APP_API_URL=/api
+      - PORT=80
+    command: >
+      bash -c "yarn install && REACT_APP_VERSION=$$(npm pkg get version | tr -d '\"') REACT_APP_NAME=$$(npm pkg get name | tr -d '\"') yarn start"
   mongo:
     image: mongo
     environment:
@@ -38,9 +51,11 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - ./redis:/data
+    #restart: always
 
   mongo-express:
     image: mongo-express
+    restart: always
     ports:
       - 8081:8081
     environment:
@@ -48,6 +63,12 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/
 
-networks:
-  default:
-    name: docker_default
+  nginx:
+    image: nginx
+    volumes:
+    - ./nginx:/etc/nginx/templates
+    ports:
+    - "80:80"
+    environment:
+    - NGINX_HOST=localhost
+    - NGINX_PORT=80
