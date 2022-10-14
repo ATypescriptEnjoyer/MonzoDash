@@ -2,8 +2,7 @@ version: "3.4"
 
 services:
   monzodash:
-    build:
-      dockerfile: Dockerfile
+    image: ghcr.io/sasharyder/monzodash:latest
     restart: unless-stopped
     links:
       - redis
