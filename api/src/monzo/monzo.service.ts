@@ -238,9 +238,9 @@ export class MonzoService {
         }
       });
       if (!hookExists) {
-        await firstValueFrom(
-          this.httpService.post('webhooks', { account_id: accountId, url: webhookUrl }, { headers }),
-        );
+        const requestData = { account_id: accountId, url: webhookUrl };
+        const requestDataString = new URLSearchParams(requestData).toString();
+        await firstValueFrom(this.httpService.post('webhooks', requestDataString, { headers }));
       }
       return true;
     } catch (error) {
