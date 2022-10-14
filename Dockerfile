@@ -12,10 +12,8 @@ ENV REACT_APP_API_URL=/api
 COPY client /app/client
 COPY shared /app/shared
 WORKDIR /app/client
-RUN export REACT_APP_VERSION=$(npm pkg get version)
-RUN export REACT_APP_NAME=$(npm pkg get name)
 RUN yarn install
-RUN yarn build
+RUN REACT_APP_VERSION=$(npm pkg get version) REACT_APP_NAME=$(npm pkg get name) yarn build
 
 FROM node:16.18.0 AS build
 
