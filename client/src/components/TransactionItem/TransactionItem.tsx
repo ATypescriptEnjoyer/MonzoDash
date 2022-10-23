@@ -11,7 +11,7 @@ interface Props {
 const TransactionItem = ({ Merchant, Icon = '/icons/transaction.png', Type, Amount }: Props): JSX.Element => {
   return (
     <StyledHeader>
-      <StyledIcon src={Icon} />
+      <StyledIcon src={Icon ? Icon : '/icons/transaction.png'} />
       <StyledInfo>
         <StyledMerchant>{Merchant}</StyledMerchant>
         <StyledCurrency Type={Type}>{Amount}</StyledCurrency>
