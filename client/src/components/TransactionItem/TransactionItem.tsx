@@ -15,7 +15,7 @@ const TransactionItem = ({ Merchant, Icon = DefaultIcon, Type, Amount }: Props):
       <StyledIcon src={Icon ? Icon : DefaultIcon} />
       <StyledInfo>
         <StyledMerchant>{Merchant}</StyledMerchant>
-        <StyledCurrency Type={Type}>{Amount}</StyledCurrency>
+        <StyledCurrency Type={Type}>{Amount % 1 === 0 ? Amount : Amount.toFixed(2)}</StyledCurrency>
       </StyledInfo>
     </StyledHeader>
   );
