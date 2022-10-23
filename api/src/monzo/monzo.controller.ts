@@ -39,6 +39,7 @@ export class MonzoController {
         type: transaction.data.amount > 0 ? 'incoming' : 'outgoing',
         logoUrl: transaction.data.merchant?.logo,
         description,
+        transaction: transaction.data,
       });
       const employer = (await this.employerService.getAll())[0];
       const finances = await this.financesService.getAll();
