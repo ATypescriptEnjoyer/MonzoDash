@@ -30,7 +30,10 @@ export class MonzoController {
   @Post('webhook')
   async webhook(@Body() transaction: WebhookTransaction): Promise<void> {
     if (transaction.type === 'transaction.created') {
-      const description = transaction.data.merchant?.name || transaction.data.counterparty?.name;
+      let description = transaction.data.merchant?.name || transaction.data.counterparty?.name;
+      if (!description && transaction.data.category === 'savings') {
+        description = 'Savings';
+      }
       const amount = Math.abs(transaction.data.amount) / 100;
       await this.transactionService.create({
         id: transaction.data.id,

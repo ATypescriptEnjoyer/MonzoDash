@@ -13,6 +13,7 @@ interface WebhookTransactionData {
   amount: number;
   merchant?: WebhookTransactionDataMerchant;
   counterparty?: WebhookTransactionDataCounterparty;
+  category?: string;
 }
 
 export interface WebhookTransaction {
