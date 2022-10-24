@@ -2,10 +2,13 @@ import { Typography } from '@mui/material';
 import styled from 'styled-components';
 
 export const ModuleContainer = styled.div`
+  min-height: 100%;
+  height: 0;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto;
+  box-sizing: border-box;
 `;
 
 export const ModuleHeader = styled(Typography)`

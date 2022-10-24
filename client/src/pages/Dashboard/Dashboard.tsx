@@ -22,7 +22,7 @@ interface Employer {
 }
 
 export const Dashboard = (): JSX.Element => {
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string>('User');
   const [employerInfoExists, setEmployerInfoExists] = useState(false);
   const [employerInfo, setEmployerInfo] = useState<Employer>({ name: '', payDay: 1 });
   const [currentFinances, setCurrentFinances] = useState<CurrentFinances>();
@@ -124,7 +124,7 @@ export const Dashboard = (): JSX.Element => {
         </UnselectableTypography>
       )}
       {!loading && (
-        <Modules>
+        <Modules employerSet={employerInfoExists && !!currentFinances}>
           {!employerInfoExists && (
             <Module HeaderText="Employer Information">
               <EmployerInfoContainer>
