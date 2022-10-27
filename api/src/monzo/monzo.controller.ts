@@ -36,7 +36,7 @@ export class MonzoController {
         const pots = await this.monzoService.getPots();
         const pot = pots.find((pot) => pot.id === transaction.data.description);
         if (pot) {
-          description = `${type === 'incoming' ? 'Withdrawal from' : 'Deposit to'} ${pot}`;
+          description = `${type === 'incoming' ? 'Withdrawal from' : 'Deposit to'} ${pot.name}`;
         } else {
           description = type === 'incoming' ? 'Withdrawal from pot' : 'Deposit to pot';
         }
