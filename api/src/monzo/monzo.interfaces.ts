@@ -14,6 +14,8 @@ interface WebhookTransactionData {
   merchant?: WebhookTransactionDataMerchant;
   counterparty?: WebhookTransactionDataCounterparty;
   category?: string;
+  description?: string;
+  notes?: string;
 }
 
 export interface WebhookTransaction {

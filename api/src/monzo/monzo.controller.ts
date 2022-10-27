@@ -31,17 +31,27 @@ export class MonzoController {
   async webhook(@Body() transaction: WebhookTransaction): Promise<void> {
     if (transaction.type === 'transaction.created') {
       let description = transaction.data.merchant?.name || transaction.data.counterparty?.name;
-      if (!description && transaction.data.category === 'savings') {
-        description = 'Savings';
+      const type = transaction.data.amount > 0 ? 'incoming' : 'outgoing';
+      if (!description && transaction.data.description.startsWith('pot_')) {
+        const pots = await this.monzoService.getPots();
+        const pot = pots.find((pot) => pot.id === transaction.data.description);
+        if (pot) {
+          description = `${type === 'incoming' ? 'Withdrawal from' : 'Deposit to'} ${pot}`;
+        } else {
+          description = type === 'incoming' ? 'Withdrawal from pot' : 'Deposit to pot';
+        }
+      }
+      if (description === 'Flex') {
+        description = transaction.data.notes;
       }
       const amount = Math.abs(transaction.data.amount) / 100;
       await this.transactionService.create({
         id: transaction.data.id,
         amount,
         created: transaction.data.created,
-        type: transaction.data.amount > 0 ? 'incoming' : 'outgoing',
+        type,
         logoUrl: transaction.data.merchant?.logo,
-        description,
+        description: description.trim(),
         transaction: transaction.data,
       });
       const employer = (await this.employerService.getAll())[0];
