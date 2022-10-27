@@ -10,6 +10,7 @@ services:
     command: >
       bash -c "yarn install && yarn start:dev"
     environment:
+      - TZ=Europe/London
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_HOST=${MONGO_HOST}

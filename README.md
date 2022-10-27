@@ -39,6 +39,7 @@ services:
       - redis
       - mongo
     environment:
+      - TZ=Europe/London
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_HOST=${MONGO_HOST}
