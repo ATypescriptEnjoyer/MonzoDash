@@ -25,5 +25,6 @@ export const calculatePayDay = async (day: number): Promise<Date> => {
       proposedNextPayday.subtract('3', 'days');
     }
   }
+  proposedNextPayday.add('1', 'day');
   return proposedNextPayday.toDate();
 };
