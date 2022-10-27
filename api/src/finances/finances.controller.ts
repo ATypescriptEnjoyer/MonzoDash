@@ -5,18 +5,19 @@ https://docs.nestjs.com/controllers#controllers
 import { Body, Controller, forwardRef, Get, Inject, Put } from '@nestjs/common';
 import * as moment from 'moment';
 import { CurrentFinances, DedicatedFinance } from '../../../shared/interfaces/finances';
-import { calculatePayDay } from '../../util/calculatePayDay';
+import { calculatePayDay } from '../util/calculatePayDay';
 import { EmployerService } from '../employer/employer.service';
 import { MonzoService } from '../monzo/monzo.service';
 import { FinancesService } from './finances.service';
-import { Finances } from './schemas/finances.schema';
-
+import { HolidaysService } from 'src/holidays/holidays.service';
+import { Holiday } from 'src/holidays/schemas/holidays.schema';
 @Controller('Finances')
 export class FinancesController {
   constructor(
     private readonly financesService: FinancesService,
     private readonly employerService: EmployerService,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
+    private readonly holidaysService: HolidaysService,
   ) {}
 
   @Get('dedicated')
@@ -64,7 +65,8 @@ export class FinancesController {
     const balance = await this.monzoService.getBalance();
     const employer = (await this.employerService.getAll())[0];
     if (employer) {
-      const payDate = await calculatePayDay(employer.payDay);
+      const holidays: Holiday[] = await this.holidaysService.getAll();
+      const payDate = await calculatePayDay(employer.payDay, holidays);
       const daysUntil = moment(payDate).diff(moment(), 'days');
 
       return {

@@ -1,7 +1,7 @@
-import axios from 'axios';
 import * as moment from 'moment';
+import { Holiday } from '../holidays/schemas/holidays.schema';
 
-export const calculatePayDay = async (day: number): Promise<Date> => {
+export const calculatePayDay = async (day: number, holidays: Holiday[]): Promise<Date> => {
   const dateNow = new Date();
   let year = dateNow.getFullYear();
   let month = dateNow.getDate() >= day ? dateNow.getMonth() + 2 : dateNow.getMonth() + 1;
@@ -15,9 +15,7 @@ export const calculatePayDay = async (day: number): Promise<Date> => {
   } else if (proposedNextPayday.isoWeekday() === 7) {
     proposedNextPayday.subtract('2', 'days');
   }
-  const { data } = await axios.get('https://www.gov.uk/bank-holidays.json');
-  const holArr: { date: string }[] = data['england-and-wales']['events'];
-  const isBankHoliday = holArr.some(({ date }) => proposedNextPayday.isSame(date));
+  const isBankHoliday = holidays.some(({ date }) => proposedNextPayday.isSame(date));
   if (isBankHoliday) {
     if (proposedNextPayday.isoWeekday() <= 5 && proposedNextPayday.isoWeekday() >= 2) {
       proposedNextPayday.subtract('1', 'day');

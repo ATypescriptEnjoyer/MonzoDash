@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { HolidaysModule } from 'src/holidays/holidays.module';
 import { EmployerModule } from '../employer/employer.module';
 import { MonzoModule } from '../monzo/monzo.module';
 import { FinancesController } from './finances.controller';
@@ -11,6 +12,7 @@ import { Finances, FinancesSchema } from './schemas/finances.schema';
     MongooseModule.forFeature([{ name: Finances.name, schema: FinancesSchema }]),
     EmployerModule,
     forwardRef(() => MonzoModule),
+    HolidaysModule,
   ],
   controllers: [FinancesController],
   providers: [FinancesService],

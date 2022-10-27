@@ -1,10 +1,9 @@
 {
   "name": "monzodash-api",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
-  "private": true,
-  "license": "UNLICENSED",
+  "version": "1.1.0",
+  "description": "MonzoDash API",
+  "author": "Sasha Ryder",
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
@@ -36,9 +35,11 @@
     "ioredis": "^5.2.3",
     "moment": "^2.29.4",
     "mongoose": "^6.6.2",
+    "nestjs-command": "^3.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "yargs": "^17.6.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.0.0",
@@ -50,6 +51,7 @@
     "@types/mongodb": "^4.0.7",
     "@types/node": "^16.0.0",
     "@types/supertest": "^2.0.11",
+    "@types/yargs": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "dotenv-cli": "^6.0.0",

@@ -7,6 +7,9 @@ import { EmployerModule } from '../employer/employer.module';
 import { FinancesModule } from '../finances/finances.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { HolidaysModule } from '../holidays/holidays.module';
+import { CommandModule } from 'nestjs-command';
+import { HolidaysSeed } from 'src/holidays/seeds/holidays.seed';
 
 console.log(join(__dirname, '..', 'client'));
 
@@ -32,6 +35,9 @@ console.log(join(__dirname, '..', 'client'));
     MonzoModule,
     EmployerModule,
     FinancesModule,
+    HolidaysModule,
+    CommandModule,
   ],
+  providers: [HolidaysModule, HolidaysSeed],
 })
 export class AppModule {}
