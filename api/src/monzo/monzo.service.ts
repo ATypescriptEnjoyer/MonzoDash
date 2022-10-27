@@ -186,7 +186,7 @@ export class MonzoService {
 
     const accountId = await this.getAccountId();
 
-    const requestData = { source_account_id: accountId, amount: valuePence.toString(), dedupe_id: potId };
+    const requestData = { source_account_id: accountId, amount: Math.abs(valuePence) as any, dedupe_id: potId };
     const requestDataString = new URLSearchParams(requestData).toString();
 
     const { data } = await firstValueFrom(
@@ -205,7 +205,7 @@ export class MonzoService {
 
     const accountId = await this.getAccountId();
 
-    const requestData = { destination_account_id: accountId, amount: valuePence.toString(), dedupe_id: potId };
+    const requestData = { destination_account_id: accountId, amount: Math.abs(valuePence) as any, dedupe_id: potId };
     const requestDataString = new URLSearchParams(requestData).toString();
 
     const { data } = await firstValueFrom(
