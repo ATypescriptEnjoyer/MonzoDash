@@ -24,4 +24,4 @@ COPY --from=client /app/client/build /app/dist/api/src/client
 EXPOSE 5000
 WORKDIR /app
 
-CMD [ "yarn", "start:prod" ]
+CMD [ "/bin/bash", "-c npx nestjs-command create:holidays; yarn start:prod" ]
