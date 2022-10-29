@@ -30,6 +30,10 @@ export const ModuleBody = styled.div`
   flex: 1;
   overflow-y: auto;
   padding-right: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   @media screen and (max-width: 900px) {
     padding: 0;

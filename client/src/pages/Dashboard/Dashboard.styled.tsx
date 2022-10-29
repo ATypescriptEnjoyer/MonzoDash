@@ -39,6 +39,9 @@ export const ModuleList = styled.div`
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  width: 100%;
+  padding-right: 16px;
+  box-sizing: border-box;
 `;
 
 export const EmployerInfoContainer = styled.div`

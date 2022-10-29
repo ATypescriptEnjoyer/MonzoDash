@@ -178,7 +178,7 @@ export const Dashboard = (): JSX.Element => {
             </Module>
           )}
           {currentFinances && (
-            <Module space={2} HeaderText="Current Finances">
+            <Module HeaderText="Current Finances">
               <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '10px' }}>
                 £{(currentFinances.balancePence / 100).toFixed(2)} left for {currentFinances.daysTilPay} days
               </Typography>
@@ -187,6 +187,19 @@ export const Dashboard = (): JSX.Element => {
               </Typography>
             </Module>
           )}
+          <Module verticalSpace={2} HeaderText="Recent Transactions">
+            <ModuleList>
+              {transactions.map((transaction) => (
+                <TransactionItem
+                  Merchant={transaction.description}
+                  key={transaction.id}
+                  Icon={transaction.logoUrl}
+                  Amount={transaction.amount}
+                  Type={transaction.type}
+                />
+              ))}
+            </ModuleList>
+          </Module>
           <Module HeaderText="Dedicated Spending">
             {spendingData.status && <StyledDedicatedSpendingPie data={createDoughnutData()} options={opts} />}
             {!spendingData.status && (
@@ -208,19 +221,6 @@ export const Dashboard = (): JSX.Element => {
                 </Button>
               </>
             )}
-          </Module>
-          <Module HeaderText="Recent Transactions">
-            <ModuleList>
-              {transactions.map((transaction) => (
-                <TransactionItem
-                  Merchant={transaction.description}
-                  key={transaction.id}
-                  Icon={transaction.logoUrl}
-                  Amount={transaction.amount}
-                  Type={transaction.type}
-                />
-              ))}
-            </ModuleList>
           </Module>
         </Modules>
       )}
