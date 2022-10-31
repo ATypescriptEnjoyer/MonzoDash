@@ -7,7 +7,6 @@ export const ModuleContainer = styled.div`
   padding: 16px;
   display: flex;
   flex-direction: column;
-  overflow: auto;
   box-sizing: border-box;
 `;
 
@@ -28,12 +27,12 @@ export const ModuleHeader = styled(Typography)`
 
 export const ModuleBody = styled.div`
   flex: 1;
-  overflow-y: auto;
   padding-right: 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-height: 100%;
 
   @media screen and (max-width: 900px) {
     padding: 0;

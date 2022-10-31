@@ -34,7 +34,7 @@ export const Modules = styled.div<{ employerSet: boolean }>`
 
 export const StyledDedicatedSpendingPie = styled(Doughnut)``;
 
-export const ModuleList = styled.div`
+export const TransactionList = styled.div`
   gap: 16px;
   display: flex;
   flex-direction: column;
@@ -53,4 +53,21 @@ export const EmployerInfoContainer = styled.div`
 
 export const EmployerInfoChild = styled.div`
   flex: 1;
+`;
+
+export const TransactionDay = styled.div`
+  width: 100%;
+`;
+
+export const TransactionContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  overflow: auto;
+  max-height: 100%;
+`;
+
+export const TransactionDayTitle = styled.h4`
+  text-transform: uppercase;
 `;

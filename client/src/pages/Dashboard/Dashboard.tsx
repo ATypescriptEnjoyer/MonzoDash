@@ -4,9 +4,12 @@ import {
   DashContainer,
   Modules,
   StyledDedicatedSpendingPie,
-  ModuleList,
+  TransactionList,
   EmployerInfoChild,
   EmployerInfoContainer,
+  TransactionDay,
+  TransactionContainer,
+  TransactionDayTitle,
 } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
@@ -116,6 +119,29 @@ export const Dashboard = (): JSX.Element => {
     setSpendingData(data);
   };
 
+  const generateTransactionDays = (): JSX.Element => {
+    return (
+      <TransactionContainer>
+        {transactions.map((transaction) => (
+          <TransactionDay>
+            <TransactionDayTitle>{transaction.title}</TransactionDayTitle>
+            <TransactionList>
+              {transaction.transactions.map((transactionItem) => (
+                <TransactionItem
+                  Merchant={transactionItem.description}
+                  key={transactionItem.id}
+                  Icon={transactionItem.logoUrl}
+                  Amount={transactionItem.amount}
+                  Type={transactionItem.type}
+                />
+              ))}
+            </TransactionList>
+          </TransactionDay>
+        ))}
+      </TransactionContainer>
+    );
+  };
+
   return (
     <DashContainer>
       {name && (
@@ -187,18 +213,8 @@ export const Dashboard = (): JSX.Element => {
               </Typography>
             </Module>
           )}
-          <Module verticalSpace={2} HeaderText="Recent Transactions">
-            <ModuleList>
-              {transactions.map((transaction) => (
-                <TransactionItem
-                  Merchant={transaction.description}
-                  key={transaction.id}
-                  Icon={transaction.logoUrl}
-                  Amount={transaction.amount}
-                  Type={transaction.type}
-                />
-              ))}
-            </ModuleList>
+          <Module verticalSpace={2} HeaderText="Transactions">
+            {generateTransactionDays()}
           </Module>
           <Module HeaderText="Dedicated Spending">
             {spendingData.status && <StyledDedicatedSpendingPie data={createDoughnutData()} options={opts} />}
