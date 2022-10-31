@@ -29,12 +29,12 @@ export class TransactionsController {
 
     return transactions.reduce((prev: Transaction[], curr) => {
       const dateToMoment = moment(curr.created);
-      const momentToday = moment(new Date());
-      const momentYesterday = momentToday.subtract('1', 'day');
+      const momentToday = moment().startOf('day');
+      const momentYesterday = momentToday.clone().subtract('1', 'day').startOf('day');
       let localeDateString = '';
-      if (dateToMoment.isSame(momentToday)) {
+      if (dateToMoment.isSame(momentToday, 'd')) {
         localeDateString = 'Today';
-      } else if (dateToMoment.subtract('1', 'day').isSame(momentYesterday)) {
+      } else if (dateToMoment.isSame(momentYesterday, 'd')) {
         localeDateString = 'Yesterday';
       } else {
         localeDateString = `${moment(curr.created).format('dddd, D MMM')}${
