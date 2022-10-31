@@ -10,13 +10,14 @@ import {
   TransactionDay,
   TransactionContainer,
   TransactionDayTitle,
+  TransactionDayHeader,
 } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
-import { Transaction } from '../../../../shared/interfaces/transaction';
+import { Transaction, TransactionItem } from '../../../../shared/interfaces/transaction';
 import { ApiConnector } from '../../network';
 import { ChartData, ChartOptions } from 'chart.js';
-import { TransactionItem } from '../../components/TransactionItem';
+import { TransactionItem as TransactionItemComponent } from '../../components/TransactionItem';
 import { Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 
 interface Employer {
@@ -120,14 +121,26 @@ export const Dashboard = (): JSX.Element => {
   };
 
   const generateTransactionDays = (): JSX.Element => {
+    const generateDailyFinance = (transactions: TransactionItem[]): string => {
+      const finance = transactions.reduce((prev, curr) => {
+        prev += curr.type === 'outgoing' ? -curr.amount : curr.amount;
+        return prev;
+      }, 0);
+
+      return `£ ${finance.toFixed(2)}`;
+    };
+
     return (
       <TransactionContainer>
         {transactions.map((transaction) => (
           <TransactionDay>
-            <TransactionDayTitle>{transaction.title}</TransactionDayTitle>
+            <TransactionDayHeader>
+              <TransactionDayTitle>{transaction.title}</TransactionDayTitle>
+              <TransactionDayTitle>{generateDailyFinance(transaction.transactions)}</TransactionDayTitle>
+            </TransactionDayHeader>
             <TransactionList>
               {transaction.transactions.map((transactionItem) => (
-                <TransactionItem
+                <TransactionItemComponent
                   Merchant={transactionItem.description}
                   key={transactionItem.id}
                   Icon={transactionItem.logoUrl}

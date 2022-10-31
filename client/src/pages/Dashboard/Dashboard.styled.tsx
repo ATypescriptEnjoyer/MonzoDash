@@ -59,6 +59,12 @@ export const TransactionDay = styled.div`
   width: 100%;
 `;
 
+export const TransactionDayHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-right: 32px;
+`;
+
 export const TransactionContainer = styled.div`
   width: 100%;
   display: flex;
