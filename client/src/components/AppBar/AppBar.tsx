@@ -1,10 +1,10 @@
 import React from 'react';
 import { AppBar as MaterialAppBar, Toolbar } from '@mui/material';
-import SmartToy from '@mui/icons-material/SmartToy';
 import { GetAppName, GetAppVersion } from '../../utils';
 import { UnselectableTypography } from '../';
-import { SignOut } from './AppBar.styled';
+import { SignOut, AppBarIcon } from './AppBar.styled';
 import { ApiConnector } from '../../network';
+import monzodash from './monzodash.png';
 
 export const AppBar = (): JSX.Element => {
   const HandleSignOutClick = async (): Promise<void> => {
@@ -19,7 +19,7 @@ export const AppBar = (): JSX.Element => {
   return (
     <MaterialAppBar position="relative">
       <Toolbar>
-        <SmartToy sx={{ mr: 2 }} />
+        <AppBarIcon src={monzodash} />
         <UnselectableTypography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
           {GetAppName()} v{GetAppVersion()}
         </UnselectableTypography>

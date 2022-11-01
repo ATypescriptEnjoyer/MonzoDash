@@ -1,6 +1,8 @@
-# MonzoDash
+<p align="center">
+  <a href="https://github.com/SashaRyder/MonzoDash/ target="blank"><img src="https://raw.githubusercontent.com/SashaRyder/MonzoDash/master/client/src/components/AppBar/monzodash.png?raw=true" width="120" alt="MonzoDash Logo" /></a>
+</p>
 
-MonzoDash is a dockerised web app for monitoring and managing your Monzo bank account.
+<p align="center">MonzoDash is a dockerised web app for monitoring and managing your Monzo bank account.</p>
 
 ## Features
 
