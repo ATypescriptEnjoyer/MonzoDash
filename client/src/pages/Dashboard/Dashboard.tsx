@@ -11,6 +11,8 @@ import {
   TransactionContainer,
   TransactionDayTitle,
   TransactionDayHeader,
+  TransactionDailyCount,
+  DailyCountContainers,
 } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
@@ -19,6 +21,7 @@ import { ApiConnector } from '../../network';
 import { ChartData, ChartOptions } from 'chart.js';
 import { TransactionItem as TransactionItemComponent } from '../../components/TransactionItem';
 import { Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import { TrendingUp, TrendingDown, CalendarToday } from '@mui/icons-material';
 
 interface Employer {
   name: string;
@@ -121,36 +124,56 @@ export const Dashboard = (): JSX.Element => {
   };
 
   const generateTransactionDays = (): JSX.Element => {
-    const generateDailyFinance = (transactions: TransactionItem[]): string => {
-      const finance = transactions.reduce((prev, curr) => {
-        prev += curr.type === 'outgoing' ? -curr.amount : curr.amount;
-        return prev;
-      }, 0);
-
-      return `£ ${finance.toFixed(2)}`;
+    const generateDailyFinance = (transactions: TransactionItem[]): { incoming: number; outgoing: number } => {
+      return transactions.reduce(
+        (prev, curr) => {
+          const amt = Math.abs(curr.amount);
+          if (curr.type === 'incoming') {
+            return { incoming: prev.incoming + amt, outgoing: prev.outgoing };
+          }
+          return { incoming: prev.incoming, outgoing: prev.outgoing + amt };
+        },
+        { incoming: 0, outgoing: 0 },
+      );
     };
 
     return (
       <TransactionContainer>
-        {transactions.map((transaction) => (
-          <TransactionDay>
-            <TransactionDayHeader>
-              <TransactionDayTitle>{transaction.title}</TransactionDayTitle>
-              <TransactionDayTitle>{generateDailyFinance(transaction.transactions)}</TransactionDayTitle>
-            </TransactionDayHeader>
-            <TransactionList>
-              {transaction.transactions.map((transactionItem) => (
-                <TransactionItemComponent
-                  Merchant={transactionItem.description}
-                  key={transactionItem.id}
-                  Icon={transactionItem.logoUrl}
-                  Amount={transactionItem.amount}
-                  Type={transactionItem.type}
-                />
-              ))}
-            </TransactionList>
-          </TransactionDay>
-        ))}
+        {transactions.map((transaction) => {
+          const { incoming, outgoing } = generateDailyFinance(transaction.transactions);
+
+          return (
+            <TransactionDay>
+              <TransactionDayHeader>
+                <TransactionDayTitle>
+                  <CalendarToday />
+                  {transaction.title}
+                </TransactionDayTitle>
+                <DailyCountContainers>
+                  <TransactionDailyCount isPositive={true}>
+                    <TrendingUp />
+                    <span>£{Math.abs(incoming).toFixed(2)}</span>
+                  </TransactionDailyCount>
+                  <TransactionDailyCount isPositive={false}>
+                    <TrendingDown />
+                    <span>£{Math.abs(outgoing).toFixed(2)}</span>
+                  </TransactionDailyCount>
+                </DailyCountContainers>
+              </TransactionDayHeader>
+              <TransactionList>
+                {transaction.transactions.map((transactionItem) => (
+                  <TransactionItemComponent
+                    Merchant={transactionItem.description}
+                    key={transactionItem.id}
+                    Icon={transactionItem.logoUrl}
+                    Amount={transactionItem.amount}
+                    Type={transactionItem.type}
+                  />
+                ))}
+              </TransactionList>
+            </TransactionDay>
+          );
+        })}
       </TransactionContainer>
     );
   };

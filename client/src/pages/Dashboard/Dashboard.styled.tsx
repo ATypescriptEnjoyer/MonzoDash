@@ -62,7 +62,8 @@ export const TransactionDay = styled.div`
 export const TransactionDayHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-right: 32px;
+  margin-right: 16px;
+  align-items: center;
 `;
 
 export const TransactionContainer = styled.div`
@@ -76,4 +77,21 @@ export const TransactionContainer = styled.div`
 
 export const TransactionDayTitle = styled.h4`
   text-transform: uppercase;
+  background-color: white;
+  border-radius: 4px;
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #121212;
+`;
+
+export const TransactionDailyCount = styled(TransactionDayTitle)<{ isPositive: boolean }>`
+  color: ${(props): string => (props.isPositive ? '#80d195' : '#dc3545')};
+`;
+
+export const DailyCountContainers = styled.div`
+  display: flex;
+  gap: 16px;
 `;
