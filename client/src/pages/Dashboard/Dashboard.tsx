@@ -13,6 +13,7 @@ import {
   TransactionDayHeader,
   TransactionDailyCount,
   DailyCountContainers,
+  LoadingContainer,
 } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
@@ -21,7 +22,8 @@ import { ApiConnector } from '../../network';
 import { ChartData, ChartOptions } from 'chart.js';
 import { TransactionItem as TransactionItemComponent } from '../../components/TransactionItem';
 import { Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from '@mui/material';
-import { TrendingUp, TrendingDown, CalendarToday } from '@mui/icons-material';
+import { TrendingUp, TrendingDown, TrendingFlat, CalendarToday } from '@mui/icons-material';
+import { MoonLoader } from 'react-spinners';
 
 interface Employer {
   name: string;
@@ -158,6 +160,10 @@ export const Dashboard = (): JSX.Element => {
                     <TrendingDown />
                     <span>£{Math.abs(outgoing).toFixed(2)}</span>
                   </TransactionDailyCount>
+                  <TransactionDayTitle>
+                    <TrendingFlat />
+                    <span>£{(incoming - outgoing).toFixed(2)}</span>
+                  </TransactionDayTitle>
                 </DailyCountContainers>
               </TransactionDayHeader>
               <TransactionList>
@@ -178,104 +184,107 @@ export const Dashboard = (): JSX.Element => {
     );
   };
 
-  return (
+  return loading ? (
+    <LoadingContainer>
+      <MoonLoader color="#F8C8DC" size="80" title="Loading..." />
+      <h1>Loading...</h1>
+    </LoadingContainer>
+  ) : (
     <DashContainer>
       {name && (
         <UnselectableTypography sx={{ marginBottom: '20px' }} variant="h4" fontWeight="300" color="inherit">
           Welcome Back, {name}
         </UnselectableTypography>
       )}
-      {!loading && (
-        <Modules employerSet={employerInfoExists && !!currentFinances}>
-          {!employerInfoExists && (
-            <Module HeaderText="Employer Information">
-              <EmployerInfoContainer>
-                <EmployerInfoChild>
-                  <UnselectableTypography
-                    sx={{ marginBottom: '20px' }}
-                    variant="subtitle1"
-                    fontWeight="300"
-                    color="inherit"
-                  >
-                    Employer Name (As is on Monzo!):
-                  </UnselectableTypography>
-                  <FormControl fullWidth>
-                    <Input
-                      value={employerInfo?.name}
-                      onChange={(event): void => setEmployerInfo({ ...employerInfo, name: event.currentTarget.value })}
-                    />
-                  </FormControl>
-                </EmployerInfoChild>
-                <EmployerInfoChild>
-                  <UnselectableTypography
-                    sx={{ marginBottom: '20px' }}
-                    variant="subtitle1"
-                    fontWeight="300"
-                    color="inherit"
-                  >
-                    Pay Day:
-                  </UnselectableTypography>
-                  <FormControl fullWidth>
-                    <InputLabel id="payday-label">Pay Day</InputLabel>
-                    <Select
-                      value={employerInfo.payDay}
-                      labelId="payday-label"
-                      label="Pay Day"
-                      onChange={(value): void =>
-                        setEmployerInfo({ ...employerInfo, payDay: value.target.value as number })
-                      }
-                    >
-                      {Array.from(Array(31).keys()).map((value) => (
-                        <MenuItem key={value + 1} value={value + 1}>
-                          {value + 1}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </EmployerInfoChild>
-              </EmployerInfoContainer>
-              <Button variant="contained" onClick={submitEmployerInformation}>
-                Save Employer Information
-              </Button>
-            </Module>
-          )}
-          {currentFinances && (
-            <Module HeaderText="Current Finances">
-              <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '10px' }}>
-                £{(currentFinances.balancePence / 100).toFixed(2)} left for {currentFinances.daysTilPay} days
-              </Typography>
-              <Typography variant="h5" style={{ textAlign: 'center' }}>
-                That's £{(currentFinances.perDayPence / 100).toFixed(2)} per day!
-              </Typography>
-            </Module>
-          )}
-          <Module verticalSpace={2} HeaderText="Transactions">
-            {generateTransactionDays()}
-          </Module>
-          <Module HeaderText="Dedicated Spending">
-            {spendingData.status && <StyledDedicatedSpendingPie data={createDoughnutData()} options={opts} />}
-            {!spendingData.status && (
-              <>
-                {spendingData.data.map((value) => (
-                  <SpendingRow
-                    id={value.id}
-                    key={value.id}
-                    name={value.name}
-                    amount={value.amount}
-                    colour={value.colour}
-                    dynamicPot={value.dynamicPot}
-                    onRowUpdate={onDedicatedFinanceUpdate}
+      <Modules employerSet={employerInfoExists && !!currentFinances}>
+        {!employerInfoExists && (
+          <Module HeaderText="Employer Information">
+            <EmployerInfoContainer>
+              <EmployerInfoChild>
+                <UnselectableTypography
+                  sx={{ marginBottom: '20px' }}
+                  variant="subtitle1"
+                  fontWeight="300"
+                  color="inherit"
+                >
+                  Employer Name (As is on Monzo!):
+                </UnselectableTypography>
+                <FormControl fullWidth>
+                  <Input
+                    value={employerInfo?.name}
+                    onChange={(event): void => setEmployerInfo({ ...employerInfo, name: event.currentTarget.value })}
                   />
-                ))}
-
-                <Button variant="contained" onClick={submitSpendingData}>
-                  Save Dedicated Spending
-                </Button>
-              </>
-            )}
+                </FormControl>
+              </EmployerInfoChild>
+              <EmployerInfoChild>
+                <UnselectableTypography
+                  sx={{ marginBottom: '20px' }}
+                  variant="subtitle1"
+                  fontWeight="300"
+                  color="inherit"
+                >
+                  Pay Day:
+                </UnselectableTypography>
+                <FormControl fullWidth>
+                  <InputLabel id="payday-label">Pay Day</InputLabel>
+                  <Select
+                    value={employerInfo.payDay}
+                    labelId="payday-label"
+                    label="Pay Day"
+                    onChange={(value): void =>
+                      setEmployerInfo({ ...employerInfo, payDay: value.target.value as number })
+                    }
+                  >
+                    {Array.from(Array(31).keys()).map((value) => (
+                      <MenuItem key={value + 1} value={value + 1}>
+                        {value + 1}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </EmployerInfoChild>
+            </EmployerInfoContainer>
+            <Button variant="contained" onClick={submitEmployerInformation}>
+              Save Employer Information
+            </Button>
           </Module>
-        </Modules>
-      )}
+        )}
+        {currentFinances && (
+          <Module HeaderText="Current Finances">
+            <Typography variant="h4" style={{ textAlign: 'center', marginBottom: '10px' }}>
+              £{(currentFinances.balancePence / 100).toFixed(2)} left for {currentFinances.daysTilPay} days
+            </Typography>
+            <Typography variant="h5" style={{ textAlign: 'center' }}>
+              That's £{(currentFinances.perDayPence / 100).toFixed(2)} per day!
+            </Typography>
+          </Module>
+        )}
+        <Module verticalSpace={2} HeaderText="Transactions">
+          {generateTransactionDays()}
+        </Module>
+        <Module HeaderText="Dedicated Spending">
+          {spendingData.status && <StyledDedicatedSpendingPie data={createDoughnutData()} options={opts} />}
+          {!spendingData.status && (
+            <>
+              {spendingData.data.map((value) => (
+                <SpendingRow
+                  id={value.id}
+                  key={value.id}
+                  name={value.name}
+                  amount={value.amount}
+                  colour={value.colour}
+                  dynamicPot={value.dynamicPot}
+                  onRowUpdate={onDedicatedFinanceUpdate}
+                />
+              ))}
+
+              <Button variant="contained" onClick={submitSpendingData}>
+                Save Dedicated Spending
+              </Button>
+            </>
+          )}
+        </Module>
+      </Modules>
     </DashContainer>
   );
 };
