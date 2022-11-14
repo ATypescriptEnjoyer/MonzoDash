@@ -45,6 +45,6 @@ console.log(join(__dirname, '..', 'client'));
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoginMiddleware).exclude('api/login/(.*)').forRoutes('*');
+    consumer.apply(LoginMiddleware).exclude('api/login/(.*)', 'api/monzo/webhook').forRoutes('api/*');
   }
 }
