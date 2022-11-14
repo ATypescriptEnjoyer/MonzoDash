@@ -1,6 +1,6 @@
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { MonzoModule } from '../monzo/monzo.module';
 import { EmployerModule } from '../employer/employer.module';
@@ -10,6 +10,8 @@ import { join } from 'path';
 import { HolidaysModule } from '../holidays/holidays.module';
 import { CommandModule } from 'nestjs-command';
 import { HolidaysSeed } from 'src/holidays/seeds/holidays.seed';
+import { LoginMiddleware } from 'src/login/login.middleware';
+import { LoginModule } from 'src/login/login.module';
 
 console.log(join(__dirname, '..', 'client'));
 
@@ -37,7 +39,12 @@ console.log(join(__dirname, '..', 'client'));
     FinancesModule,
     HolidaysModule,
     CommandModule,
+    LoginModule,
   ],
   providers: [HolidaysModule, HolidaysSeed],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoginMiddleware).exclude('api/login/(.*)').forRoutes('*');
+  }
+}

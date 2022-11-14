@@ -215,6 +215,26 @@ export class MonzoService {
     return data;
   }
 
+  async sendNotification(title: string, message: string): Promise<void> {
+    const authToken = (await this.authService.getLatestToken()).authToken;
+
+    const headers: AxiosRequestHeaders = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    const accountId = await this.getAccountId();
+
+    const imageUrl =
+      'https://raw.githubusercontent.com/SashaRyder/MonzoDash/master/client/src/components/AppBar/monzodash.png?raw=true';
+
+    const requestData = { account_id: accountId, type: 'basic' };
+    const requestDataString = `${new URLSearchParams(
+      requestData,
+    ).toString()}&params[title]=${title}&params[image_url]=${imageUrl}&params[body]=${message}`;
+
+    await firstValueFrom(this.httpService.post(`feed`, requestDataString, { headers }));
+  }
+
   async signOut(): Promise<string> {
     return this.redisService.getClient().flushall();
   }
