@@ -21,7 +21,7 @@ export class LoginController {
 
   @Post('auth-code')
   async postAuthCode(@Body() bodyData: { code: string }): Promise<boolean> {
-    const codeValid = await this.loginService.validateCode(bodyData.code);
+    const codeValid = await this.loginService.validateCode(bodyData.code, true);
     return codeValid;
   }
 }

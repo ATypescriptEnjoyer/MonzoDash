@@ -21,9 +21,12 @@ export class LoginService extends StorageService<Login> {
     return createdCode.code;
   }
 
-  async validateCode(codeString: string): Promise<boolean> {
+  async validateCode(codeString: string, onlyUnused: boolean): Promise<boolean> {
     const codes = await this.getAll();
     const code = codes.find((code) => code.code === codeString && code.expiresAt.getTime() > new Date().getTime());
+    if (onlyUnused && code?.used) {
+      return false;
+    }
     const codeExists = !!code;
     if (codeExists) {
       code.used = true;
