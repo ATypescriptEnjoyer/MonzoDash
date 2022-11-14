@@ -19,16 +19,25 @@ function App(): JSX.Element {
       } else {
         setIsMonzoAuthed(data as boolean);
         setCheckedAuth(true);
-      }
-    };
-    checkAuth().catch((error) => {
-      setCheckedAuth(true);
-      if (error.response.status === 401) {
-        if (location.pathname !== '/app-login') {
-          navigate('/app-login');
+        if (location.pathname === '/app-login') {
+          navigate('/login');
         }
       }
-    });
+    };
+    const qs = new URLSearchParams(location.search);
+    if (location.pathname === '/login/verify' && qs.has('code')) {
+      localStorage.setItem('auth-code', qs.get('code') || '');
+      window.location.href = window.location.pathname;
+    } else {
+      checkAuth().catch((error) => {
+        setCheckedAuth(true);
+        if (error.response.status === 401) {
+          if (location.pathname !== '/app-login') {
+            navigate('/app-login');
+          }
+        }
+      });
+    }
   }, []);
 
   const routing = useRoutes(routes(isMonzoAuthed));

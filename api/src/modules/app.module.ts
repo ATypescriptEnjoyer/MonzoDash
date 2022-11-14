@@ -9,9 +9,14 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { HolidaysModule } from '../holidays/holidays.module';
 import { CommandModule } from 'nestjs-command';
-import { HolidaysSeed } from 'src/holidays/seeds/holidays.seed';
-import { LoginMiddleware } from 'src/login/login.middleware';
-import { LoginModule } from 'src/login/login.module';
+import { HolidaysSeed } from '../holidays/seeds/holidays.seed';
+import { LoginMiddleware } from '../login/login.middleware';
+import { LoginModule } from '../login/login.module';
+import { AuthController } from '../auth/auth.controller';
+import { EmployerController } from '../employer/employer.controller';
+import { FinancesController } from '../finances/finances.controller';
+import { MonzoController } from '../monzo/monzo.controller';
+import { TransactionsModule } from '../transactions/transactions.module';
 
 console.log(join(__dirname, '..', 'client'));
 
@@ -40,11 +45,15 @@ console.log(join(__dirname, '..', 'client'));
     HolidaysModule,
     CommandModule,
     LoginModule,
+    TransactionsModule,
   ],
   providers: [HolidaysModule, HolidaysSeed],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoginMiddleware).exclude('api/login/(.*)', 'api/monzo/webhook').forRoutes('api/**');
+    consumer
+      .apply(LoginMiddleware)
+      .exclude('auth/redirectUri', 'auth/callback', 'monzo/webhook')
+      .forRoutes(AuthController, EmployerController, FinancesController, MonzoController, TransactionsModule);
   }
 }

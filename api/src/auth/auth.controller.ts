@@ -16,11 +16,13 @@ import {
 import { AuthService } from './auth.service';
 import { MonzoService } from '../monzo/monzo.service';
 import { Auth } from './schemas/auth.schema';
+import { LoginService } from 'src/login/login.service';
 
 @Controller('Auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
+    private readonly loginService: LoginService,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
   ) {}
 
@@ -53,7 +55,8 @@ export class AuthController {
       };
       await this.authService.deleteAll();
       await this.authService.create(record);
-      return response.redirect('/login/verify');
+      const loginCode = await this.loginService.createCode();
+      return response.redirect(`/login/verify?code=${loginCode}`);
     } catch (error) {
       throw new InternalServerErrorException(error.response.data);
     }
@@ -75,6 +78,7 @@ export class AuthController {
   @Post('signout')
   async signOut(): Promise<void> {
     await this.authService.deleteAll();
+    await this.loginService.deleteAll();
     await this.monzoService.signOut();
   }
 
