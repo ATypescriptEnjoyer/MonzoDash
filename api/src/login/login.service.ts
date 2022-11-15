@@ -5,7 +5,7 @@ import { Login, LoginDocument } from './schemas/login.schema';
 import { StorageService } from '../storageService';
 import * as moment from 'moment';
 import { Cron } from '@nestjs/schedule';
-import sha1 from 'sha1';
+import { sha512 } from 'sha512-crypt-ts';
 
 @Injectable()
 export class LoginService extends StorageService<Login> {
@@ -20,7 +20,7 @@ export class LoginService extends StorageService<Login> {
 
   async createCode(): Promise<string> {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
-    const codeHash = sha1(code);
+    const codeHash = sha512.crypt(code, process.env.CRYPT_SALT || 'monzodash');
     await this.create({
       code: codeHash,
       createdAt: new Date(),
@@ -32,7 +32,7 @@ export class LoginService extends StorageService<Login> {
   }
 
   async validateCode(codeString: string, onlyUnused: boolean): Promise<boolean> {
-    const codeHash = sha1(codeString);
+    const codeHash = sha512.crypt(codeString, process.env.CRYPT_SALT || 'monzodash');
     const codes = await this.getAll();
     const code = codes.find((code) => code.code === codeHash && code.expiresAt.getTime() > new Date().getTime());
     if (onlyUnused && code?.used) {
