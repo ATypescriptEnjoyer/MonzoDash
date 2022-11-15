@@ -9,6 +9,9 @@ export class Login {
   code: string;
 
   @Prop()
+  createdAt: Date;
+
+  @Prop()
   expiresAt: Date;
 
   @Prop()

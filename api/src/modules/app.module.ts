@@ -1,6 +1,6 @@
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MiddlewareConsumer, Module, NestModule, Req, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { MonzoModule } from '../monzo/monzo.module';
 import { EmployerModule } from '../employer/employer.module';
@@ -17,11 +17,13 @@ import { EmployerController } from '../employer/employer.controller';
 import { FinancesController } from '../finances/finances.controller';
 import { MonzoController } from '../monzo/monzo.controller';
 import { TransactionsModule } from '../transactions/transactions.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 console.log(join(__dirname, '..', 'client'));
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
