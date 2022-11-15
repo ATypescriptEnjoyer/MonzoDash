@@ -1,6 +1,6 @@
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, Req, RequestMethod } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { MonzoModule } from '../monzo/monzo.module';
 import { EmployerModule } from '../employer/employer.module';
@@ -53,7 +53,14 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoginMiddleware)
-      .exclude('auth/redirectUri', 'auth/callback', 'monzo/webhook')
+      .exclude(
+        { path: '/api/auth/redirectUri', method: RequestMethod.GET },
+        { path: '/api/auth/callback', method: RequestMethod.GET },
+        {
+          path: '/api/monzo/webhook',
+          method: RequestMethod.POST,
+        },
+      )
       .forRoutes(AuthController, EmployerController, FinancesController, MonzoController, TransactionsModule);
   }
 }
