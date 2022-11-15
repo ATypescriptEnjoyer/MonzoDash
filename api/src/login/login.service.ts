@@ -15,7 +15,9 @@ export class LoginService extends StorageService<Login> {
 
   @Cron('0 0 * * *')
   async clearCodes(): Promise<void> {
-    await this.loginModel.deleteMany({ $or: [{ expiresAt: { $lt: new Date() } }, { used: false }] });
+    console.log('Running login code clear cycle');
+    const deleted = await this.loginModel.deleteMany({ $or: [{ expiresAt: { $lt: new Date() } }, { used: false }] });
+    console.log(`${deleted.deletedCount} expired logins deleted.`);
   }
 
   async createCode(): Promise<string> {
