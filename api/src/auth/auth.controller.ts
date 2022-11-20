@@ -93,9 +93,12 @@ export class AuthController {
         return true;
       }
       const userInfo = await this.monzoService.getAccountId();
+      const webhookDomain = process.env.MONZODASH_WEBHOOK_DOMAIN
+        ? process.env.MONZODASH_WEBHOOK_DOMAIN
+        : process.env.MONZODASH_DOMAIN;
       await this.monzoService.configureWebhooks({
         accountId: userInfo,
-        webhookUrl: `${process.env.MONZODASH_WEBHOOK_DOMAIN}/api/monzo/webhook`,
+        webhookUrl: `${webhookDomain}/api/monzo/webhook`,
       });
       token.twoFactored = true;
       await this.authService.save(token);
