@@ -30,7 +30,7 @@ You need to use [docker](https://docs.docker.com/get-started/), and I recommend 
 
 ### Example docker-compose.yml
 
-```
+```bash
 version: "3.4"
 
 services:
@@ -49,7 +49,7 @@ services:
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
-      - MONZODASH_WEBHOOK_DOMAIN=${MONZODASH_WEBHOOK_DOMAIN}
+      - MONZODASH_WEBHOOK_DOMAIN=${MONZODASH_WEBHOOK_DOMAIN} #Optional: will fall back to MONZODASH_DOMAIN if not added
 
   mongo:
     image: mongo
@@ -73,7 +73,7 @@ services:
 
 Before doing this, create a `.env` file along side your `docker-compose.yml` file.
 
-```
+```bash
 MONGO_USERNAME=monzodash
 MONGO_PASSWORD=monzodash
 MONGO_HOST=mongo
@@ -81,12 +81,12 @@ REDIS_URL=redis://redis
 MONZO_CLIENT_ID=
 MONZO_CLIENT_SECRET=
 MONZODASH_DOMAIN=http://localhost
-MONZODASH_WEBHOOK_DOMAIN=http://localhost
+MONZODASH_WEBHOOK_DOMAIN=http://localhost #Optional: will fall back to MONZODASH_DOMAIN if not added
 ```
 
 - You can get `MONZO_CLIENT_ID` and `MONZO_CLIENT_SECRET` from `https://developers.monzo.com/`
 - Set `MONZODASH_DOMAIN` to `https://YOUR_DOMAIN` (Where you'll setup nginx ect to access the frontend, or access directly)
-- Set `MONZO_WEBHOOK_URI` to `https://YOUR_WEBHOOK_DOMAIN` (Where you'll process webhooks, I added this because I don't expose the MonzoDash frontend via NGINX, only the webhook endpoint.)
+- Set `MONZO_WEBHOOK_URI` to `https://YOUR_WEBHOOK_DOMAIN` (not required if they're the same domain.)
 
 ## Usage
 
