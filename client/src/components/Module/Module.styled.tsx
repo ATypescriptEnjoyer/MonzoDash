@@ -8,6 +8,11 @@ export const ModuleContainer = styled.div`
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+
+  @media screen and (max-width: 900px) {
+    min-height: unset;
+    height: auto;
+  }
 `;
 
 export const ModuleHeader = styled(Typography)`
@@ -36,5 +41,6 @@ export const ModuleBody = styled.div`
 
   @media screen and (max-width: 900px) {
     padding: 0;
+    flex: unset;
   }
 `;

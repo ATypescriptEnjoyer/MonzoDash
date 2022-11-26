@@ -28,7 +28,7 @@ export const Modules = styled.div<{ employerSet: boolean }>`
     grid-template-rows: 1fr; */
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 24px;
   }
 `;
 
@@ -85,10 +85,17 @@ export const TransactionDayTitle = styled.h4`
   justify-content: center;
   gap: 8px;
   color: #121212;
+
+  @media screen and (max-width: 900px) {
+    font-size: 12px;
+  }
 `;
 
 export const TransactionDailyCount = styled(TransactionDayTitle)<{ isPositive: boolean }>`
   color: ${(props): string => (props.isPositive ? '#80d195' : '#dc3545')};
+  @media screen and (max-width: 900px) {
+    display: none;
+  }
 `;
 
 export const DailyCountContainers = styled.div`

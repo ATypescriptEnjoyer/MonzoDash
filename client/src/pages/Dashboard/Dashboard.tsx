@@ -19,7 +19,7 @@ import { Owner } from '../../../../shared/interfaces/monzo';
 import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
 import { Transaction, TransactionItem } from '../../../../shared/interfaces/transaction';
 import { ApiConnector } from '../../network';
-import { ChartData, ChartOptions } from 'chart.js';
+import { BubbleDataPoint, Chart, ChartData, ChartOptions, ChartTypeRegistry, ScatterDataPoint } from 'chart.js';
 import { TransactionItem as TransactionItemComponent } from '../../components/TransactionItem';
 import { Button, FormControl, Input, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import { TrendingUp, TrendingDown, TrendingFlat, CalendarToday } from '@mui/icons-material';
@@ -89,6 +89,18 @@ export const Dashboard = (): JSX.Element => {
     };
   };
 
+  const handleChartResize = (
+    chart: Chart<keyof ChartTypeRegistry, (number | ScatterDataPoint | BubbleDataPoint | null)[], unknown>,
+  ): void => {
+    if (chart.options.plugins?.legend) {
+      if (window.innerWidth <= 900) {
+        chart.options.plugins.legend.position = 'left';
+        return;
+      }
+      chart.options.plugins.legend.position = 'chartArea';
+    }
+  };
+
   const opts: ChartOptions = {
     maintainAspectRatio: false,
     responsive: true,
@@ -101,6 +113,7 @@ export const Dashboard = (): JSX.Element => {
         },
       },
     },
+    onResize: handleChartResize,
   };
 
   const submitEmployerInformation = async (): Promise<void> => {

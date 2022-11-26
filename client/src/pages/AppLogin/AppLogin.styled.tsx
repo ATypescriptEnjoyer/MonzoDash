@@ -28,22 +28,28 @@ export const StyledSubtitle = styled.h3`
   color: #a1a1a1;
   padding: 0;
   margin: 0 0 44px 0;
+  text-align: center;
 `;
 
 export const StyledAuthCodeContainer = styled.div`
   display: flex;
   gap: 12px;
+  @media screen and (max-width: 900px) {
+    gap: 4px;
+  }
 `;
 
 export const StyledAuthCodeDigit = styled.input`
   font-size: 48px;
   font-weight: bold;
-  max-width: 48px;
+  max-width: 56px;
   height: 96px;
   border: 3px solid black;
   border-radius: 6px;
   text-align: center;
   caret-color: transparent;
+  box-sizing: border-box;
+  flex: 1;
 
   &:focus {
     outline: none;
