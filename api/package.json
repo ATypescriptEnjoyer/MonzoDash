@@ -1,6 +1,6 @@
 {
   "name": "monzodash-api",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "MonzoDash API",
   "author": "Sasha Ryder",
   "license": "MIT",
@@ -41,6 +41,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "sha512-crypt-ts": "^0.1.27",
+    "uuid": "^9.0.0",
     "yargs": "^17.6.0"
   },
   "devDependencies": {
@@ -54,6 +55,7 @@
     "@types/mongodb": "^4.0.7",
     "@types/node": "^16.0.0",
     "@types/supertest": "^2.0.11",
+    "@types/uuid": "^9.0.0",
     "@types/yargs": "^17.0.13",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",

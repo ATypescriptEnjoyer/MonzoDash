@@ -11,6 +11,7 @@ import { Owner, Account } from '../../../shared/interfaces/monzo';
 import { buildStorage, setupCache } from 'axios-cache-interceptor';
 import { AuthService } from '../auth/auth.service';
 import async from 'async';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface MonzoAuthResponse {
   access_token: string;
@@ -38,6 +39,7 @@ export interface Balances {
 export interface Pot {
   id: string;
   name: string;
+  balance: number;
 }
 
 export interface PotsResponse {
@@ -174,7 +176,7 @@ export class MonzoService {
       this.httpService.get<PotsResponse>(`pots?current_account_id=${accountId}`, { headers }),
     );
 
-    return data.pots.filter((pot) => !pot.deleted).map(({ id, name }) => ({ id, name }));
+    return data.pots.filter((pot) => !pot.deleted).map(({ id, name, balance }) => ({ id, name, balance }));
   }
 
   async depositToPot(potId: string, valuePence: number): Promise<Pot> {
@@ -189,7 +191,7 @@ export class MonzoService {
     const requestData = {
       source_account_id: accountId,
       amount: Math.abs(valuePence) as any,
-      dedupe_id: potId.substring(4),
+      dedupe_id: uuidv4(),
     };
     const requestDataString = new URLSearchParams(requestData).toString();
 
@@ -212,7 +214,7 @@ export class MonzoService {
     const requestData = {
       destination_account_id: accountId,
       amount: Math.abs(valuePence) as any,
-      dedupe_id: potId.substring(4),
+      dedupe_id: uuidv4(),
     };
     const requestDataString = new URLSearchParams(requestData).toString();
 
