@@ -40,10 +40,11 @@ export interface Pot {
   id: string;
   name: string;
   balance: number;
+  deleted?: boolean;
 }
 
 export interface PotsResponse {
-  pots: (Pot & { deleted: boolean })[];
+  pots: Pot[];
 }
 
 @Injectable()

@@ -19,8 +19,6 @@ import { MonzoController } from '../monzo/monzo.controller';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
-console.log(join(__dirname, '..', 'client'));
-
 @Module({
   imports: [
     ScheduleModule.forRoot(),

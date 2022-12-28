@@ -1,0 +1,14 @@
+{
+  "name": "monzodash",
+  "version": "1.3.3",
+  "description": "MonzoDash is a dockerised web app for monitoring and managing your Monzo bank account.",
+  "repository": "git@github.com:SashaRyder/MonzoDash.git",
+  "author": "Sasha Ryder <8694395+SashaRyder@users.noreply.github.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "docker compose --env-file .env -f docker-compose.dev.yml up -d --build",
+    "stop": "docker compose --env-file .env -f docker-compose.dev.yml down",
+    "logs": "docker compose -f docker-compose.dev.yml logs -f"
+  }
+}
