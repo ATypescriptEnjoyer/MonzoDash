@@ -2,13 +2,13 @@ version: "3.4"
 
 services:
   api:
-    image: node:16.18.0
+    image: node:18.12.1-alpine
     volumes:
       - ./shared:/app/shared
       - ./api:/app/api
     working_dir: /app/api
     command: >
-      bash -c "yarn install && yarn start:dev"
+      sh -c "yarn install && yarn start:dev"
     environment:
       - TZ=Europe/London
       - MONGO_USERNAME=${MONGO_USERNAME}
@@ -22,7 +22,7 @@ services:
       - redis
       - mongo
   client:
-    image: node:16.18.0
+    image: node:18.12.1-alpine
     volumes:
       - ./:/app
     working_dir: /app/client
@@ -30,7 +30,7 @@ services:
       - REACT_APP_API_URL=/api
       - PORT=80
     command: >
-      bash -c "yarn install && export REACT_APP_VERSION=$(node -pe \"require('../package.json').version\") && export REACT_APP_NAME=$(node -pe \"require('../package.json').name\") && yarn start"
+      sh -c "yarn install && export REACT_APP_VERSION=$(node -pe \"require('../package.json').version\") && export REACT_APP_NAME=$(node -pe \"require('../package.json').name\") && yarn start"
   mongo:
     image: mongo
     environment:

@@ -1,4 +1,4 @@
-FROM node:16.18.0 AS api
+FROM node:18.12.1-alpine AS api
 
 COPY api /app/api
 COPY shared /app/shared
@@ -6,7 +6,7 @@ WORKDIR /app/api
 RUN yarn install
 RUN yarn build
 
-FROM node:16.18.0 AS client
+FROM node:18.12.1-alpine AS client
 
 ENV REACT_APP_API_URL=/api
 COPY package.json rootpackage.json
@@ -18,7 +18,7 @@ WORKDIR /app/client
 RUN yarn install
 RUN yarn build
 
-FROM node:16.18.0 AS build
+FROM node:18.12.1-alpine AS build
 
 COPY --from=api /app/api/dist /app/dist
 COPY --from=api /app/api/node_modules /app/node_modules
@@ -27,4 +27,4 @@ COPY --from=client /app/client/build /app/dist/api/src/client
 EXPOSE 5000
 WORKDIR /app
 
-CMD [ "/bin/bash", "-c", "CLI_PATH=./dist/api/src/cli.js npx nestjs-command create:holidays; yarn start:prod" ]
+CMD [ "/bin/sh", "-c", "CLI_PATH=./dist/api/src/cli.js npx nestjs-command create:holidays; yarn start:prod" ]
