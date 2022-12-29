@@ -24,14 +24,13 @@ services:
   client:
     image: node:16.18.0
     volumes:
-      - ./shared:/app/shared
-      - ./client:/app/client
+      - ./:/app
     working_dir: /app/client
     environment:
       - REACT_APP_API_URL=/api
       - PORT=80
     command: >
-      bash -c "yarn install && REACT_APP_VERSION=$$(npm pkg get version | tr -d '\"') REACT_APP_NAME=$$(npm pkg get name | tr -d '\"') yarn start"
+      bash -c "yarn install && export REACT_APP_VERSION=$(node -pe \"require('../package.json').version\") && export REACT_APP_NAME=$(node -pe \"require('../package.json').name\") && yarn start"
   mongo:
     image: mongo
     environment:
@@ -48,7 +47,7 @@ services:
       - PUID=1000
     ports:
       - 6379:6379
-    command: ["redis-server", "--appendonly", "yes"]
+    command: [ "redis-server", "--appendonly", "yes" ]
     volumes:
       - ./redis:/data
     #restart: always
@@ -66,9 +65,9 @@ services:
   nginx:
     image: nginx
     volumes:
-    - ./nginx:/etc/nginx/templates
+      - ./nginx:/etc/nginx/templates
     ports:
-    - "80:80"
+      - "80:80"
     environment:
-    - NGINX_HOST=localhost
-    - NGINX_PORT=80
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
