@@ -10,4 +10,5 @@ export interface TransactionItem {
   amount: number;
   type: "incoming" | "outgoing";
   description: string;
+  internal?: boolean;
 }

@@ -140,16 +140,18 @@ export const Dashboard = (): JSX.Element => {
 
   const generateTransactionDays = (): JSX.Element => {
     const generateDailyFinance = (transactions: TransactionItem[]): { incoming: number; outgoing: number } => {
-      return transactions.reduce(
-        (prev, curr) => {
-          const amt = Math.abs(curr.amount);
-          if (curr.type === 'incoming') {
-            return { incoming: prev.incoming + amt, outgoing: prev.outgoing };
-          }
-          return { incoming: prev.incoming, outgoing: prev.outgoing + amt };
-        },
-        { incoming: 0, outgoing: 0 },
-      );
+      return transactions
+        .filter((transact) => !transact.internal) //Don't include pot transactions as "real" transactions.
+        .reduce(
+          (prev, curr) => {
+            const amt = Math.abs(curr.amount);
+            if (curr.type === 'incoming') {
+              return { incoming: prev.incoming + amt, outgoing: prev.outgoing };
+            }
+            return { incoming: prev.incoming, outgoing: prev.outgoing + amt };
+          },
+          { incoming: 0, outgoing: 0 },
+        );
     };
 
     return (

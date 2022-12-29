@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Login, LoginDocument } from './schemas/login.schema';
 import { StorageService } from '../storageService';
 import * as moment from 'moment';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { sha512 } from 'sha512-crypt-ts';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class LoginService extends StorageService<Login> {
     super(loginModel);
   }
 
-  @Cron('0 0 * * *')
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async clearCodes(): Promise<void> {
     console.log('Running login code clear cycle');
     const deleted = await this.loginModel.deleteMany({ $or: [{ expiresAt: { $lt: new Date() } }, { used: false }] });

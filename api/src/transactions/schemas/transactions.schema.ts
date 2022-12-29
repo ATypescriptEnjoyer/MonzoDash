@@ -23,6 +23,9 @@ export class Transactions {
   @Prop()
   description: string;
 
+  @Prop()
+  internal?: boolean;
+
   @Prop({ type: mongoose.Schema.Types.Mixed })
   transaction?: any;
 }

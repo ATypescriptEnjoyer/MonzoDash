@@ -29,4 +29,4 @@ COPY --from=client /app/client/build /app/dist/api/src/client
 EXPOSE 5000
 WORKDIR /app
 
-CMD [ "/bin/sh", "-c", "CLI_PATH=./dist/api/src/cli.js npx nestjs-command create:holidays; yarn start:prod" ]
+CMD [ "/bin/sh", "-c", "yarn start:prod" ]

@@ -23,6 +23,7 @@ export class TransactionsController {
         amount: transactionItem.amount,
         type: transactionItem.type,
         description: transactionItem.description,
+        internal: transactionItem.internal,
       }),
     );
     transactions = transactions.sort((a, b) => b.created.getTime() - a.created.getTime());

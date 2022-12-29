@@ -8,8 +8,6 @@ import { FinancesModule } from '../finances/finances.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { HolidaysModule } from '../holidays/holidays.module';
-import { CommandModule } from 'nestjs-command';
-import { HolidaysSeed } from '../holidays/seeds/holidays.seed';
 import { LoginMiddleware } from '../login/login.middleware';
 import { LoginModule } from '../login/login.module';
 import { AuthController } from '../auth/auth.controller';
@@ -18,6 +16,7 @@ import { FinancesController } from '../finances/finances.controller';
 import { MonzoController } from '../monzo/monzo.controller';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { MigrationsModule } from 'src/migrations/migrations.module';
 
 @Module({
   imports: [
@@ -43,11 +42,11 @@ import { ScheduleModule } from '@nestjs/schedule';
     EmployerModule,
     FinancesModule,
     HolidaysModule,
-    CommandModule,
     LoginModule,
     TransactionsModule,
+    MigrationsModule,
   ],
-  providers: [HolidaysModule, HolidaysSeed],
+  providers: [HolidaysModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
