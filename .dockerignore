@@ -1,0 +1,12 @@
+.env
+db
+redis
+**/node_modules
+.env.example
+nginx
+.vscode
+.github
+dist
+test
+plop-templates
+build

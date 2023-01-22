@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -32,7 +31,6 @@
     "moment": "^2.29.4",
     "mongoose": "^6.6.2",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "sha512-crypt-ts": "^0.1.27",
     "uuid": "^9.0.0",

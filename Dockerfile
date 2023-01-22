@@ -3,12 +3,13 @@ FROM node:18.12.1-alpine AS api
 COPY api /app/api
 COPY shared /app/shared
 WORKDIR /app/api
-RUN yarn install
-RUN yarn build
+RUN yarn install && \
+    yarn build && \
+    rm -rf shared && \
+    yarn install --production
 
 FROM node:18.12.1-alpine AS client
 
-ENV REACT_APP_API_URL=/api
 COPY client /app/client
 COPY shared /app/shared
 WORKDIR /app/client
@@ -17,14 +18,12 @@ RUN \
     yarn install && \
     export REACT_APP_VERSION=$(node -pe "require('./rootpackage.json').version") && \
     export REACT_APP_NAME=$(node -pe "require('./rootpackage.json').name") && \
-    yarn build && \
+    REACT_APP_API_URL=/api yarn build && \
     rm rootpackage.json
 
 FROM node:18.12.1-alpine AS build
 
-COPY --from=api /app/api/dist /app/dist
-COPY --from=api /app/api/node_modules /app/node_modules
-COPY --from=api /app/api/package.json /app/package.json
+COPY --from=api /app/api/dist /app/api/node_modules /app/api/package.json /app/
 COPY --from=client /app/client/build /app/dist/api/src/client
 EXPOSE 5000
 WORKDIR /app
