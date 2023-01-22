@@ -23,7 +23,9 @@ RUN \
 
 FROM node:18.12.1-alpine AS build
 
-COPY --from=api /app/api/dist /app/api/node_modules /app/api/package.json /app/
+COPY --from=api /app/api/dist/ /app/dist
+COPY --from=api /app/api/node_modules/ /app/node_modules
+COPY --from=api /app/api/package.json /app/package.json
 COPY --from=client /app/client/build /app/dist/api/src/client
 EXPOSE 5000
 WORKDIR /app
