@@ -7,15 +7,12 @@ import { LoginService } from './login.service';
 export class LoginMiddleware implements NestMiddleware {
   constructor(private readonly loginService: LoginService, private readonly authService: AuthService) {}
 
-  async use(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async use(req: Request, _: Response, next: NextFunction): Promise<void> {
     const latestToken = await this.authService.getLatestToken();
     if (latestToken) {
-      const authHeader = req.headers.authorization;
-      if (!authHeader) {
-        throw new HttpException('Login Required', HttpStatus.UNAUTHORIZED);
-      }
-      const codeIsValid = await this.loginService.validateCode(authHeader, false);
-      if (!codeIsValid) {
+      const authIsValid =
+        req.headers.authorization || (await this.loginService.validateCode(req.headers.authorization, false));
+      if (!authIsValid) {
         throw new HttpException('Login Required', HttpStatus.UNAUTHORIZED);
       }
     }

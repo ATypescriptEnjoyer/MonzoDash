@@ -40,7 +40,7 @@ export const StyledAuthCodeContainer = styled.div`
 `;
 
 export const StyledAuthCodeDigit = styled.input`
-  font-size: 48px;
+  font-size: 3em;
   font-weight: bold;
   max-width: 56px;
   height: 96px;
@@ -50,6 +50,11 @@ export const StyledAuthCodeDigit = styled.input`
   caret-color: transparent;
   box-sizing: border-box;
   flex: 1;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 
   &:focus {
     outline: none;

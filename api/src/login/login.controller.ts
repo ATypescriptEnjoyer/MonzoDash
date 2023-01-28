@@ -14,14 +14,13 @@ export class LoginController {
   async getAuthCode(): Promise<void> {
     const generatedAuthCode = await this.loginService.createCode();
     await this.monzoService.sendNotification(
-      'MonzoDash Auth Code',
-      `Your MonzoDash Auth Code is: ${generatedAuthCode}`,
+      `MonzoDash Auth Code - ${generatedAuthCode}`,
+      `Please use this code to log in to MonzoDash!`,
     );
   }
 
   @Post('auth-code')
-  async postAuthCode(@Body() bodyData: { code: string }): Promise<boolean> {
-    const codeValid = await this.loginService.validateCode(bodyData.code, true);
-    return codeValid;
+  async postAuthCode(@Body() { code }: { code: string }): Promise<boolean> {
+    return await this.loginService.validateCode(code, true);
   }
 }
