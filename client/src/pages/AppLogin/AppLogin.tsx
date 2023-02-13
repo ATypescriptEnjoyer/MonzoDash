@@ -9,11 +9,15 @@ import {
 } from './AppLogin.styled';
 import { ApiConnector } from '../../network';
 import { Button } from '@mui/material';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export const AppLogin = (): JSX.Element => {
   const [authCodeSent, setAuthCodeSent] = useState(false);
   const [authCode, setAuthCode] = useState<{ [indx: number]: number | string }>({});
   const refs = useRef<HTMLElement[]>([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const defaultValues = Array.from(new Array(6).keys()).reduce((prev, _, indx) => {
@@ -39,7 +43,15 @@ export const AppLogin = (): JSX.Element => {
   }, [authCode]);
 
   const sendAuthRequest = async (): Promise<void> => {
-    await ApiConnector.get('/login/auth-code');
+    try {
+      await ApiConnector.get('/login/auth-code');
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        if (error.response.status === 403) {
+          await ApiConnector.post('/auth/signout').finally(() => navigate('/login'));
+        }
+      }
+    }
     setAuthCodeSent(true);
   };
 
