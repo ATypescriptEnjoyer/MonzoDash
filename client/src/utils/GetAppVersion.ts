@@ -1,3 +1,3 @@
-const { REACT_APP_VERSION } = process.env;
+const { VITE_APP_VERSION } = import.meta.env;
 
-export const GetAppVersion = (): string => `${REACT_APP_VERSION}`;
+export const GetAppVersion = (): string => `${VITE_APP_VERSION}`;

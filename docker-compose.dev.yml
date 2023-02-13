@@ -27,10 +27,9 @@ services:
       - ./:/app
     working_dir: /app/client
     environment:
-      - REACT_APP_API_URL=/api
-      - PORT=80
+      - VITE_API_URL=/api
     command: >
-      sh -c "yarn install && export REACT_APP_VERSION=$(node -pe \"require('../package.json').version\") && export REACT_APP_NAME=$(node -pe \"require('../package.json').name\") && yarn start"
+      sh -c "yarn install && export VITE_APP_VERSION=$(node -pe \"require('../package.json').version\") && export VITE_APP_NAME=$(node -pe \"require('../package.json').name\") && yarn start"
   mongo:
     image: mongo
     environment:

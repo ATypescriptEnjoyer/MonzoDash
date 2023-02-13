@@ -16,9 +16,9 @@ WORKDIR /app/client
 COPY package.json rootpackage.json
 RUN \
     yarn install && \
-    export REACT_APP_VERSION=$(node -pe "require('./rootpackage.json').version") && \
-    export REACT_APP_NAME=$(node -pe "require('./rootpackage.json').name") && \
-    REACT_APP_API_URL=/api yarn build && \
+    export VITE_APP_VERSION=$(node -pe "require('./rootpackage.json').version") && \
+    export VITE_APP_NAME=$(node -pe "require('./rootpackage.json').name") && \
+    VITE_API_URL=/api yarn build && \
     rm rootpackage.json
 
 FROM node:18.12.1-alpine AS build
@@ -26,7 +26,7 @@ FROM node:18.12.1-alpine AS build
 COPY --from=api /app/api/dist/ /app/dist
 COPY --from=api /app/api/node_modules/ /app/node_modules
 COPY --from=api /app/api/package.json /app/package.json
-COPY --from=client /app/client/build /app/dist/api/src/client
+COPY --from=client /app/client/dist /app/dist/api/src/client
 EXPOSE 5000
 WORKDIR /app
 

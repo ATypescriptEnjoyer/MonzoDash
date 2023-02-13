@@ -16,6 +16,6 @@ server {
         location / {
                 resolver 127.0.0.11 valid=30s;
                 set $upstream_url client;
-                proxy_pass http://$upstream_url;
+                proxy_pass http://$upstream_url:5173;
         }
 }

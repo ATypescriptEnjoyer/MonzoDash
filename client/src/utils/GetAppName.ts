@@ -1,3 +1,3 @@
-const { REACT_APP_NAME } = process.env;
+const { VITE_APP_NAME } = import.meta.env;
 
-export const GetAppName = (): string => `${REACT_APP_NAME?.slice(0, 1).toUpperCase()}${REACT_APP_NAME?.substring(1)}`;
+export const GetAppName = (): string => `${VITE_APP_NAME?.slice(0, 1).toUpperCase()}${VITE_APP_NAME?.substring(1)}`;
