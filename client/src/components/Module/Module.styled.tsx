@@ -15,13 +15,19 @@ export const ModuleContainer = styled.div`
   }
 `;
 
+export const ModuleHeaderContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+`;
+
 export const ModuleHeader = styled(Typography)`
   color: white;
   display: block;
   text-align: center;
 
   && {
-    margin-bottom: 24px;
     font-weight: bold;
   }
 
@@ -32,7 +38,6 @@ export const ModuleHeader = styled(Typography)`
 
 export const ModuleBody = styled.div`
   flex: 1;
-  padding-right: 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -14,6 +14,7 @@ import {
   TransactionDailyCount,
   DailyCountContainers,
   LoadingContainer,
+  SpendingSetup,
 } from './Dashboard.styled';
 import { Owner } from '../../../../shared/interfaces/monzo';
 import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
@@ -37,10 +38,14 @@ export const Dashboard = (): JSX.Element => {
   const [currentFinances, setCurrentFinances] = useState<CurrentFinances>();
   const [spendingData, setSpendingData] = useState<{ status: boolean; data: DedicatedFinance[] }>({
     status: false,
-    data: [{ id: '0', name: 'Monthly Take Home', amount: 0, colour: '#FFFFFF' }],
+    data: [{ id: '0', name: 'Unassigned', amount: 0, colour: '#FFFFFF' }],
   });
+  const [spendingBackup, setSpendingBackup] = useState<DedicatedFinance[]>([]);
+  const [isEditingDedicatedSpending, setIsEditingDedicatedSpending] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [doughnutData, setDoughnutData] = useState<ChartData<'doughnut'>>();
 
   useEffect(() => {
     const getName = async (): Promise<void> => {
@@ -66,6 +71,7 @@ export const Dashboard = (): JSX.Element => {
         setSpendingData((baseObject) => ({ status: data.status, data: [...baseObject.data, ...data.data] }));
       } else {
         setSpendingData(data);
+        setDoughnutData(createDoughnutData(data));
       }
     };
     const getTransactions = async (): Promise<void> => {
@@ -77,13 +83,21 @@ export const Dashboard = (): JSX.Element => {
     );
   }, []);
 
-  const createDoughnutData = (): ChartData<'doughnut'> => {
+  const createDoughnutData = (givenData: { status: boolean; data: DedicatedFinance[] }): ChartData<'doughnut'> => {
+    const calculateSalaryUnassigned = (): number => {
+      const salary = givenData.data.find((finance) => finance.id === '0')?.amount || 0;
+      const leftOver = givenData.data
+        .filter((finance) => finance.id !== '0')
+        .reduce((prev, curr) => (prev -= curr.amount), salary);
+      return leftOver;
+    };
+
     return {
-      labels: spendingData.data.map((data) => data.name),
+      labels: givenData.data.map((data) => (data.id === '0' ? 'Unassigned' : data.name)),
       datasets: [
         {
-          data: spendingData.data.map((data) => data.amount),
-          backgroundColor: spendingData.data.map((data) => data.colour),
+          data: givenData.data.map((data) => (data.id === '0' ? calculateSalaryUnassigned() : data.amount)),
+          backgroundColor: givenData.data.map((data) => data.colour),
         },
       ],
     };
@@ -131,11 +145,25 @@ export const Dashboard = (): JSX.Element => {
   };
 
   const submitSpendingData = async (): Promise<void> => {
-    const { data } = await ApiConnector.put<{ status: boolean; data: DedicatedFinance[] }>(
+    const { data } = await ApiConnector.post<{ status: boolean; data: DedicatedFinance[] }>(
       '/finances/dedicated',
-      spendingData.data.filter((data) => data.amount > 0),
+      spendingData.data,
     );
     setSpendingData(data);
+    setDoughnutData(createDoughnutData(data));
+    setIsEditingDedicatedSpending(false);
+  };
+
+  const onDedicatedSpendingEditClick = async (): Promise<void> => {
+    setSpendingBackup([...spendingData.data]);
+    setSpendingData(({ data }) => ({ status: false, data: data }));
+    setIsEditingDedicatedSpending(true);
+  };
+
+  const onDedicatedSpendingCloseClick = async (): Promise<void> => {
+    setSpendingData({ status: true, data: [...spendingBackup] });
+    setSpendingBackup([]);
+    setIsEditingDedicatedSpending(false);
   };
 
   const generateTransactionDays = (): JSX.Element => {
@@ -277,22 +305,28 @@ export const Dashboard = (): JSX.Element => {
         <Module verticalSpace={2} HeaderText="Transactions">
           {generateTransactionDays()}
         </Module>
-        <Module HeaderText="Dedicated Spending">
-          {spendingData.status && <StyledDedicatedSpendingPie data={createDoughnutData()} options={opts} />}
+        <Module
+          HeaderText="Dedicated Spending"
+          isEditing={isEditingDedicatedSpending}
+          onEditClick={onDedicatedSpendingEditClick}
+          onEditCancelClick={onDedicatedSpendingCloseClick}
+        >
+          {spendingData.status && doughnutData && <StyledDedicatedSpendingPie data={doughnutData} options={opts} />}
           {!spendingData.status && (
             <>
-              {spendingData.data.map((value) => (
-                <SpendingRow
-                  id={value.id}
-                  key={value.id}
-                  name={value.name}
-                  amount={value.amount}
-                  colour={value.colour}
-                  dynamicPot={value.dynamicPot}
-                  onRowUpdate={onDedicatedFinanceUpdate}
-                />
-              ))}
-
+              <SpendingSetup>
+                {spendingData.data.map((value) => (
+                  <SpendingRow
+                    id={value.id}
+                    key={value.id}
+                    name={value.id === '0' ? 'Salary' : value.name}
+                    amount={value.amount}
+                    colour={value.colour}
+                    dynamicPot={value.dynamicPot}
+                    onRowUpdate={onDedicatedFinanceUpdate}
+                  />
+                ))}
+              </SpendingSetup>
               <Button variant="contained" onClick={submitSpendingData}>
                 Save Dedicated Spending
               </Button>

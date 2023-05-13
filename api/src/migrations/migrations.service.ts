@@ -6,12 +6,15 @@ import { StorageService } from '../storageService';
 import { TransactionsService } from 'src/transactions/transactions.service';
 import { TransactionsDocument } from 'src/transactions/schemas/transactions.schema';
 import * as async from 'async';
+import { FinancesService } from 'src/finances/finances.service';
+import { Finances } from 'src/finances/schemas/finances.schema';
 
 @Injectable()
 export class MigrationsService extends StorageService<Migrations> implements OnModuleInit {
   constructor(
-    @InjectModel(Migrations.name) private migrationsModel: Model<MigrationsDocument>,
+    @InjectModel(Migrations.name) migrationsModel: Model<MigrationsDocument>,
     @Inject(forwardRef(() => TransactionsService)) private readonly transactionsService: TransactionsService,
+    @Inject(forwardRef(() => FinancesService)) private readonly financesService: FinancesService,
   ) {
     super(migrationsModel);
   }
@@ -38,6 +41,20 @@ export class MigrationsService extends StorageService<Migrations> implements OnM
           transaction.internal = transaction.transaction ? transaction.transaction.scheme === 'uk_retail_pot' : false;
           await transaction.save();
         });
+      },
+    },
+    {
+      name: '20230513-v2-DB',
+      run: async () => {
+        const finances = await this.financesService.getAll();
+        if (finances.length === 0) {
+          return;
+        }
+        const salaryObject = finances.find((finance: Finances) => finance.id === '0');
+        const salarySum = finances.reduce((prev, curr: Finances) => (prev += curr.amount), 0);
+        salaryObject.amount = salarySum;
+        salaryObject.name = 'Unassigned';
+        await salaryObject.save();
       },
     },
   ];

@@ -16,6 +16,13 @@ export const DashContainer = styled.div`
   }
 `;
 
+export const SpendingSetup = styled.div`
+  overflow-y: auto;
+  width: 100%;
+  padding-right: 12px;
+  margin-bottom: 12px;
+`;
+
 export const Modules = styled.div<{ employerSet: boolean }>`
   gap: 120px 12px;
   display: grid;
