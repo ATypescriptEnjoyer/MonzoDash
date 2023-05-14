@@ -57,8 +57,8 @@ export class MonzoController {
       const employer = (await this.employerService.getAll())[0];
       const finances = await this.financesService.getAll();
       if (employer && employer.name === description) {
-        const totalDedicatedSpending = finances.reduce((prev, curr) => (prev += curr.amount), 0);
-        if (amount >= totalDedicatedSpending - 100) {
+        const salary = finances.find((finance) => finance.id === '0').amount;
+        if (amount >= salary - 100) {
           await async.eachSeries(finances, async (potInfo: Finances) => {
             if (potInfo.id !== '0') {
               await this.monzoService.depositToPot(potInfo.id, potInfo.amount * 100);
