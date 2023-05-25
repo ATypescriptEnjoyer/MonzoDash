@@ -16,6 +16,7 @@ interface WebhookTransactionData {
   category?: string;
   description?: string;
   notes?: string;
+  account_id?: string;
 }
 
 export interface WebhookTransaction {

@@ -180,17 +180,15 @@ export class MonzoService {
     return data.pots.filter((pot) => !pot.deleted).map(({ id, name, balance }) => ({ id, name, balance }));
   }
 
-  async depositToPot(potId: string, valuePence: number): Promise<Pot> {
+  async depositToPot(potId: string, valuePence: number, accountId?: string): Promise<Pot> {
     const authToken = (await this.authService.getLatestToken()).authToken;
 
     const headers: AxiosRequestHeaders = {
       Authorization: `Bearer ${authToken}`,
     };
 
-    const accountId = await this.getAccountId();
-
     const requestData = {
-      source_account_id: accountId,
+      source_account_id: accountId || await this.getAccountId(),
       amount: Math.abs(valuePence) as any,
       dedupe_id: uuidv4(),
     };
@@ -203,17 +201,15 @@ export class MonzoService {
     return data;
   }
 
-  async withdrawFromPot(potId: string, valuePence: number): Promise<Pot> {
+  async withdrawFromPot(potId: string, valuePence: number, accountId?: string): Promise<Pot> {
     const authToken = (await this.authService.getLatestToken()).authToken;
 
     const headers: AxiosRequestHeaders = {
       Authorization: `Bearer ${authToken}`,
     };
 
-    const accountId = await this.getAccountId();
-
     const requestData = {
-      destination_account_id: accountId,
+      destination_account_id: accountId || await this.getAccountId(),
       amount: Math.abs(valuePence) as any,
       dedupe_id: uuidv4(),
     };
