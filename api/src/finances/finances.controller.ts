@@ -67,7 +67,8 @@ export class FinancesController {
       const payDate = await calculatePayDay(employer.payDay, holidays);
       let daysUntil = moment(payDate).diff(moment(), 'days');
       if (daysUntil === 0) {
-        const nextPayday = await calculatePayDay(employer.payDay, holidays, moment().add('1', 'day').toDate());
+        payDate.setDate(employer.payDay);
+        const nextPayday = await calculatePayDay(employer.payDay, holidays, payDate);
         daysUntil = moment(nextPayday).diff(moment(), 'days');
       }
 
