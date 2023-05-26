@@ -11,7 +11,6 @@ import { Finances } from '../finances/schemas/finances.schema';
 import { TransactionsService } from '../transactions/transactions.service';
 import { WebhookTransaction } from './monzo.interfaces';
 import { MonzoService } from './monzo.service';
-import { sleep } from '../util/sleep';
 
 @Controller('monzo')
 export class MonzoController {
@@ -20,7 +19,7 @@ export class MonzoController {
     private readonly transactionService: TransactionsService,
     private readonly financesService: FinancesService,
     private readonly employerService: EmployerService,
-  ) { }
+  ) {}
 
   @Get('getUser')
   async getUser(): Promise<Owner> {
@@ -61,25 +60,29 @@ export class MonzoController {
         if (employer && employer.name === description) {
           const salary = finances.find((finance) => finance.id === '0').amount;
           if (amount >= salary - 100) {
-            await async.eachSeries(finances, async (potInfo: Finances) => {
+            async.eachSeries(finances, async (potInfo: Finances) => {
               if (potInfo.id !== '0') {
-                console.log("Pot ID: {0} - Amount {1}", potInfo.id, potInfo.amount);
-                await this.monzoService.depositToPot(potInfo.id, potInfo.amount * 100, transaction.data.account_id);
-                await sleep(5000);
-
+                console.log('Pot ID: {0} - Amount {1}', potInfo.id, potInfo.amount);
+                await this.monzoService.depositToPot(
+                  potInfo.id,
+                  Math.trunc(potInfo.amount * 100),
+                  transaction.data.account_id,
+                );
               }
             });
           }
         } else {
           const dynamicPot = finances.find((finance) => finance.dynamicPot && finance.name === description);
           if (dynamicPot) {
-            await this.monzoService.withdrawFromPot(dynamicPot.id, dynamicPot.amount * 100, transaction.data.account_id);
-            await sleep(5000);
+            await this.monzoService.withdrawFromPot(
+              dynamicPot.id,
+              Math.trunc(dynamicPot.amount * 100),
+              transaction.data.account_id,
+            );
           }
         }
       }
-    }
-    catch (error) {
+    } catch (error) {
       //Writes the error, but prevents Monzo from calling over and over
       console.error(error);
     }
