@@ -1,6 +1,6 @@
 {
   "name": "monzodash",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "MonzoDash is a dockerised web app for monitoring and managing your Monzo bank account.",
   "repository": "git@github.com:SashaRyder/MonzoDash.git",
   "author": "Sasha Ryder <8694395+SashaRyder@users.noreply.github.com>",

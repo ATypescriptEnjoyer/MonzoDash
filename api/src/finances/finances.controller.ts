@@ -65,7 +65,11 @@ export class FinancesController {
     if (employer) {
       const holidays: Holiday[] = await this.holidaysService.getAll();
       const payDate = await calculatePayDay(employer.payDay, holidays);
-      const daysUntil = moment(payDate).diff(moment(), 'days');
+      let daysUntil = moment(payDate).diff(moment(), 'days');
+      if (daysUntil === 0) {
+        const nextPayday = await calculatePayDay(employer.payDay, holidays, moment().add('1', 'day').toDate());
+        daysUntil = moment(nextPayday).diff(moment(), 'days');
+      }
 
       return {
         balancePence: balance,

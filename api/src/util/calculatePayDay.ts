@@ -1,8 +1,8 @@
 import * as moment from 'moment';
 import { Holiday } from '../holidays/schemas/holidays.schema';
 
-export const calculatePayDay = async (day: number, holidays: Holiday[]): Promise<Date> => {
-  const dateNow = new Date();
+export const calculatePayDay = async (day: number, holidays: Holiday[], fromDate: Date = new Date()): Promise<Date> => {
+  const dateNow = fromDate;
   let year = dateNow.getFullYear();
   let month = dateNow.getDate() >= day ? dateNow.getMonth() + 2 : dateNow.getMonth() + 1;
   if (month >= 13) {
