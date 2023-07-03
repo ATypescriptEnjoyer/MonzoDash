@@ -18,6 +18,8 @@ services:
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
+      - SENTRY_DSN=https://4db30d1a6e5d45faa23c3ef2d238fb24@o4504078906097664.ingest.sentry.io/4505467364638720
+      - DEBUG=true
     links:
       - redis
       - mongo

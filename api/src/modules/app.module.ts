@@ -16,6 +16,10 @@ import { MonzoController } from '../monzo/monzo.controller';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MigrationsModule } from 'src/migrations/migrations.module';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { SentryInterceptor } from 'src/sentry/sentry.interceptor';
+import * as Sentry from '@sentry/node';
+import { SentryFilter } from 'src/sentry/sentry.filter';
 
 const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST } = process.env;
 
@@ -35,7 +39,17 @@ const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST } = process.env;
     TransactionsModule,
     MigrationsModule,
   ],
-  providers: [HolidaysModule],
+  providers: [
+    HolidaysModule,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SentryInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: SentryFilter,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
@@ -50,5 +64,7 @@ export class AppModule implements NestModule {
         },
       )
       .forRoutes(AuthController, EmployerController, FinancesController, MonzoController, TransactionsModule);
+
+    consumer.apply(Sentry.Handlers.requestHandler()).forRoutes('*');
   }
 }
