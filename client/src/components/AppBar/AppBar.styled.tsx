@@ -6,6 +6,6 @@ export const SignOut = styled(Typography)`
 `;
 
 export const AppBarIcon = styled.img`
-  height: 50px;
+  width: 80px;
   padding-right: 16px;
 `;

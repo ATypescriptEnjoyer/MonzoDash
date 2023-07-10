@@ -4,7 +4,7 @@ import { GetAppName, GetAppVersion } from '../../utils';
 import { UnselectableTypography } from '../';
 import { SignOut, AppBarIcon } from './AppBar.styled';
 import { ApiConnector } from '../../network';
-import monzodash from './monzodash.png';
+import logo from '/monzodash.png';
 
 export const AppBar = (): JSX.Element => {
   const HandleSignOutClick = async (): Promise<void> => {
@@ -19,7 +19,7 @@ export const AppBar = (): JSX.Element => {
   return (
     <MaterialAppBar position="relative">
       <Toolbar>
-        <AppBarIcon src={monzodash} />
+        <AppBarIcon src={logo} />
         <UnselectableTypography variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
           {GetAppName()} v{GetAppVersion()}
         </UnselectableTypography>
