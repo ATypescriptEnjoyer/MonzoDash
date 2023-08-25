@@ -61,7 +61,7 @@ export class MonzoController {
           const salary = finances.find((finance) => finance.id === '0').amount;
           if (amount >= salary - 100) {
             async.eachSeries(finances, async (potInfo: Finances) => {
-              if (potInfo.id !== '0') {
+              if (potInfo.id !== '0' && potInfo.amount > 0) {
                 await this.monzoService.depositToPot(
                   potInfo.id,
                   Math.trunc(potInfo.amount * 100),
