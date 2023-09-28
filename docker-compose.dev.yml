@@ -48,7 +48,7 @@ services:
       - PUID=1000
     ports:
       - 6379:6379
-    command: [ "redis-server", "--appendonly", "yes" ]
+    command: ["redis-server", "--appendonly", "yes"]
     volumes:
       - ./redis:/data
     #restart: always

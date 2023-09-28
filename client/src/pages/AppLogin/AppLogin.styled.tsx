@@ -44,7 +44,7 @@ export const StyledAuthCodeDigit = styled.input`
   font-weight: bold;
   max-width: 56px;
   height: 96px;
-  border: 3px solid black;
+  border: 3px solid ${(props) => props.theme.black};
   border-radius: 6px;
   text-align: center;
   caret-color: transparent;

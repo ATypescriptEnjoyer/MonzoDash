@@ -1,7 +1,5 @@
 import { AppBar } from './AppBar';
 import { Module } from './Module';
-import { UnselectableTypography } from './UnselectableTypography';
-import { Tabs } from './Tabs';
-import { SpendingRow } from './SpendingRow';
+import { Icon } from './Icon';
 
-export { AppBar, Module, UnselectableTypography, Tabs, SpendingRow };
+export { AppBar, Module, Icon };

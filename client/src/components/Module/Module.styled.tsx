@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import styled from 'styled-components';
 
 export const ModuleContainer = styled.div`
@@ -22,7 +21,7 @@ export const ModuleHeaderContainer = styled.div`
   margin-bottom: 26px;
 `;
 
-export const ModuleHeader = styled(Typography)`
+export const ModuleHeader = styled.h4`
   color: white;
   display: block;
   text-align: center;

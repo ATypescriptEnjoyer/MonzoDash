@@ -20,6 +20,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { SentryInterceptor } from 'src/sentry/sentry.interceptor';
 import * as Sentry from '@sentry/node';
 import { SentryFilter } from 'src/sentry/sentry.filter';
+import { DailyReportModule } from '../dailyReport/dailyReport.module';
 
 const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, SENTRY_DSN } = process.env;
 
@@ -38,6 +39,7 @@ const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, SENTRY_DSN } = process.env;
     LoginModule,
     TransactionsModule,
     MigrationsModule,
+    DailyReportModule,
   ],
   providers: [
     HolidaysModule,

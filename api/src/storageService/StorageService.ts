@@ -3,7 +3,7 @@ import { DeleteResult } from 'mongodb';
 import { IStorageService } from './';
 
 export class StorageService<T> implements IStorageService<T> {
-  constructor(private model: Model<T & Document>) {}
+  constructor(readonly model: Model<T & Document>) {}
 
   create = async (obj: T): Promise<T & Document> => {
     const createdModel = new this.model(obj);

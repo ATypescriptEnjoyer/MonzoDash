@@ -19,7 +19,7 @@ export const StyledIcon = styled.img`
 `;
 
 export const StyledMerchant = styled.h4`
-  color: black;
+  color: ${(props) => props.theme.black};
   padding: 0;
   margin: 0;
 `;
@@ -33,7 +33,7 @@ export const StyledInfo = styled.div`
 
 export const StyledCurrency = styled.span<{ Type: 'incoming' | 'outgoing' }>`
   font-weight: bold;
-  color: ${({ Type }): string => (Type === 'incoming' ? '#80d195' : '#121212')};
+  color: ${({ Type }): string => (Type === 'incoming' ? '#80d195' : 'black')};
   ::before {
     content: '${({ Type }): string => (Type === 'incoming' ? '+' : '-')} £';
   }

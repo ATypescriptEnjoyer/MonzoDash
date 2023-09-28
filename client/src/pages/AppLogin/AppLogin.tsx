@@ -8,7 +8,6 @@ import {
   StyledAuthCodeDigit,
 } from './AppLogin.styled';
 import { ApiConnector } from '../../network';
-import { Button } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -80,11 +79,7 @@ export const AppLogin = (): JSX.Element => {
             ))}
           </StyledAuthCodeContainer>
         )}
-        {!authCodeSent && (
-          <Button variant="contained" onClick={sendAuthRequest}>
-            Send Auth Code via Monzo
-          </Button>
-        )}
+        {!authCodeSent && <button onClick={sendAuthRequest}>Send Auth Code via Monzo</button>}
       </StyledActionBox>
     </StyledContainer>
   );

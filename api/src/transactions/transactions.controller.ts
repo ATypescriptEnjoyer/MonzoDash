@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transactions } from './schemas/transactions.schema';
 import { Transaction } from '../../../shared/interfaces/transaction';
@@ -28,26 +28,33 @@ export class TransactionsController {
     );
     transactions = transactions.sort((a, b) => b.created.getTime() - a.created.getTime());
 
-    return transactions.reduce((prev: Transaction[], curr) => {
-      const dateToMoment = moment(curr.created);
-      const momentToday = moment().startOf('day');
-      const momentYesterday = momentToday.clone().subtract('1', 'day').startOf('day');
-      let localeDateString = '';
-      if (dateToMoment.isSame(momentToday, 'd')) {
-        localeDateString = 'Today';
-      } else if (dateToMoment.isSame(momentYesterday, 'd')) {
-        localeDateString = 'Yesterday';
-      } else {
-        localeDateString = `${moment(curr.created).format('dddd, D MMM')}${
-          curr.created.getFullYear() !== new Date().getFullYear() ? ` ${curr.created.getFullYear()}` : ''
-        }`;
-      }
-      const arrIndx = prev.findIndex((val) => val.title === localeDateString);
-      if (arrIndx > -1) {
-        prev[arrIndx] = { ...prev[arrIndx], transactions: [...prev[arrIndx].transactions, curr] };
-        return prev;
-      }
-      return [...prev, { title: localeDateString, transactions: [curr] }];
-    }, [] as Transaction[]);
+    return transactions;
+  }
+
+  @Get('monthly-burndown/:month')
+  async getMonthlyBurndown(@Param('month') month: number): Promise<{ [index: number]: number }> {
+    const properDate = new Date(new Date().getFullYear(), month - 1, 0);
+    const transactions: Transactions[] = await this.transactionsService.model.aggregate([
+      {
+        $match: {
+          $expr: {
+            $eq: [{ $month: '$created' }, month],
+          },
+        },
+      },
+    ]);
+    const dates = Array.from(new Array(properDate.getDate()).keys())
+      .slice(1)
+      .reduce(
+        (prev, curr) => ({
+          ...prev,
+          [curr]: transactions
+            .filter((transaction) => transaction.created.getDate() === curr)
+            .reduce((prev, curr) => (prev += curr.amount), 0),
+        }),
+        {},
+      );
+
+    return dates;
   }
 }

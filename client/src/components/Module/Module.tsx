@@ -1,6 +1,5 @@
 import React from 'react';
 import { ModuleContainer, ModuleHeaderContainer, ModuleHeader, ModuleBody } from './Module.styled';
-import { Button } from '@mui/material';
 
 interface Props {
   children?: React.ReactNode;
@@ -33,17 +32,9 @@ export const Module = ({
     <ModuleContainer style={{ gridColumn: `span ${horizontalSpace}`, gridRow: `span ${verticalSpace}` }}>
       <ModuleHeaderContainer>
         {(onEditClick || onEditCancelClick) && <span></span>}
-        <ModuleHeader variant="h4">{HeaderText}</ModuleHeader>
-        {onEditClick && !isEditing && (
-          <Button variant="contained" onClick={handleEditingButtonsClicked}>
-            Edit
-          </Button>
-        )}
-        {onEditCancelClick && isEditing && (
-          <Button variant="contained" onClick={handleEditingButtonsClicked}>
-            Cancel
-          </Button>
-        )}
+        <ModuleHeader>{HeaderText}</ModuleHeader>
+        {onEditClick && !isEditing && <button onClick={handleEditingButtonsClicked}>Edit</button>}
+        {onEditCancelClick && isEditing && <button onClick={handleEditingButtonsClicked}>Cancel</button>}
       </ModuleHeaderContainer>
       <ModuleBody>{children}</ModuleBody>
     </ModuleContainer>
