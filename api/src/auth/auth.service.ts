@@ -19,11 +19,15 @@ export class AuthService extends StorageService<Auth> {
     const query = await this.authModel.findOne().sort({ createdAt: 'descending' }).exec();
     if (query) {
       if (new Date().getTime() > query.expiresIn.getTime()) {
-        const newTokenInfo = await this.monzoService.refreshToken({ refreshToken: query.refreshToken });
-        query.authToken = newTokenInfo.accessToken;
-        query.refreshToken = newTokenInfo.refreshToken;
-        query.expiresIn = moment().add(newTokenInfo.expiresIn, 'seconds').toDate();
-        await this.save(query);
+        try {
+          const newTokenInfo = await this.monzoService.refreshToken({ refreshToken: query.refreshToken });
+          query.authToken = newTokenInfo.accessToken;
+          query.refreshToken = newTokenInfo.refreshToken;
+          query.expiresIn = moment().add(newTokenInfo.expiresIn, 'seconds').toDate();
+          await this.save(query);
+        } catch (error) {
+          return null;
+        }
       }
       return query;
     }

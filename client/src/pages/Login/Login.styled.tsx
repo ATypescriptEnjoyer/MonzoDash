@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Button } from '../../components';
 
 export const StyledContainer = styled.div`
   display: flex;
@@ -31,6 +32,6 @@ export const StyledSubtitle = styled.h3`
   margin: 0 0 44px 0;
 `;
 
-export const StyledButton = styled.button`
+export const StyledButton = styled(Button)`
   width: 60%;
 `;

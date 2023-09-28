@@ -13,21 +13,15 @@ import {
   TableLogo,
   TableRow,
 } from './NewDashboard.styled';
-import { Owner } from '../../../../shared/interfaces/monzo';
-import { DedicatedFinance, CurrentFinances } from '../../../../shared/interfaces/finances';
 import { Transaction } from '../../../../shared/interfaces/transaction';
 import { ApiConnector } from '../../network';
 import { MoonLoader } from 'react-spinners';
-import { XYPlot, XAxis, YAxis, HorizontalGridLines, LineSeries, FlexibleXYPlot, AreaSeries } from 'react-vis';
+import { XAxis, YAxis, HorizontalGridLines, FlexibleXYPlot, AreaSeries } from 'react-vis';
 import { useTheme } from 'styled-components';
 import { ThemeType } from '../..';
 import moment from 'moment';
-import { Icon } from '../../components';
-
-interface Employer {
-  name: string;
-  payDay: number;
-}
+import { Icon, Modal } from '../../components';
+import { subscribe, unsubscribe, EVENT_TYPES } from '../../event';
 
 export const NewDashboard = (): JSX.Element => {
   const [transactionIndex, setTransactionIndex] = useState<number>(0);
@@ -35,8 +29,27 @@ export const NewDashboard = (): JSX.Element => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [showSalaryModal, setShowSalaryModal] = useState(false);
+  const [showSpendingModal, setShowSpendingModal] = useState(false);
+
   const [chartData, setChartDate] = useState<{ day: number; amount: number }[]>([]);
   const theme = useTheme();
+
+  useEffect(() => {
+    const salaryOpen = () => {
+      setShowSalaryModal(true);
+    };
+    const spendingOpen = () => {
+      setShowSpendingModal(true);
+    };
+    subscribe(EVENT_TYPES.SALARY_DETAILS_OPEN, salaryOpen);
+    subscribe(EVENT_TYPES.DEDICATED_SPENDING_OPEN, spendingOpen);
+
+    return () => {
+      unsubscribe(EVENT_TYPES.SALARY_DETAILS_OPEN, salaryOpen);
+      unsubscribe(EVENT_TYPES.DEDICATED_SPENDING_OPEN, spendingOpen);
+    };
+  }, []);
 
   useEffect(() => {
     setUserTransactionIndex(`${transactionIndex + 1}`);
@@ -71,11 +84,25 @@ export const NewDashboard = (): JSX.Element => {
 
   return loading ? (
     <LoadingContainer>
-      <MoonLoader color="#F8C8DC" size="80" title="Loading..." />
+      <MoonLoader color={(theme as any).pink} size="80" title="Loading..." />
       <h1>Loading...</h1>
     </LoadingContainer>
   ) : (
     <DashContainer>
+      <Modal
+        show={showSalaryModal}
+        onClose={() => {
+          setShowSalaryModal(false);
+        }}
+        title="Update Salary Details"
+      ></Modal>
+      <Modal
+        show={showSpendingModal}
+        onClose={() => {
+          setShowSpendingModal(false);
+        }}
+        title="Update Dedicated Spending"
+      ></Modal>
       <Component>
         <Header>{new Date().toLocaleString('default', { month: 'long' })} Monthly Spending</Header>
         {chartData && (

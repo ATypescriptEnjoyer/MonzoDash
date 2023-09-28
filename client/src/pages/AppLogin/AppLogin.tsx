@@ -10,6 +10,7 @@ import {
 import { ApiConnector } from '../../network';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../../components';
 
 export const AppLogin = (): JSX.Element => {
   const [authCodeSent, setAuthCodeSent] = useState(false);
@@ -79,7 +80,7 @@ export const AppLogin = (): JSX.Element => {
             ))}
           </StyledAuthCodeContainer>
         )}
-        {!authCodeSent && <button onClick={sendAuthRequest}>Send Auth Code via Monzo</button>}
+        {!authCodeSent && <Button onClick={sendAuthRequest}>Send Auth Code via Monzo</Button>}
       </StyledActionBox>
     </StyledContainer>
   );
