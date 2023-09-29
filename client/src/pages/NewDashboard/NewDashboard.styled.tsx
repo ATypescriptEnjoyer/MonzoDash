@@ -46,6 +46,7 @@ export const Header = styled.h2`
 export const Group = styled.div`
   display: flex;
   align-items: center;
+  height: 100%;
 `;
 
 export const LoadingContainer = styled.div`
@@ -103,4 +104,46 @@ export const TableCell = styled.div`
 export const TableLogo = styled.img`
   width: 30px;
   border-radius: 20%;
+`;
+
+export const SpendingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  padding: 28px 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  flex: 0.3;
+
+  :first-child {
+    flex: 0.7;
+  }
+`;
+
+export const SpendingBar = styled.div`
+  width: 70px;
+  border: 1px solid ${(props) => props.theme.white};
+  height: 100%;
+  max-height: 400px;
+  overflow: hidden;
+`;
+
+export const SpendingBarItem = styled.div.attrs((props) => ({
+  style: {
+    background: props.color,
+  },
+}))<{ percent: number; color: string }>`
+  width: 100%;
+  overflow: hidden;
+  height: ${(props) => props.percent}%;
+  box-sizing: border-box;
+`;
+export const SpendingBoxContainer = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow-y: auto;
 `;

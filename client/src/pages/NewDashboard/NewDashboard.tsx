@@ -12,16 +12,22 @@ import {
   TableHead,
   TableLogo,
   TableRow,
+  SpendingContainer,
+  SpendingBar,
+  SpendingBarItem,
+  SpendingBoxContainer,
 } from './NewDashboard.styled';
 import { Transaction } from '../../../../shared/interfaces/transaction';
 import { ApiConnector } from '../../network';
 import { MoonLoader } from 'react-spinners';
-import { XAxis, YAxis, HorizontalGridLines, FlexibleXYPlot, AreaSeries } from 'react-vis';
+import { XAxis, YAxis, HorizontalGridLines, FlexibleXYPlot, AreaSeries, Hint, AreaSeriesPoint } from 'react-vis';
 import { useTheme } from 'styled-components';
 import { ThemeType } from '../..';
 import moment from 'moment';
 import { Icon, Modal } from '../../components';
 import { subscribe, unsubscribe, EVENT_TYPES } from '../../event';
+import { DedicatedFinance } from '../../../../shared/interfaces/finances';
+import { SpendingBox } from '../../components/SpendingBox';
 
 export const NewDashboard = (): JSX.Element => {
   const [transactionIndex, setTransactionIndex] = useState<number>(0);
@@ -32,14 +38,18 @@ export const NewDashboard = (): JSX.Element => {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [showSpendingModal, setShowSpendingModal] = useState(false);
 
-  const [chartData, setChartDate] = useState<{ day: number; amount: number }[]>([]);
+  const [spendingData, setSpendingData] = useState<(DedicatedFinance & { amountString: string })[]>();
+
+  const [chartData, setChartDate] = useState<{ day: number; amount: number | null }[]>([]);
+  const [hintValue, setHintValue] = useState<AreaSeriesPoint | null>(null);
   const theme = useTheme();
 
   useEffect(() => {
     const salaryOpen = () => {
       setShowSalaryModal(true);
     };
-    const spendingOpen = () => {
+    const spendingOpen = async () => {
+      await getDedicatedSpending();
       setShowSpendingModal(true);
     };
     subscribe(EVENT_TYPES.SALARY_DETAILS_OPEN, salaryOpen);
@@ -64,7 +74,7 @@ export const NewDashboard = (): JSX.Element => {
       const labels = Array.from(new Array(moment().daysInMonth() + 1).keys()).splice(1);
       const datesData = labels.map((val) => {
         const datesAmount = data.find((value) => value.day === val);
-        return { day: val, amount: datesAmount ? datesAmount.amount : 0 };
+        return { day: val, amount: datesAmount ? datesAmount.amount : null };
       });
       setChartDate(datesData);
     };
@@ -73,13 +83,53 @@ export const NewDashboard = (): JSX.Element => {
       const { data } = await ApiConnector.get<Transaction[]>('/transactions');
       setTransactions(data);
     };
-    Promise.all([getMonthlySpend(), getTransactions()]).then(() => setLoading(false));
+
+    Promise.all([getMonthlySpend(), getTransactions(), getDedicatedSpending()]).then(() => setLoading(false));
   }, []);
 
   const changeUserTransactionIndex = (ev: React.ChangeEvent<HTMLInputElement>) => {
     if (!Number.isNaN(+ev.currentTarget.value)) {
       setUserTransactionIndex(ev.currentTarget.value);
     }
+  };
+
+  const getDedicatedSpending = async (): Promise<void> => {
+    const { data } = await ApiConnector.get<DedicatedFinance[]>('/finances/dedicated');
+    const mappedData: (DedicatedFinance & { amountString: string })[] = data.map((finance) => ({
+      ...finance,
+      amountString: finance.amount.toFixed(2),
+    }));
+    setSpendingData(mappedData);
+  };
+
+  const calculateSpendingBar = () => {
+    if (!spendingData) {
+      return null;
+    }
+
+    const salary = spendingData.find((val) => val.id === '0');
+    const restSum = spendingData
+      .filter((val) => val.id !== '0')
+      .reduce((prev, curr) => (prev += +curr.amountString), 0);
+
+    const spendingBarData = spendingData.map((value) => {
+      const percent =
+        value.id === '0'
+          ? ((+value.amountString - restSum) / +value.amountString) * 100
+          : (+value.amountString / +(salary?.amountString || 0)) * 100;
+      return (
+        <SpendingBarItem key={value.id} percent={percent} color={value.colour}>
+          {percent.toFixed(2)}%
+        </SpendingBarItem>
+      );
+    });
+
+    return spendingBarData;
+  };
+
+  const submitSpendingData = async (): Promise<void> => {
+    await ApiConnector.post<DedicatedFinance[]>('/finances/dedicated', spendingData);
+    setShowSpendingModal(false);
   };
 
   return loading ? (
@@ -91,6 +141,7 @@ export const NewDashboard = (): JSX.Element => {
     <DashContainer>
       <Modal
         show={showSalaryModal}
+        onSubmit={() => null}
         onClose={() => {
           setShowSalaryModal(false);
         }}
@@ -98,21 +149,54 @@ export const NewDashboard = (): JSX.Element => {
       ></Modal>
       <Modal
         show={showSpendingModal}
+        onSubmit={submitSpendingData}
         onClose={() => {
           setShowSpendingModal(false);
         }}
         title="Update Dedicated Spending"
-      ></Modal>
+      >
+        <Group>
+          <SpendingContainer>
+            <SpendingBoxContainer>
+              {spendingData &&
+                spendingData.map((value) => (
+                  <SpendingBox
+                    key={value.id}
+                    spendingValue={value}
+                    onValueChange={(finance) => {
+                      const itemIndex = spendingData.findIndex((val) => val.id === finance.id);
+                      const newData = [...spendingData];
+                      newData[itemIndex] = finance;
+                      setSpendingData(newData);
+                    }}
+                  />
+                ))}
+            </SpendingBoxContainer>
+          </SpendingContainer>
+          <SpendingContainer style={{ alignItems: 'center' }}>
+            <SpendingBar>{calculateSpendingBar()}</SpendingBar>
+          </SpendingContainer>
+        </Group>
+      </Modal>
       <Component>
         <Header>{new Date().toLocaleString('default', { month: 'long' })} Monthly Spending</Header>
         {chartData && (
-          <FlexibleXYPlot ty>
+          <FlexibleXYPlot onMouseLeave={() => setHintValue(null)}>
             <HorizontalGridLines />
             <AreaSeries
               stroke={(theme as ThemeType).white}
               color={(theme as ThemeType).pink}
-              data={chartData.map((val) => ({ x: val.day, y: val.amount }))}
+              getNull={(d) => d.y !== null}
+              data={chartData.map((val) => ({ x: val.day, y: val.amount as any }))}
+              onNearestXY={(v) => setHintValue(v)}
             />
+            {hintValue && (
+              <Hint value={hintValue}>
+                <h3 style={{ background: (theme as ThemeType).white, color: (theme as ThemeType).pink }}>
+                  Day {hintValue.x} - £{hintValue.y}
+                </h3>
+              </Hint>
+            )}
             <XAxis style={{ fill: (theme as ThemeType).white }} />
             <YAxis style={{ fill: (theme as ThemeType).white }} />
           </FlexibleXYPlot>

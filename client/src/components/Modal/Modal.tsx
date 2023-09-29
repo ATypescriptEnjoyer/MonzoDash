@@ -8,11 +8,12 @@ interface Props {
   onClose: () => void;
   show: boolean;
   saveText?: string;
+  onSubmit: () => void;
 }
 
 type ModalProps = Props & React.HTMLAttributes<HTMLDivElement>;
 
-export const Modal = ({ title, onClose, show, children, saveText, ...rest }: ModalProps) => {
+export const Modal = ({ title, onClose, show, children, saveText, onSubmit, ...rest }: ModalProps) => {
   return (
     <BackContainer show={show}>
       <MainContainer>
@@ -22,7 +23,7 @@ export const Modal = ({ title, onClose, show, children, saveText, ...rest }: Mod
         </Header>
         <Body>{children}</Body>
         <Footer>
-          <Button>{saveText || 'Submit'}</Button>
+          <Button onClick={onSubmit}>{saveText || 'Submit'}</Button>
         </Footer>
       </MainContainer>
     </BackContainer>
