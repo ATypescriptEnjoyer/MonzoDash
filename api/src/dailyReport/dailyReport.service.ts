@@ -6,34 +6,26 @@ import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as moment from 'moment';
 import { TransactionsService } from 'src/transactions/transactions.service';
+import { MonzoService } from 'src/monzo/monzo.service';
 
 @Injectable()
 export class DailyReportService extends StorageService<DailyReport> {
   constructor(
     @InjectModel(DailyReport.name) private dailyReportModel: Model<DailyReportDocument>,
-    @Inject(forwardRef(() => TransactionsService)) private readonly transactionsService: TransactionsService,
+    @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
   ) {
     super(dailyReportModel);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async createYesterdaysReport(): Promise<void> {
-    const yday = moment().subtract(1, 'days');
-    const lastReportDate = moment().subtract(2, 'days');
-    const lastReport = await this.getByDate(lastReportDate.month() + 1, lastReportDate.year(), lastReportDate.date());
-    console.log(`Generating report for ${yday.format()}`);
-    const lastValue = lastReport.length > 0 ? lastReport[0].amount : 0;
-    const transactions = await this.transactionsService.getAll();
-    const yesterdaysValue = transactions
-      .filter((transaction) => moment(transaction.created).format('L') === yday.format('L'))
-      .reduce((prev, curr) => (prev += curr.amount), 0);
-
-    const totalValue = lastValue + yesterdaysValue;
+    const amountInBank = await this.monzoService.getBalance();
+    const yday = moment().subtract('1', 'days');
     const model: DailyReport = {
       day: yday.date(),
       month: yday.month() + 1,
       year: yday.year(),
-      amount: totalValue,
+      amount: +(amountInBank / 100).toFixed(2),
     };
     await this.dailyReportModel.create(model);
   }
