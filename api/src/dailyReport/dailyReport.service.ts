@@ -5,7 +5,6 @@ import { DailyReport, DailyReportDocument } from './schemas/dailyReport.schema';
 import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as moment from 'moment';
-import { TransactionsService } from 'src/transactions/transactions.service';
 import { MonzoService } from 'src/monzo/monzo.service';
 
 @Injectable()
