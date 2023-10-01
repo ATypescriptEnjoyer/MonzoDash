@@ -6,7 +6,7 @@ import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
 
 const manifestForPlugin: Partial<VitePWAOptions> = {
   registerType: 'prompt',
-  includeAssets: ['/monzodash.png'],
+  includeAssets: ['/logo.png'],
   manifest: {
     name: 'MonzoDash',
     short_name: 'MonzoDash',

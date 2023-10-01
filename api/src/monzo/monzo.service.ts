@@ -231,8 +231,7 @@ export class MonzoService {
 
     const accountId = await this.getAccountId();
 
-    const imageUrl =
-      'https://raw.githubusercontent.com/SashaRyder/MonzoDash/master/client/src/components/AppBar/monzodash.png?raw=true';
+    const imageUrl = 'https://github.com/SashaRyder/MonzoDash/blob/master/client/public/icon-192x192.png?raw=true';
 
     const requestData = { account_id: accountId, type: 'basic' };
     const requestDataString = `${new URLSearchParams(
