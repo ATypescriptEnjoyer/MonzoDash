@@ -28,11 +28,7 @@ export const AppBar = (): JSX.Element => {
 
   return (
     <StyledHeader>
-      <Logo
-        src="/icon-192x192.png"
-        alt={`${GetAppName()} v${GetAppVersion()}`}
-        title={`${GetAppName()} v${GetAppVersion()}`}
-      />
+      <Logo src="/logo.png" alt={`${GetAppName()} v${GetAppVersion()}`} title={`${GetAppName()} v${GetAppVersion()}`} />
       <Group>
         <Link onClick={() => publish(EVENT_TYPES.SALARY_DETAILS_OPEN, null)}>Update Salary Details</Link>
         {finances && (
