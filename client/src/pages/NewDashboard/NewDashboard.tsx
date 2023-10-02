@@ -181,7 +181,10 @@ export const NewDashboard = (): JSX.Element => {
       <Component>
         <Header>{new Date().toLocaleString('default', { month: 'long' })} Monthly Spending</Header>
         {chartData && (
-          <FlexibleXYPlot onMouseLeave={() => setHintValue(null)}>
+          <FlexibleXYPlot
+            yDomain={[0, chartData.reduce((prev, curr) => ((curr.amount || 0) > prev ? curr.amount || 0 : prev), 0)]}
+            onMouseLeave={() => setHintValue(null)}
+          >
             <HorizontalGridLines />
             <AreaSeries
               stroke={(theme as ThemeType).white}
