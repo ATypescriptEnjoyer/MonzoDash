@@ -3,11 +3,11 @@ import { Inject, Injectable, OnModuleInit, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Migrations, MigrationsDocument } from './schemas/migrations.schema';
 import { StorageService } from '../storageService';
-import { TransactionsService } from 'src/transactions/transactions.service';
-import { TransactionsDocument } from 'src/transactions/schemas/transactions.schema';
+import { TransactionsService } from '../transactions/transactions.service';
+import { TransactionsDocument } from '../transactions/schemas/transactions.schema';
 import * as async from 'async';
-import { FinancesService } from 'src/finances/finances.service';
-import { Finances } from 'src/finances/schemas/finances.schema';
+import { FinancesService } from '../finances/finances.service';
+import { Finances } from '../finances/schemas/finances.schema';
 
 @Injectable()
 export class MigrationsService extends StorageService<Migrations> implements OnModuleInit {

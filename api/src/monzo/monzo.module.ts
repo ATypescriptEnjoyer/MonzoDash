@@ -1,5 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from '../auth/auth.module';
 import { MonzoController } from './monzo.controller';
 import { MonzoService } from './monzo.service';
@@ -11,7 +10,6 @@ import { EmployerModule } from '../employer/employer.module';
 @Module({
   imports: [
     RedisModule.forRoot({ config: { url: process.env.REDIS_URL } }),
-    HttpModule.register({ baseURL: 'https://api.monzo.com/' }),
     forwardRef(() => AuthModule),
     TransactionsModule,
     FinancesModule,

@@ -1,6 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { HolidaysModule } from 'src/holidays/holidays.module';
+import { HolidaysModule } from '../holidays/holidays.module';
 import { EmployerModule } from '../employer/employer.module';
 import { MonzoModule } from '../monzo/monzo.module';
 import { FinancesController } from './finances.controller';

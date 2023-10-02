@@ -4,7 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Finances, FinancesDocument } from './schemas/finances.schema';
 import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { MonzoService } from 'src/monzo/monzo.service';
+import { MonzoService } from '../monzo/monzo.service';
 import async from 'async';
 
 @Injectable()

@@ -3,7 +3,7 @@ https://docs.nestjs.com/controllers#controllers
 */
 
 import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
-import { MonzoService } from 'src/monzo/monzo.service';
+import { MonzoService } from '../monzo/monzo.service';
 import { LoginService } from './login.service';
 import axios from 'axios';
 

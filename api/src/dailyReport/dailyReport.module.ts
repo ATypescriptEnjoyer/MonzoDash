@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { DailyReportController } from './dailyReport.controller';
 import { DailyReportService } from './dailyReport.service';
 import { DailyReport, DailyReportSchema } from './schemas/dailyReport.schema';
-import { MonzoModule } from 'src/monzo/monzo.module';
+import { MonzoModule } from '../monzo/monzo.module';
 
 @Module({
   imports: [

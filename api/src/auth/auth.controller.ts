@@ -16,7 +16,7 @@ import {
 import { AuthService } from './auth.service';
 import { MonzoService } from '../monzo/monzo.service';
 import { Auth } from './schemas/auth.schema';
-import { LoginService } from 'src/login/login.service';
+import { LoginService } from '../login/login.service';
 
 @Controller('Auth')
 export class AuthController {

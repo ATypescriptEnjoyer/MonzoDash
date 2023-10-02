@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MigrationsService } from './migrations.service';
 import { Migrations, MigrationsSchema } from './schemas/migrations.schema';
-import { TransactionsModule } from 'src/transactions/transactions.module';
-import { FinancesModule } from 'src/finances/finances.module';
+import { TransactionsModule } from '../transactions/transactions.module';
+import { FinancesModule } from '../finances/finances.module';
 
 @Module({
   imports: [

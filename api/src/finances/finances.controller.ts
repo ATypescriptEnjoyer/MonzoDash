@@ -9,8 +9,8 @@ import { calculatePayDay } from '../util/calculatePayDay';
 import { EmployerService } from '../employer/employer.service';
 import { MonzoService } from '../monzo/monzo.service';
 import { FinancesService } from './finances.service';
-import { HolidaysService } from 'src/holidays/holidays.service';
-import { Holiday } from 'src/holidays/schemas/holidays.schema';
+import { HolidaysService } from '../holidays/holidays.service';
+import { Holiday } from '../holidays/schemas/holidays.schema';
 @Controller('Finances')
 export class FinancesController {
   constructor(
