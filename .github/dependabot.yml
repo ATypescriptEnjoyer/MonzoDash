@@ -1,0 +1,20 @@
+# `dependabot.yml` file with updates
+version: 2
+updates:
+  # Configuration for Dockerfile
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Configuration for API
+  - package-ecosystem: "npm"
+    directory: "/api/"
+    schedule:
+      interval: "daily"
+
+  # Configuration for Client
+  - package-ecosystem: "npm"
+    directory: "/client/"
+    schedule:
+      interval: "daily"
