@@ -2128,10 +2128,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-vis@^1.11.11":
-  version "1.11.11"
-  resolved "https://registry.yarnpkg.com/@types/react-vis/-/react-vis-1.11.11.tgz#2cc53acfb3a1f617572ac662982dc9fa3f985ba9"
-  integrity sha512-hmm0sPseBNp4hFqQuvR7Tte5k3QmSf2rhZmn5An31rZeuv69pyq16ZcbSS91XMgRdAfC+GA33OvCZq624d9ncg==
+"@types/react-vis@^1.11.12":
+  version "1.11.12"
+  resolved "https://registry.yarnpkg.com/@types/react-vis/-/react-vis-1.11.12.tgz#1a2585897bf829c75bf479e66d0b16e8ee70c523"
+  integrity sha512-HEI+4UEM6KCfirTz3fzsB6V2wmwiGNwsOGzdo0FxOT6BpsyMTgkIawjM0iB1ASlPhpHQoZC84bmn2YroW7SriQ==
   dependencies:
     "@types/react" "*"
 
