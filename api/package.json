@@ -21,7 +21,7 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/platform-express": "^8.0.0",
-    "@nestjs/schedule": "^2.1.0",
+    "@nestjs/schedule": "^3.0.4",
     "@nestjs/serve-static": "^3.0.0",
     "@sentry/integrations": "^7.73.0",
     "@sentry/node": "^7.73.0",
