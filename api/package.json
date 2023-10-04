@@ -30,7 +30,7 @@
     "axios-cache-interceptor": "^0.10.7",
     "ioredis": "^5.3.2",
     "moment": "^2.29.4",
-    "mongoose": "^6.6.2",
+    "mongoose": "^7.5.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "sha512-crypt-ts": "^0.1.27",
