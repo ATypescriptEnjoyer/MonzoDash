@@ -25,7 +25,7 @@ export class FinancesService extends StorageService<Finances> {
       const matchedPot = newPots.find((newPot) => newPot.id === finance.id);
       if (matchedPot) {
         if (matchedPot.deleted) {
-          finance.delete();
+          await this.delete(finance);
         } else {
           finance.name = matchedPot.name;
           await finance.save();

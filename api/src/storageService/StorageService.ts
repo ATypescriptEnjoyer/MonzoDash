@@ -23,7 +23,7 @@ export class StorageService<T> implements IStorageService<T> {
   };
 
   delete = async (obj: T & Document): Promise<T & Document> => {
-    return await obj.delete();
+    return await obj.deleteOne();
   };
 
   deleteAll = async (): Promise<DeleteResult> => {

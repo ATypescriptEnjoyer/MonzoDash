@@ -18,7 +18,7 @@ export class HolidaysService extends StorageService<Holiday> {
   async updateStoredHolidays(): Promise<void> {
     const currentStoredHolidays = await this.getAll();
     const oldHolidays = currentStoredHolidays.filter((holiday) => moment(holiday.date).isBefore(moment()));
-    await async.eachSeries(oldHolidays, async (holiday) => await holiday.delete());
+    await async.eachSeries(oldHolidays, async (holiday) => await this.delete(holiday));
     console.log(`${oldHolidays.length} old holidays removed.`);
     if (currentStoredHolidays.length - oldHolidays.length !== 0) {
       return;
