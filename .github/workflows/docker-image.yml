@@ -38,10 +38,10 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: sasharyder/monzodash
+          images: ghcr.io/sasharyder/monzodash
           tags: |
             # set latest tag for master branch
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            type=raw,value=latest,enable={{is_default_branch}},priority=9999
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
