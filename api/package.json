@@ -15,7 +15,7 @@
     "plop": "plop"
   },
   "dependencies": {
-    "@liaoliaots/nestjs-redis": "^9.0.2",
+    "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
