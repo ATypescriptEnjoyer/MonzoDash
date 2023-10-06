@@ -38,11 +38,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Enable Automerge for dependabot
+        if: github.event.pull_request.user.login == 'dependabot[bot]'
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/sasharyder/monzodash
+          images: ${{ env.REGISTRY }}/sasharyder/monzodash
           tags: |
             # set latest tag for master branch
             type=raw,value=latest,enable={{is_default_branch}},priority=9999
