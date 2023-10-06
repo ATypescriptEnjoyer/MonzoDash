@@ -15,7 +15,7 @@
     "plop": "plop"
   },
   "dependencies": {
-    "@liaoliaots/nestjs-redis": "^9.0.2",
+    "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs/axios": "^3.0.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
@@ -32,7 +32,7 @@
     "moment": "^2.29.4",
     "mongoose": "^7.5.4",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0",
+    "rxjs": "^7.8.1",
     "sha512-crypt-ts": "^0.1.27",
     "uuid": "^9.0.0",
     "yargs": "^17.7.2"
@@ -47,13 +47,13 @@
     "@types/jest": "27.0.2",
     "@types/mongodb": "^4.0.7",
     "@types/node": "^20.8.0",
-    "@types/supertest": "^2.0.11",
+    "@types/supertest": "^2.0.14",
     "@types/uuid": "^9.0.0",
     "@types/yargs": "^17.0.26",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",
-    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.2.5",
     "plop": "^3.1.1",
