@@ -1671,14 +1671,14 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
-axios-cache-interceptor@^0.10.7:
-  version "0.10.7"
-  resolved "https://registry.yarnpkg.com/axios-cache-interceptor/-/axios-cache-interceptor-0.10.7.tgz#9a69fdaf10b7bb65e62d264ebe0a068efcb73bef"
-  integrity sha512-UjpxChG5DpF6Kf1IPGMLOzRDNL8ZNS6TOn1jTaVvCE7cWFU904jJwi0T1s+IbijpnLEjK2iq5uLIuR8Sj+RsFQ==
+axios-cache-interceptor@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/axios-cache-interceptor/-/axios-cache-interceptor-1.3.1.tgz#734f8640110554c8372013d638e9eee39b0f4414"
+  integrity sha512-nu78dBlzQbELLEd/DhzIBFEha5xZwQ1KMEu6iy49HaYbKoFFDRHMaukJFjpj0Sp0kET+u3TjwQh549DfPh13hA==
   dependencies:
     cache-parser "^1.2.4"
     fast-defer "^1.1.7"
-    object-code "^1.2.4"
+    object-code "^1.3.0"
 
 axios@0.27.2:
   version "0.27.2"
@@ -4646,10 +4646,10 @@ object-assign@^4, object-assign@^4.1.1:
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
 
-object-code@^1.2.4:
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/object-code/-/object-code-1.2.4.tgz#c356b1c5237272e736a3843c6086ca09a754b277"
-  integrity sha512-uGq4ETUuWe+GA586NXEriiaozNuff+YNFXlpD8cVrM1GoiuTZpCABP+bZCWDrvQDoCiSTyiWAFHD/HF/iwhb2w==
+object-code@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/object-code/-/object-code-1.3.0.tgz#59b52213c5a7a450071dab201e36ae2492b983d8"
+  integrity sha512-PLplgvzuFhSPBuTX/mtaXEnU3c6g7qKflVVQbV9VWEnV/34iKeAX1jeDNCKq1OgGlsnkA/NjldCzTbHxa7Wj4A==
 
 object-hash@3.0.0:
   version "3.0.0"
