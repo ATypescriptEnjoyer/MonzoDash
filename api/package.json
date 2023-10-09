@@ -49,7 +49,7 @@
     "@types/node": "^20.8.2",
     "@types/supertest": "^2.0.14",
     "@types/uuid": "^9.0.0",
-    "@types/yargs": "^17.0.26",
+    "@types/yargs": "^17.0.28",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",
