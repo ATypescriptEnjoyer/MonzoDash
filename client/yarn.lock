@@ -1986,10 +1986,10 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-vis@^1.11.12":
-  version "1.11.12"
-  resolved "https://registry.yarnpkg.com/@types/react-vis/-/react-vis-1.11.12.tgz#1a2585897bf829c75bf479e66d0b16e8ee70c523"
-  integrity sha512-HEI+4UEM6KCfirTz3fzsB6V2wmwiGNwsOGzdo0FxOT6BpsyMTgkIawjM0iB1ASlPhpHQoZC84bmn2YroW7SriQ==
+"@types/react-vis@^1.11.13":
+  version "1.11.13"
+  resolved "https://registry.yarnpkg.com/@types/react-vis/-/react-vis-1.11.13.tgz#8d825f82ade0a6a6eba659b53502f6c8f9631aed"
+  integrity sha512-1cov2VpmJIbhQqEZsLMKE0gZULO0KBAkYTfTFklI7RbBDF3KJHnQWKfaQDPdOvBGjugLXP8solO6jBJtpR9eOw==
   dependencies:
     "@types/react" "*"
 
