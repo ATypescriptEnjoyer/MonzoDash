@@ -39,7 +39,7 @@
     "@types/node": "^20.8.7",
     "@types/react": "^18.2.30",
     "@types/react-dom": "^18.2.14",
-    "@types/react-vis": "^1.11.12",
+    "@types/react-vis": "^1.11.13",
     "@types/redis": "^4.0.11",
     "@types/styled-components": "^5.1.29",
     "@typescript-eslint/parser": "^6.8.0",
