@@ -37,7 +37,7 @@
     "@testing-library/user-event": "^14.5.1",
     "@types/jest": "^29.5.7",
     "@types/node": "^20.8.10",
-    "@types/react": "^18.2.35",
+    "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",
     "@types/react-vis": "^1.11.13",
     "@types/redis": "^4.0.11",
