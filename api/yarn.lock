@@ -926,10 +926,10 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@types/async@^3.2.22":
-  version "3.2.22"
-  resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.22.tgz#6c8c8ee46b4dd0c7a7c33fff2bdb313bf3e639d2"
-  integrity sha512-aYsrMkRWXwJfchKtwubTIgvWcgRU8zFT+lL48l9jSu7RJKa3A+E3qwmAJVYap4Do9QzTCLm6p63JmOuII3j7dg==
+"@types/async@^3.2.23":
+  version "3.2.23"
+  resolved "https://registry.yarnpkg.com/@types/async/-/async-3.2.23.tgz#41d0b8dfae811c4a91f17c14be19a8fe6eef6294"
+  integrity sha512-/sDXs+HxCtt4/duO0AZFHs+ydQYHzd3qUybEFb+juRWQJNCFj3sYbqM2ABjWi8m7J93KXdJvIbDiARzqqIEESw==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.19"
