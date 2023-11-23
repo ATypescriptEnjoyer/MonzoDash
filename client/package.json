@@ -41,7 +41,7 @@
     "@types/react-dom": "^18.2.17",
     "@types/react-vis": "^1.11.14",
     "@types/redis": "^4.0.11",
-    "@types/styled-components": "^5.1.30",
+    "@types/styled-components": "^5.1.32",
     "@typescript-eslint/parser": "^6.12.0",
     "@vitejs/plugin-react": "^4.2.0",
     "eslint": "^8.54.0",
