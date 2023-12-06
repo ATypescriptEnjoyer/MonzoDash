@@ -1,4 +1,4 @@
-FROM node:21.3.0-alpine AS api
+FROM node:21.4.0-alpine AS api
 
 COPY api /app/api
 COPY shared /app/shared
@@ -8,7 +8,7 @@ RUN yarn install && \
     rm -rf shared && \
     yarn install --production
 
-FROM node:21.3.0-alpine AS client
+FROM node:21.4.0-alpine AS client
 
 COPY client /app/client
 COPY shared /app/shared
@@ -21,7 +21,7 @@ RUN \
     VITE_API_URL=/api yarn build && \
     rm rootpackage.json
 
-FROM node:21.3.0-alpine AS build
+FROM node:21.4.0-alpine AS build
 
 COPY --from=api /app/api/dist/ /app/dist
 COPY --from=api /app/api/node_modules/ /app/node_modules
