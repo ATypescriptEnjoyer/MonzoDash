@@ -3959,10 +3959,10 @@ magic-string@^0.25.0, magic-string@^0.25.7:
   dependencies:
     sourcemap-codec "^1.4.8"
 
-material-symbols@^0.14.1:
-  version "0.14.1"
-  resolved "https://registry.yarnpkg.com/material-symbols/-/material-symbols-0.14.1.tgz#bea312f17aa3cf9191b42a82b790b70df2eda666"
-  integrity sha512-qFUhEt90BbKMkpUIN8OdrjFpFBSeQ2XyB6H2Z08wecOWJnbkvAgslejKivgEewtPse14ElkOwZeoHakPZYUEhQ==
+material-symbols@^0.14.2:
+  version "0.14.2"
+  resolved "https://registry.yarnpkg.com/material-symbols/-/material-symbols-0.14.2.tgz#8b3cb12416ff93787d324dd97bc171b6bcd3e74a"
+  integrity sha512-liWnRpINHzpP/V7jgBLKXhE9lFany8Y9rzBAHr1CSA1NAjTCAct3FGG3d+GXxOfoWUzK/8qPpiQrtXhPXbzIfA==
 
 merge-stream@^2.0.0:
   version "2.0.0"
