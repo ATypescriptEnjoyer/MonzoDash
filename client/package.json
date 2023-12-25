@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@emotion/react": "^11.11.1",
+    "@emotion/react": "^11.11.3",
     "@mui/lab": "^5.0.0-alpha.157",
     "axios": "^1.6.2",
     "material-symbols": "^0.14.3",
