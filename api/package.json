@@ -38,7 +38,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.2.1",
+    "@nestjs/cli": "^10.3.0",
     "@nestjs/schematics": "^10.1.0",
     "@nestjs/testing": "^8.0.0",
     "@types/async": "^3.2.24",
