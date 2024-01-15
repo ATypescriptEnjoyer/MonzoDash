@@ -58,7 +58,7 @@
     "plop": "^4.0.1",
     "prettier": "^3.2.2",
     "source-map-support": "^0.5.20",
-    "supertest": "^6.3.3",
+    "supertest": "^6.3.4",
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
