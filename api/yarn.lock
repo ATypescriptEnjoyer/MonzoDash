@@ -1661,10 +1661,10 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
 
-axios-cache-interceptor@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/axios-cache-interceptor/-/axios-cache-interceptor-1.4.1.tgz#1046a9e77410d7405b03d470c74bd074629258f5"
-  integrity sha512-Ax4+PiGfNxpQvyF00t55nFzWoVnqW7slKCg9va6dbqiuAGIxRE8r1uMzunw8TKJ5iwLivFqAb0EeiLeUCxuZIw==
+axios-cache-interceptor@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/axios-cache-interceptor/-/axios-cache-interceptor-1.5.1.tgz#fe4095f74262011fd8b7576b0a0e8c8026e301c5"
+  integrity sha512-1p/rTi7DSqUghJ5Ck8GKNt47X6f3IB8XnJ+TM4PwIdhimmCgh0jEQiwI8mBvf2kIMIl4Kz5idwbf/ouK75nEHA==
   dependencies:
     cache-parser "1.2.4"
     fast-defer "1.1.8"
