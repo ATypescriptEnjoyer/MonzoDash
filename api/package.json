@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@liaoliaots/nestjs-redis": "^9.0.5",
-    "@nestjs/axios": "^3.0.1",
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/mongoose": "^10.0.4",
