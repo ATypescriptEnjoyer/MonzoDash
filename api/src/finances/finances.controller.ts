@@ -60,9 +60,8 @@ export class FinancesController {
         if (err.status === 403) {
           return new HttpException('Forbidden', HttpStatus.FORBIDDEN); //Pass 403 to frontend
         }
-      } else {
-        return err; //Rethrow and let sentry pick it up
       }
+      return err;
     });
     if (typeof balance !== "number") { // Must be exception
       throw balance;
