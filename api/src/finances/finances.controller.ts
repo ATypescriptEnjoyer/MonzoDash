@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Body, Controller, forwardRef, Get, Inject, Post } from '@nestjs/common';
+import { Body, Controller, forwardRef, Get, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
 import * as moment from 'moment';
 import { CurrentFinances, DedicatedFinance } from '../../../shared/interfaces/finances';
 import { calculatePayDay } from '../util/calculatePayDay';
@@ -11,6 +11,7 @@ import { MonzoService } from '../monzo/monzo.service';
 import { FinancesService } from './finances.service';
 import { HolidaysService } from '../holidays/holidays.service';
 import { Holiday } from '../holidays/schemas/holidays.schema';
+import axios, { AxiosError } from 'axios';
 @Controller('Finances')
 export class FinancesController {
   constructor(
@@ -18,7 +19,7 @@ export class FinancesController {
     private readonly employerService: EmployerService,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
     private readonly holidaysService: HolidaysService,
-  ) {}
+  ) { }
 
   @Get('dedicated')
   async dedicatedFinances(): Promise<DedicatedFinance[]> {
@@ -54,7 +55,19 @@ export class FinancesController {
 
   @Get('current')
   async currentFinances(): Promise<CurrentFinances> {
-    const balance = await this.monzoService.getBalance();
+    let balance = 0;
+    try {
+      balance = await this.monzoService.getBalance();
+    }
+    catch (err) {
+      if (axios.isAxiosError(err)) {
+        if (err.status === 403) {
+          throw new HttpException('Forbidden', HttpStatus.FORBIDDEN); //Pass 403 to frontend
+        }
+      } else {
+        throw err; //Rethrow and let sentry pick it up
+      }
+    }
     const employer = (await this.employerService.getAll())[0];
     if (employer) {
       const holidays: Holiday[] = await this.holidaysService.getAll();

@@ -5,14 +5,23 @@ import { Group, Link, Logo, Splitter, StyledHeader, Tablet, TabletItem } from '.
 import { ApiConnector } from '../../network';
 import { publish, EVENT_TYPES } from '../../event';
 import { CurrentFinances } from '../../../../shared/interfaces/finances';
+import axios from 'axios';
 
 export const AppBar = (): JSX.Element => {
   const [finances, setFinances] = useState<CurrentFinances>();
 
   useEffect(() => {
     const getPerDayData = async (): Promise<void> => {
-      const { data } = await ApiConnector.get<CurrentFinances>(`/finances/current`);
-      setFinances(data);
+      try {
+        const { data } = await ApiConnector.get<CurrentFinances>(`/finances/current`);
+        setFinances(data);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          if (error.response.status === 403) {
+            await HandleSignOutClick();
+          }
+        }
+      }
     };
     getPerDayData();
   }, []);
