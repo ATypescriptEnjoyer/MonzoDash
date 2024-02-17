@@ -58,12 +58,15 @@ export class FinancesController {
     const balance = await this.monzoService.getBalance().catch((err) => {
       if (axios.isAxiosError(err)) {
         if (err.status === 403) {
-          throw new HttpException('Forbidden', HttpStatus.FORBIDDEN); //Pass 403 to frontend
+          return new HttpException('Forbidden', HttpStatus.FORBIDDEN); //Pass 403 to frontend
         }
       } else {
-        throw err; //Rethrow and let sentry pick it up
+        return err; //Rethrow and let sentry pick it up
       }
     });
+    if (typeof balance !== "number") { // Must be exception
+      throw balance;
+    }
     const employer = (await this.employerService.getAll())[0];
     if (employer) {
       const holidays: Holiday[] = await this.holidaysService.getAll();
