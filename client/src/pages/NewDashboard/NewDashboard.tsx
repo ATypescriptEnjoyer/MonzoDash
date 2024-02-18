@@ -118,7 +118,7 @@ export const NewDashboard = (): JSX.Element => {
           ? ((+value.amountString - restSum) / +value.amountString) * 100
           : (+value.amountString / +(salary?.amountString || 0)) * 100;
       return (
-        <SpendingBarItem key={value.id} percent={percent} color={value.colour}>
+        <SpendingBarItem key={value.id} $percent={percent} color={value.colour}>
           {percent.toFixed(2)}%
         </SpendingBarItem>
       );

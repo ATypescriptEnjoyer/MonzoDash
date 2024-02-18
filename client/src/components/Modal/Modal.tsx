@@ -15,7 +15,7 @@ type ModalProps = Props & React.HTMLAttributes<HTMLDivElement>;
 
 export const Modal = ({ title, onClose, show, children, saveText, onSubmit, ...rest }: ModalProps) => {
   return (
-    <BackContainer show={show}>
+    <BackContainer $show={show}>
       <MainContainer>
         <Header>
           <Title>{title}</Title>

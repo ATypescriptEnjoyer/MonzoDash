@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-export const StyledIcon = styled.span<{ clickable?: boolean; hidden?: boolean }>`
+export const StyledIcon = styled.span<{ $clickable?: boolean; hidden?: boolean }>`
   background-color: ${(props) => props.theme.grey};
   color: ${(props) => props.theme.lightGrey};
   border-radius: 50%;
-  cursor: ${(props) => (props.clickable ? 'pointer' : 'default')};
+  cursor: ${(props) => (props.$clickable ? 'pointer' : 'default')};
   font-size: 1.5rem;
   padding: 10px;
   transition: all 0.25s ease-in-out;
@@ -15,7 +15,7 @@ export const StyledIcon = styled.span<{ clickable?: boolean; hidden?: boolean }>
   visibility: ${(props) => (props.hidden ? 'hidden' : 'visible')};
 
   ${(props) =>
-    props.clickable &&
+    props.$clickable &&
     `
     :hover {
       visibility: ${props.hidden ? 'hidden' : 'visible'};

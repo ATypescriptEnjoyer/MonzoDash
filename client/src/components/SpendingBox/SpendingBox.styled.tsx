@@ -1,11 +1,7 @@
 import styled from 'styled-components';
 
-export const StyledSpendingBox = styled.div.attrs((props: { borderColor: string }) => ({
-  style: {
-    borderColor: props.borderColor,
-  },
-}))<{ borderColor: string }>`
-  border: 2px solid;
+export const StyledSpendingBox = styled.div<{ $borderColor: string }>`
+  border: 2px solid ${(props) => props.$borderColor};
   display: grid;
   grid-template-rows: min-content 1fr;
   grid-template-columns: 1fr 1fr 1fr;

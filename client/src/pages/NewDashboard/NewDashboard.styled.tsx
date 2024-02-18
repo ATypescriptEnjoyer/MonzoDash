@@ -85,7 +85,7 @@ export const TableBody = styled.div`
     padding: 12px 0;
     margin: 0 12px;
 
-    :not(:last-child) {
+    &:not(:last-of-type) {
       border-bottom: 1px solid ${(props) => props.theme.white};
     }
   }
@@ -115,7 +115,7 @@ export const SpendingContainer = styled.div`
   overflow-y: auto;
   flex: 0.3;
 
-  :first-child {
+  &:first-of-type {
     flex: 0.7;
   }
 `;
@@ -132,10 +132,10 @@ export const SpendingBarItem = styled.div.attrs((props) => ({
   style: {
     background: props.color,
   },
-}))<{ percent: number; color: string }>`
+})) <{ $percent: number; color: string }>`
   width: 100%;
   overflow: hidden;
-  height: ${(props) => props.percent}%;
+  height: ${(props) => props.$percent}%;
   box-sizing: border-box;
 `;
 export const SpendingBoxContainer = styled.div`

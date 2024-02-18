@@ -16,7 +16,7 @@ export const SpendingBox = (props: Props) => {
   };
 
   return props.spendingValue ? (
-    <StyledSpendingBox borderColor={props.spendingValue.colour}>
+    <StyledSpendingBox $borderColor={props.spendingValue.colour}>
       <Title>{props.spendingValue.name}</Title>
       <Option>
         <Header>Amount</Header>
