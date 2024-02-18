@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   api:
-    image: node:20.8.0-alpine
+    image: node:lts-alpine
     volumes:
       - ./shared:/app/shared
       - ./api:/app/api
@@ -24,7 +24,7 @@ services:
       - redis
       - mongo
   client:
-    image: node:20.8.0-alpine
+    image: node:lts-alpine
     volumes:
       - ./:/app
     working_dir: /app/client
@@ -48,7 +48,7 @@ services:
       - PUID=1000
     ports:
       - 6379:6379
-    command: ["redis-server", "--appendonly", "yes"]
+    command: [ "redis-server", "--appendonly", "yes" ]
     volumes:
       - ./redis:/data
     #restart: always

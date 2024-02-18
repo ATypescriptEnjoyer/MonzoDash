@@ -39,7 +39,7 @@ export class FinancesController {
     const financePromises = dedicatedDto.map(async (value: DedicatedFinance) => {
       const existingPot = existingPots.find(({ id }) => id === value.id);
       if (existingPot) {
-        await existingPot.updateOne(value);
+        await existingPot.updateOne(value).exec();
         return value;
       }
       return this.financesService.create(value);
