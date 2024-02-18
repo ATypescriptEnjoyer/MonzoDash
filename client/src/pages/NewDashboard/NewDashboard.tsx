@@ -128,7 +128,8 @@ export const NewDashboard = (): JSX.Element => {
   };
 
   const submitSpendingData = async (): Promise<void> => {
-    await ApiConnector.post<DedicatedFinance[]>('/finances/dedicated', spendingData);
+    const validData = spendingData?.map(({ amountString, ...val }) => ({ ...val, amount: +amountString }));
+    await ApiConnector.post<DedicatedFinance[]>('/finances/dedicated', validData);
     setShowSpendingModal(false);
   };
 
