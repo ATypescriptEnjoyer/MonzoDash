@@ -16,6 +16,7 @@ import {
   SpendingBar,
   SpendingBarItem,
   SpendingBoxContainer,
+  LeftoverText,
 } from './NewDashboard.styled';
 import { Transaction } from '../../../../shared/interfaces/transaction';
 import { ApiConnector } from '../../network';
@@ -102,6 +103,18 @@ export const NewDashboard = (): JSX.Element => {
     setSpendingData(mappedData);
   };
 
+  const generateLeftoverText = () => {
+    const salary = spendingData?.find((val) => val.id === '0');
+    const potPayments = spendingData?.filter((val) => val.id !== '0').reduce((prev, curr) => prev += +curr.amountString, 0) || 0;
+    const color = salary?.colour || "green";
+    const leftover = (salary?.amount || 0) - potPayments;
+    return (
+      <LeftoverText color={color}>
+        You'll have £{leftover.toFixed(2)} leftover in your current account!
+      </LeftoverText>
+    )
+  }
+
   const calculateSpendingBar = () => {
     if (!spendingData) {
       return null;
@@ -176,6 +189,7 @@ export const NewDashboard = (): JSX.Element => {
           </SpendingContainer>
           <SpendingContainer style={{ alignItems: 'center' }}>
             <SpendingBar>{calculateSpendingBar()}</SpendingBar>
+            {generateLeftoverText()}
           </SpendingContainer>
         </Group>
       </Modal>

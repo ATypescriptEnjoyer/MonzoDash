@@ -114,10 +114,19 @@ export const SpendingContainer = styled.div`
   box-sizing: border-box;
   overflow-y: auto;
   flex: 0.3;
+  flex-direction: column;
+  justify-content: space-evenly;
 
   &:first-of-type {
     flex: 0.7;
+    flex-direction: row;
   }
+`;
+
+export const LeftoverText = styled.span`
+  color: ${(props) => props.color};
+  max-width: 75%;
+  text-align: center;
 `;
 
 export const SpendingBar = styled.div`
