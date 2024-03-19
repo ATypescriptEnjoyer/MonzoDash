@@ -6,6 +6,7 @@ import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { MonzoService } from '../monzo/monzo.service';
 import async from 'async';
+import { generateColour } from '../generateColour';
 
 @Injectable()
 export class FinancesService extends StorageService<Finances> {
@@ -21,15 +22,23 @@ export class FinancesService extends StorageService<Finances> {
     console.log('Running pot name update cycle');
     const existingPots = await this.getAll();
     const newPots = await this.monzoService.getPots();
-    await async.forEachSeries(existingPots, async (finance) => {
-      const matchedPot = newPots.find((newPot) => newPot.id === finance.id);
+    await async.forEachSeries(newPots, async (extPot) => {
+      const matchedPot = existingPots.find((pot) => pot.id === extPot.id);
       if (matchedPot) {
-        if (matchedPot.deleted) {
-          await this.delete(finance);
+        if (extPot.deleted) {
+          await this.delete(matchedPot);
         } else {
-          finance.name = matchedPot.name;
-          await finance.save();
+          matchedPot.name = extPot.name;
+          await matchedPot.save();
         }
+      }
+      else {
+        this.create({
+          ...extPot,
+          colour: generateColour(),
+          amount: 0,
+          dynamicPot: false
+        });
       }
     });
     console.log('Finished pot name update cycle');
