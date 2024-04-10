@@ -23,7 +23,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/schedule": "^4.0.1",
     "@nestjs/serve-static": "^4.0.2",
-    "@sentry/integrations": "^7.90.0",
+    "@sentry/integrations": "^7.109.0",
     "@sentry/node": "^7.90.0",
     "async": "^3.2.5",
     "axios": "^1.6.8",
