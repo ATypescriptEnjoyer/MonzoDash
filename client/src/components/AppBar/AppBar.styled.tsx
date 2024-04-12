@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Icon } from '../Icon';
 
 export const AppBarIcon = styled.img`
   width: 80px;
@@ -14,7 +15,7 @@ export const StyledLogoutRounded = styled.span`
   font-weight: bold;
 `;
 
-export const StyledHeader = styled.header`
+export const StyledHeader = styled.header<{ $visible: boolean }>`
   display: flex;
   padding: 12px 20px;
   height: 95px;
@@ -23,13 +24,37 @@ export const StyledHeader = styled.header`
   align-items: center;
   border-bottom: 1px solid ${(props) => props.theme.grey};
   width: 100%;
+
+  @media (max-width: 600px) {
+    width: 0px;
+    display: none;
+    ${({ $visible, ...props }) => $visible && `
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 99;
+      background-color: ${props.theme.black};
+      height: 100%;
+      justify-content: initial;
+      align-items: initial;
+    `};
+  }
 `;
 
-export const Group = styled.div<{ direction?: string; gap?: string }>`
+export const Group = styled.div<{ $direction?: string; $gap?: string }>`
   display: flex;
-  gap: ${(props) => props.gap ?? '32px'};
-  flex-direction: ${(props) => props.direction ?? 'row'};
+  gap: ${(props) => props.$gap ?? '32px'};
   align-items: center;
+
+  @media (max-width: 600px) {
+    margin-top: 16px;
+    flex-direction: ${(props) => props.$direction ?? 'column'};
+    justify-content: space-between;
+    padding: 0 24px;
+  }
 `;
 
 export const Link = styled.span`
@@ -56,10 +81,9 @@ export const Splitter = styled.div`
   transition: all 0.25s ease-in-out;
 `;
 
-export const Tablet = styled.div`
+export const Tablet = styled.div<{ $isMobile?: boolean }>`
   padding: 8px 24px;
-  background-color: ${(props) => props.theme.black};
-  display: flex;
+  display: ${(props) => props.$isMobile ? 'none' : 'flex'};
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -70,9 +94,34 @@ export const Tablet = styled.div`
       border-color: ${(props) => props.theme.pink};
     }
   }
+
+  @media (max-width: 600px) {
+    display: ${(props) => props.$isMobile ? 'flex' : 'none'};
+  }
 `;
 
 export const TabletItem = styled.div`
   color: ${(props) => props.theme.white};
   font-weight: bold;
+`;
+
+export const MobileOnlyIcon = styled(Icon)`
+display: none;
+@media (max-width: 600px) {
+  display: block;
+}
+`;
+
+export const DesktopOnlyIcon = styled(Icon)`
+display: none;
+@media (min-width: 600px) {
+  display: block;
+}
+`;
+
+export const MobileGroup = styled(Group)`
+display: none;
+@media (max-width: 600px) {
+  display: flex;
+}
 `;

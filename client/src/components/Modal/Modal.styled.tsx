@@ -23,6 +23,11 @@ export const MainContainer = styled.div`
   border: 2px solid ${(props) => props.theme.pink};
   padding: 24px;
   box-sizing: border-box;
+
+  @media (max-width: 600px) {
+    height: 100%;
+    border: 0;
+  }
 `;
 
 export const Header = styled.div`

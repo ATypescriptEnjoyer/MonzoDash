@@ -9,12 +9,12 @@ interface Props {
 
 type IconProps = Props & React.HTMLAttributes<HTMLSpanElement>;
 
-export const Icon = ({ icon, onClick, disabled, hidden, ...rest }: IconProps) => {
+export const Icon = ({ icon, onClick, disabled, hidden, className, ...rest }: IconProps) => {
   return (
     <StyledIcon
       $clickable={!!onClick && !disabled}
       onClick={(ev) => !disabled && onClick && onClick(ev)}
-      className="material-symbols-outlined"
+      className={`${className ? className + " " : ''}material-symbols-outlined`}
       hidden={hidden}
       {...rest}
     >
