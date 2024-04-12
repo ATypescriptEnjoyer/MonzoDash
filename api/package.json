@@ -24,7 +24,7 @@
     "@nestjs/schedule": "^4.0.1",
     "@nestjs/serve-static": "^4.0.2",
     "@sentry/integrations": "^7.90.0",
-    "@sentry/node": "^7.90.0",
+    "@sentry/node": "^7.110.0",
     "async": "^3.2.5",
     "axios": "^1.6.8",
     "axios-cache-interceptor": "^1.5.1",
