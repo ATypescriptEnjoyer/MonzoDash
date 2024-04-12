@@ -103,6 +103,7 @@ export const Tablet = styled.div<{ $isMobile?: boolean }>`
 export const TabletItem = styled.div`
   color: ${(props) => props.theme.white};
   font-weight: bold;
+  text-align: center;
 `;
 
 export const MobileOnlyIcon = styled(Icon)`
