@@ -37,15 +37,24 @@ export const AppBar = (): JSX.Element => {
   };
 
   const financesElement = (mobile?: boolean) => {
-    return finances && (
+    return finances ? (
       <Tablet $isMobile={mobile}>
         <TabletItem>
-          £{(finances?.balancePence / 100).toFixed(2)} / {finances.daysTilPay} days
+          £{(finances.balancePence / 100).toFixed(2)} / {finances.daysTilPay} days
         </TabletItem>
         <Splitter />
         <TabletItem>£{(finances.perDayPence / 100).toFixed(2)} / day</TabletItem>
       </Tablet>
-    )
+    ) :
+      (
+        <Tablet $isMobile={mobile}>
+          <TabletItem>
+            Loading
+          </TabletItem>
+          <Splitter />
+          <TabletItem>Finance Data</TabletItem>
+        </Tablet>
+      )
   }
 
   const onUpdateDedicatedSpending = () => {
