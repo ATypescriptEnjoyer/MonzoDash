@@ -90,7 +90,7 @@ export class MonzoService {
 
     const requestDataString = new URLSearchParams(requestData).toString();
 
-    const { data } = await await firstValueFrom(this.httpService.post<MonzoAuthResponse>('oauth2/token', requestDataString));
+    const { data } = await firstValueFrom(this.httpService.post<MonzoAuthResponse>('oauth2/token', requestDataString));
     return {
       accessToken: data.access_token,
       expiresIn: data.expires_in, //Expires in is in seconds
@@ -202,7 +202,7 @@ export class MonzoService {
       requestData,
     ).toString()}&params[title]=${title}&params[image_url]=${imageUrl}&params[body]=${message}`;
 
-    await this.httpService.post(`feed`, requestDataString, { headers });
+    await firstValueFrom(this.httpService.post(`feed`, requestDataString, { headers }));
   }
 
   async signOut(): Promise<void> {
@@ -224,13 +224,13 @@ export class MonzoService {
         if (hook.url === webhookUrl) {
           hookExists = true;
         } else {
-          await this.httpService.delete(`webhooks/${hook.id}`, { headers });
+          await firstValueFrom(this.httpService.delete(`webhooks/${hook.id}`, { headers }));
         }
       });
       if (!hookExists) {
         const requestData = { account_id: accountId, url: webhookUrl };
         const requestDataString = new URLSearchParams(requestData).toString();
-        await this.httpService.post('webhooks', requestDataString, { headers });
+        await firstValueFrom(this.httpService.post('webhooks', requestDataString, { headers }));
       }
       return true;
     } catch (error) {
