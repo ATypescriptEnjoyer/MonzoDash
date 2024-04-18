@@ -7,7 +7,7 @@ import { NestApplicationOptions } from '@nestjs/common';
 const { SENTRY_DSN, DEBUG } = process.env;
 
 async function bootstrap() {
-  const opts: NestApplicationOptions = SENTRY_DSN ? { logger: false } : null;
+  const opts: NestApplicationOptions = SENTRY_DSN ? { logger: false } : {};
   const app = await NestFactory.create(AppModule, opts);
   if (SENTRY_DSN) {
     Sentry.init({
