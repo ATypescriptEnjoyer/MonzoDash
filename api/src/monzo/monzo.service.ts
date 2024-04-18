@@ -2,14 +2,14 @@
 https://docs.nestjs.com/providers#services
 */
 
-import { RedisService } from '@liaoliaots/nestjs-redis';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import axios, { AxiosInstance } from 'axios';
 import { Owner, Account } from '../../../shared/interfaces/monzo';
-import { buildStorage, setupCache } from 'axios-cache-interceptor';
 import { AuthService } from '../auth/auth.service';
 import async from 'async';
 import { v4 as uuidv4 } from 'uuid';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+import { LoginService } from 'src/login/login.service';
 
 export interface MonzoAuthResponse {
   access_token: string;
@@ -47,34 +47,12 @@ export interface PotsResponse {
 
 @Injectable()
 export class MonzoService {
-  private httpService: AxiosInstance;
 
   constructor(
-    private redisService: RedisService,
+    private httpService: HttpService,
+    private loginService: LoginService,
     @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService,
-  ) {
-    this.httpService = axios.create({ baseURL: 'https://api.monzo.com/' });
-    const client = redisService.getClient();
-    const redisStorage = buildStorage({
-      async find(key) {
-        const result = await client.get(`axios-cache:${key}`);
-        return JSON.parse(result);
-      },
-
-      async set(key, value) {
-        await client.set(`axios-cache:${key}`, JSON.stringify(value), 'EX', 5 * 60); //5 min expiration
-      },
-
-      async remove(key) {
-        await client.del(`axios-cache:${key}`);
-      },
-    });
-
-    setupCache(this.httpService, {
-      storage: redisStorage,
-      methods: ['get'],
-    });
-  }
+  ) { }
 
   async usingAuthCode({ authCode }: AuthRequest): Promise<AuthResponse> {
     const { MONZO_CLIENT_ID: clientId, MONZO_CLIENT_SECRET: clientSecret, MONZODASH_DOMAIN } = process.env;
@@ -91,7 +69,7 @@ export class MonzoService {
 
     const requestDataString = new URLSearchParams(requestData).toString();
 
-    const { data } = await this.httpService.post<MonzoAuthResponse>('oauth2/token', requestDataString);
+    const { data } = await firstValueFrom(this.httpService.post<MonzoAuthResponse>('oauth2/token', requestDataString));
 
     return {
       accessToken: data.access_token,
@@ -112,7 +90,7 @@ export class MonzoService {
 
     const requestDataString = new URLSearchParams(requestData).toString();
 
-    const { data } = await this.httpService.post<MonzoAuthResponse>('oauth2/token', requestDataString);
+    const { data } = await await firstValueFrom(this.httpService.post<MonzoAuthResponse>('oauth2/token', requestDataString));
     return {
       accessToken: data.access_token,
       expiresIn: data.expires_in, //Expires in is in seconds
@@ -127,9 +105,9 @@ export class MonzoService {
       Authorization: `Bearer ${authToken}`,
     };
 
-    const { data } = await this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
+    const { data } = await firstValueFrom(this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
       headers,
-    });
+    }));
     return data.accounts.find((acc) => !acc.closed).id;
   }
 
@@ -140,9 +118,9 @@ export class MonzoService {
       Authorization: `Bearer ${authToken}`,
     };
 
-    const { data } = await this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
+    const { data } = await firstValueFrom(this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
       headers,
-    });
+    }));
     return data.accounts[0].owners[0];
   }
 
@@ -155,7 +133,7 @@ export class MonzoService {
 
     const accountId = await this.getAccountId();
 
-    const { data } = await this.httpService.get<Balances>(`balance?account_id=${accountId}`, { headers });
+    const { data } = await firstValueFrom(this.httpService.get<Balances>(`balance?account_id=${accountId}`, { headers }));
     return data.balance;
   }
 
@@ -168,7 +146,7 @@ export class MonzoService {
 
     const accountId = await this.getAccountId();
 
-    const { data } = await this.httpService.get<PotsResponse>(`pots?current_account_id=${accountId}`, { headers });
+    const { data } = await firstValueFrom(this.httpService.get<PotsResponse>(`pots?current_account_id=${accountId}`, { headers }));
     return data.pots.filter((pot) => !pot.deleted).map(({ id, name, balance }) => ({ id, name, balance }));
   }
 
@@ -186,7 +164,7 @@ export class MonzoService {
     };
     const requestDataString = new URLSearchParams(requestData).toString();
 
-    const { data } = await this.httpService.put<Pot>(`pots/${potId}/deposit`, requestDataString, { headers });
+    const { data } = await firstValueFrom(this.httpService.put<Pot>(`pots/${potId}/deposit`, requestDataString, { headers }));
     return data;
   }
 
@@ -204,7 +182,7 @@ export class MonzoService {
     };
     const requestDataString = new URLSearchParams(requestData).toString();
 
-    const { data } = await this.httpService.put<Pot>(`pots/${potId}/withdraw`, requestDataString, { headers });
+    const { data } = await firstValueFrom(this.httpService.put<Pot>(`pots/${potId}/withdraw`, requestDataString, { headers }));
     return data;
   }
 
@@ -227,8 +205,8 @@ export class MonzoService {
     await this.httpService.post(`feed`, requestDataString, { headers });
   }
 
-  async signOut(): Promise<string> {
-    return this.redisService.getClient().flushall();
+  async signOut(): Promise<void> {
+    await Promise.all([this.authService.deleteAll(), this.loginService.deleteAll()]);
   }
 
   async configureWebhooks({ accountId, webhookUrl }: { accountId: string; webhookUrl: string }): Promise<boolean> {
@@ -239,7 +217,7 @@ export class MonzoService {
     };
 
     try {
-      const { data } = await this.httpService.get(`webhooks?account_id=${accountId}`, { headers });
+      const { data } = await firstValueFrom(this.httpService.get(`webhooks?account_id=${accountId}`, { headers }));
       const hooks: { webhooks: { id: string; url: string }[] } = data;
       let hookExists = false;
       await async.eachSeries(hooks.webhooks, async (hook) => {

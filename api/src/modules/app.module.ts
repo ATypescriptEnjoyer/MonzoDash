@@ -45,15 +45,15 @@ const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, SENTRY_DSN } = process.env;
     HolidaysModule,
     ...(SENTRY_DSN
       ? [
-          {
-            provide: APP_INTERCEPTOR,
-            useClass: SentryInterceptor,
-          },
-          {
-            provide: APP_FILTER,
-            useClass: SentryFilter,
-          },
-        ]
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: SentryInterceptor,
+        },
+        {
+          provide: APP_FILTER,
+          useClass: SentryFilter,
+        },
+      ]
       : []),
   ],
 })

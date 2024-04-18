@@ -1,12 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
 import * as Sentry from '@sentry/node';
-import { RewriteFrames } from '@sentry/integrations';
+import { rewriteFramesIntegration } from '@sentry/integrations';
+import { NestApplicationOptions } from '@nestjs/common';
 
 const { SENTRY_DSN, DEBUG } = process.env;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { logger: false });
+  const opts: NestApplicationOptions = SENTRY_DSN ? { logger: false } : null;
+  const app = await NestFactory.create(AppModule, opts);
   if (SENTRY_DSN) {
     Sentry.init({
       dsn: SENTRY_DSN,
@@ -14,7 +16,7 @@ async function bootstrap() {
       environment: DEBUG === 'true' ? 'dev' : 'production',
       tracesSampleRate: 1.0,
       integrations: [
-        new RewriteFrames({
+        rewriteFramesIntegration({
           root: global['__rootdir__'],
         }),
       ],

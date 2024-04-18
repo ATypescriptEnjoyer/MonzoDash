@@ -1,6 +1,5 @@
 .env
 db
-redis
 **/node_modules
 .env.example
 nginx

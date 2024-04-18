@@ -9,19 +9,19 @@ services:
     working_dir: /app/api
     command: >
       sh -c "yarn install && yarn start:dev"
+    ports:
+      - 5000:5000
     environment:
       - TZ=Europe/London
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_HOST=${MONGO_HOST}
-      - REDIS_URL=${REDIS_URL}
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
       # - SENTRY_DSN=${SENTRY_DSN}
-      # - DEBUG=true
+      - DEBUG=true
     links:
-      - redis
       - mongo
   client:
     image: node:lts-alpine
@@ -41,17 +41,6 @@ services:
       - 27017:27017
     volumes:
       - ./db:/data/db
-  redis:
-    image: redis:6.2.6-alpine
-    environment:
-      - PGID=1000
-      - PUID=1000
-    ports:
-      - 6379:6379
-    command: [ "redis-server", "--appendonly", "yes" ]
-    volumes:
-      - ./redis:/data
-    #restart: always
 
   mongo-express:
     image: mongo-express
@@ -59,6 +48,8 @@ services:
     ports:
       - 8081:8081
     environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_PASSWORD}
       ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME}
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
       ME_CONFIG_MONGODB_URL: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/

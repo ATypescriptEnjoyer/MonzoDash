@@ -38,14 +38,12 @@ services:
     image: ghcr.io/sasharyder/monzodash:latest
     restart: unless-stopped
     links:
-      - redis
       - mongo
     environment:
       - TZ=Europe/London
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_HOST=${MONGO_HOST}
-      - REDIS_URL=${REDIS_URL}
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
@@ -59,16 +57,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
       - ./db:/data/db
-
-  redis:
-    image: redis:6.2.6-alpine
-    restart: unless-stopped
-    environment:
-      - PGID=1000
-      - PUID=1000
-    command: ["redis-server", "--appendonly", "yes"]
-    volumes:
-      - ./redis:/data
 ```
 
 Before doing this, create a `.env` file along side your `docker-compose.yml` file.
@@ -77,7 +65,6 @@ Before doing this, create a `.env` file along side your `docker-compose.yml` fil
 MONGO_USERNAME=monzodash
 MONGO_PASSWORD=monzodash
 MONGO_HOST=mongo
-REDIS_URL=redis://redis
 MONZO_CLIENT_ID=
 MONZO_CLIENT_SECRET=
 MONZODASH_DOMAIN=http://localhost

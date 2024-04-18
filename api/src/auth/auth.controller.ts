@@ -24,7 +24,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly loginService: LoginService,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
-  ) {}
+  ) { }
 
   @Get('redirectUri')
   getRedirectUri(): string {
