@@ -12,8 +12,11 @@ updates:
     directory: "/api/"
     schedule:
       interval: "weekly"
-    update_configs:
-      - package-regex: "^@sentry/.*"
+    groups:
+      sentry:
+        applies-to: version-updates
+        patterns:
+        - "@sentry*"
 
   # Configuration for Client
   - package-ecosystem: "npm"
