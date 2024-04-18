@@ -5,16 +5,18 @@ updates:
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
 
   # Configuration for API
   - package-ecosystem: "npm"
     directory: "/api/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+    update_configs:
+      - package-regex: "^@sentry/.*"
 
   # Configuration for Client
   - package-ecosystem: "npm"
     directory: "/client/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
