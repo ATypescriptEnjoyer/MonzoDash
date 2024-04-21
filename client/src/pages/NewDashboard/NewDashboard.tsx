@@ -33,6 +33,8 @@ import { subscribe, unsubscribe, EVENT_TYPES } from '../../event';
 import { DedicatedFinance } from '../../../../shared/interfaces/finances';
 import { SpendingBox } from '../../components/SpendingBox';
 
+interface employerInfo { name: string, payDay: number };
+
 export const NewDashboard = (): JSX.Element => {
   const [transactionIndex, setTransactionIndex] = useState<number>(0);
   const [userTransactionIndex, setUserTransactionIndex] = useState<string>('');
@@ -42,7 +44,7 @@ export const NewDashboard = (): JSX.Element => {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [showSpendingModal, setShowSpendingModal] = useState(false);
 
-  const [salaryData, setSalaryData] = useState<{ employer: string, payday: number }>({ employer: "", payday: 28 });
+  const [salaryData, setSalaryData] = useState<employerInfo>({ name: "", payDay: 28 });
   const [spendingData, setSpendingData] = useState<(DedicatedFinance & { amountString: string })[]>();
 
   const [chartData, setChartDate] = useState<{ day: number; amount: number | null }[]>([]);
@@ -50,7 +52,8 @@ export const NewDashboard = (): JSX.Element => {
   const theme = useTheme();
 
   useEffect(() => {
-    const salaryOpen = () => {
+    const salaryOpen = async () => {
+      await getEmployerInformation();
       setShowSalaryModal(true);
     };
     const spendingOpen = async () => {
@@ -96,6 +99,11 @@ export const NewDashboard = (): JSX.Element => {
     if (!Number.isNaN(+ev.currentTarget.value)) {
       setUserTransactionIndex(ev.currentTarget.value);
     }
+  };
+
+  const getEmployerInformation = async (): Promise<void> => {
+    const { data } = await ApiConnector.get<employerInfo>('/employer');
+    setSalaryData(data);
   };
 
   const getDedicatedSpending = async (): Promise<void> => {
@@ -145,7 +153,7 @@ export const NewDashboard = (): JSX.Element => {
   };
 
   const submitSalaryData = async (): Promise<void> => {
-    await ApiConnector.put('/employer', { name: salaryData.employer, payDay: salaryData.payday });
+    await ApiConnector.put<employerInfo>('/employer', salaryData);
     setShowSalaryModal(false);
   }
 
@@ -172,11 +180,11 @@ export const NewDashboard = (): JSX.Element => {
       >
         <SalaryGroup>
           <Label>Employer Name</Label>
-          <TextBox value={salaryData.employer} onChange={(e) => setSalaryData((data) => ({ ...data, employer: e.target.value }))} />
+          <TextBox value={salaryData.name} onChange={(e) => setSalaryData((data) => ({ ...data, name: e.target.value }))} />
         </SalaryGroup>
         <SalaryGroup>
           <Label>Payday</Label>
-          <TextBox value={salaryData.payday} type='number' max={31} min={1} onChange={(e) => setSalaryData((data) => ({ ...data, payday: e.target.valueAsNumber }))} />
+          <TextBox value={salaryData.payDay} type='number' max={31} min={1} onChange={(e) => setSalaryData((data) => ({ ...data, payDay: e.target.valueAsNumber }))} />
         </SalaryGroup>
       </Modal>
       <Modal
