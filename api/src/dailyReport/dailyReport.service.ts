@@ -1,19 +1,20 @@
-import { Model, Document } from 'mongoose';
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { DailyReport, DailyReportDocument } from './schemas/dailyReport.schema';
+import { DailyReport } from './schemas/dailyReport.schema';
 import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as moment from 'moment';
 import { MonzoService } from '../monzo/monzo.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class DailyReportService extends StorageService<DailyReport> {
   constructor(
-    @InjectModel(DailyReport.name) private dailyReportModel: Model<DailyReportDocument>,
+    @InjectRepository(DailyReport)
+    private dailyReportRepository: Repository<DailyReport>,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
   ) {
-    super(dailyReportModel);
+    super(dailyReportRepository);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
@@ -26,18 +27,18 @@ export class DailyReportService extends StorageService<DailyReport> {
       year: yday.year(),
       amount: +(amountInBank / 100).toFixed(2),
     };
-    await this.dailyReportModel.create(model);
+    await this.save(model);
   }
 
-  getByDate = async (month: number, year: number, day?: number): Promise<(DailyReport & Document)[]> => {
+  getByDate = async (month: number, year: number, day?: number): Promise<DailyReport[]> => {
     const param = day
       ? {
-          year,
-          month,
-          day,
-        }
+        year,
+        month,
+        day,
+      }
       : { year, month };
 
-    return await this.dailyReportModel.find(param).exec();
+    return this.dailyReportRepository.findBy(param);
   };
 }

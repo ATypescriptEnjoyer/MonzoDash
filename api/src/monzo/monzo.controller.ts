@@ -11,6 +11,7 @@ import { Finances } from '../finances/schemas/finances.schema';
 import { TransactionsService } from '../transactions/transactions.service';
 import { WebhookTransaction } from './monzo.interfaces';
 import { MonzoService } from './monzo.service';
+import { Transactions } from '../transactions/schemas/transactions.schema';
 
 @Controller('monzo')
 export class MonzoController {
@@ -19,7 +20,7 @@ export class MonzoController {
     private readonly transactionService: TransactionsService,
     private readonly financesService: FinancesService,
     private readonly employerService: EmployerService,
-  ) {}
+  ) { }
 
   @Get('getUser')
   async getUser(): Promise<Owner> {
@@ -46,7 +47,7 @@ export class MonzoController {
           description = transaction.data.notes;
         }
         const amount = Math.abs(transaction.data.amount) / 100;
-        await this.transactionService.create({
+        await this.transactionService.save({
           id: transaction.data.id,
           amount,
           created: transaction.data.created,
@@ -54,7 +55,7 @@ export class MonzoController {
           logoUrl: transaction.data.merchant?.logo,
           description: description.trim(),
           transaction: transaction.data,
-        });
+        } as unknown as Transactions);
         const employer = (await this.employerService.getAll())[0];
         const finances = await this.financesService.getAll();
         if (employer && employer.name === description) {

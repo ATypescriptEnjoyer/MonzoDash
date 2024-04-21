@@ -19,5 +19,12 @@
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true
   },
-  "exclude": ["plop-templates/**", "./dist/**"]
+  "exclude": [
+    "plop-templates/**",
+    "./dist/**"
+  ],
+  "include": [
+    "src",
+    "migrations"
+  ]
 }

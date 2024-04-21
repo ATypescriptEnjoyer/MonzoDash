@@ -1,11 +1,11 @@
-import { Document, Types } from 'mongoose';
-import { DeleteResult } from 'mongodb';
+import { DeleteResult, FindOptionsWhere } from "typeorm";
 
 export interface IStorageService<T> {
-  create: (obj: T) => Promise<T & Document>;
-  getAll: () => Promise<(T & Document)[]>;
-  getById: (id: Types.ObjectId) => Promise<T & Document>;
-  save: (obj: T & Document) => Promise<T & Document>;
-  delete: (obj: T & Document) => Promise<T & Document>;
-  deleteAll: () => Promise<DeleteResult>;
+  getAll: (where?: FindOptionsWhere<T>) => Promise<T[]>;
+  save(obj: T): Promise<T>;
+  save(obj: T[]): Promise<T[]>;
+  delete(obj: T): Promise<T>;
+  delete(obj: T[]): Promise<T[]>;
+  deleteWhere: (where: FindOptionsWhere<T>) => Promise<DeleteResult>
+  deleteAll: () => Promise<void>;
 }

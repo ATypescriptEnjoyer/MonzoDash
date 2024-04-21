@@ -2,27 +2,23 @@ version: "3.4"
 
 services:
   api:
-    image: node:lts-alpine
+    image: node:lts-slim
     volumes:
       - ./shared:/app/shared
       - ./api:/app/api
+      - ./data:/data
     working_dir: /app/api
     command: >
-      sh -c "yarn install && yarn start:dev"
+      sh -c "apt-get update && apt-get install procps -y -qq && yarn install && yarn start:dev"
     ports:
       - 5000:5000
     environment:
       - TZ=Europe/London
-      - MONGO_USERNAME=${MONGO_USERNAME}
-      - MONGO_PASSWORD=${MONGO_PASSWORD}
-      - MONGO_HOST=${MONGO_HOST}
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
       # - SENTRY_DSN=${SENTRY_DSN}
       - DEBUG=true
-    links:
-      - mongo
   client:
     image: node:lts-alpine
     volumes:
@@ -32,27 +28,6 @@ services:
       - VITE_API_URL=/api
     command: >
       sh -c "yarn install && export VITE_APP_VERSION=$(node -pe \"require('../package.json').version\") && export VITE_APP_NAME=$(node -pe \"require('../package.json').name\") && yarn start"
-  mongo:
-    image: mongo
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-    ports:
-      - 27017:27017
-    volumes:
-      - ./db:/data/db
-
-  mongo-express:
-    image: mongo-express
-    restart: always
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_BASICAUTH_USERNAME: ${MONGO_USERNAME}
-      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGO_PASSWORD}
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongo:27017/
 
   nginx:
     image: nginx

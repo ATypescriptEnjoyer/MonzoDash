@@ -1,15 +1,29 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
 
-export type EmployerDocument = Employer & Document;
-
-@Schema()
+@Entity()
 export class Employer {
-  @Prop()
+  @PrimaryGeneratedColumn()
+  id?: string;
+
+  @Column()
   name: string;
 
-  @Prop()
+  @Column()
   payDay: number;
 }
 
-export const EmployerSchema = SchemaFactory.createForClass(Employer);
+export const EmployerSchema = new EntitySchema<Employer>({
+  name: Employer.name, target: Employer, columns: {
+    id: {
+      type: String,
+      primary: true,
+      generated: 'uuid'
+    },
+    name: {
+      type: String
+    },
+    payDay: {
+      type: String
+    }
+  }
+})

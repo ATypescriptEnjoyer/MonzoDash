@@ -1,25 +1,41 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { DedicatedFinance } from '../../../../shared/interfaces/finances';
+import { Entity, Column, EntitySchema, PrimaryColumn } from 'typeorm';
 
-export type FinancesDocument = DedicatedFinance & Document;
-
-@Schema()
+@Entity()
 export class Finances {
-  @Prop()
+  @PrimaryColumn()
   id: string;
 
-  @Prop()
+  @Column()
   name: string;
 
-  @Prop()
+  @Column()
   colour: string;
 
-  @Prop()
+  @Column()
   amount: number;
 
-  @Prop()
+  @Column()
   dynamicPot?: boolean = false;
 }
 
-export const FinancesSchema = SchemaFactory.createForClass(Finances);
+export const FinancesSchema = new EntitySchema<Finances>({
+  name: Finances.name, target: Finances, columns: {
+    id: {
+      type: String,
+      primary: true
+    },
+    name: {
+      type: String
+    },
+    colour: {
+      type: String
+    },
+    amount: {
+      type: Number
+    },
+    dynamicPot: {
+      type: Boolean,
+      default: false
+    }
+  }
+})

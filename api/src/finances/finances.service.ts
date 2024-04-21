@@ -1,20 +1,21 @@
-import { Model } from 'mongoose';
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Finances, FinancesDocument } from './schemas/finances.schema';
+import { Finances } from './schemas/finances.schema';
 import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { MonzoService } from '../monzo/monzo.service';
 import async from 'async';
 import { generateColour } from '../generateColour';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class FinancesService extends StorageService<Finances> {
   constructor(
-    @InjectModel(Finances.name) private financesModel: Model<FinancesDocument>,
+    @InjectRepository(Finances)
+    financesRepository: Repository<Finances>,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
   ) {
-    super(financesModel);
+    super(financesRepository);
   }
 
   @Cron(CronExpression.EVERY_HOUR)
@@ -29,11 +30,11 @@ export class FinancesService extends StorageService<Finances> {
           await this.delete(matchedPot);
         } else {
           matchedPot.name = extPot.name;
-          await matchedPot.save();
+          await this.save(matchedPot);
         }
       }
       else {
-        this.create({
+        await this.save({
           ...extPot,
           colour: generateColour(),
           amount: 0,

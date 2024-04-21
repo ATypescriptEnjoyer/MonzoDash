@@ -1,4 +1,3 @@
-import { MongooseModule } from '@nestjs/mongoose';
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
 import { MonzoModule } from '../monzo/monzo.module';
@@ -15,19 +14,20 @@ import { FinancesController } from '../finances/finances.controller';
 import { MonzoController } from '../monzo/monzo.controller';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { MigrationsModule } from '../migrations/migrations.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { SentryInterceptor } from '../sentry/sentry.interceptor';
 import * as Sentry from '@sentry/node';
 import { SentryFilter } from '../sentry/sentry.filter';
 import { DailyReportModule } from '../dailyReport/dailyReport.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { getConfig } from '../config/datasource.config';
 
-const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, SENTRY_DSN } = process.env;
+const { SENTRY_DSN } = process.env;
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    MongooseModule.forRoot(`mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}/monzodash?authSource=admin`),
+    TypeOrmModule.forRoot(getConfig()),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
     }),
@@ -38,7 +38,6 @@ const { MONGO_USERNAME, MONGO_PASSWORD, MONGO_HOST, SENTRY_DSN } = process.env;
     HolidaysModule,
     LoginModule,
     TransactionsModule,
-    MigrationsModule,
     DailyReportModule,
   ],
   providers: [

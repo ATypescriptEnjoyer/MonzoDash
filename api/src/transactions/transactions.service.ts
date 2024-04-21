@@ -1,12 +1,13 @@
-import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Transactions, TransactionsDocument } from './schemas/transactions.schema';
+import { Transactions } from './schemas/transactions.schema';
 import { StorageService } from '../storageService';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TransactionsService extends StorageService<Transactions> {
-  constructor(@InjectModel(Transactions.name) transactionsModel: Model<TransactionsDocument>) {
-    super(transactionsModel);
+  constructor(@InjectRepository(Transactions)
+  transactionsRepository: Repository<Transactions>,) {
+    super(transactionsRepository);
   }
 }

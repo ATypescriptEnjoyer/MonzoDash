@@ -1,21 +1,42 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
 
-export type DailyReportDocument = DailyReport & Document;
-
-@Schema()
+@Entity()
 export class DailyReport {
-  @Prop()
+
+  @PrimaryGeneratedColumn()
+  id?: string;
+
+  @Column()
   day: number;
 
-  @Prop()
+  @Column()
   month: number;
 
-  @Prop()
+  @Column()
   year: number;
 
-  @Prop()
+  @Column()
   amount: number;
 }
 
-export const DailyReportSchema = SchemaFactory.createForClass(DailyReport);
+export const DailyReportSchema = new EntitySchema<DailyReport>({
+  name: DailyReport.name, target: DailyReport, columns: {
+    id: {
+      type: String,
+      primary: true,
+      generated: 'uuid'
+    },
+    day: {
+      type: Number,
+    },
+    month: {
+      type: Number,
+    },
+    year: {
+      type: Number,
+    },
+    amount: {
+      type: Number
+    }
+  }
+});

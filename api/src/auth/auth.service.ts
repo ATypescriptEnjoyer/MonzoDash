@@ -1,29 +1,32 @@
-import { Model } from 'mongoose';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Auth, AuthDocument } from './schemas/auth.schema';
+import { Auth } from './schemas/auth.schema';
 import { MonzoService } from '../monzo/monzo.service';
-import * as moment from 'moment';
 import { StorageService } from '../storageService';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService extends StorageService<Auth> {
   constructor(
-    @InjectModel(Auth.name) private authModel: Model<AuthDocument>,
+    @InjectRepository(Auth)
+    private authRepository: Repository<Auth>,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
   ) {
-    super(authModel);
+    super(authRepository);
   }
 
-  async getLatestToken(): Promise<AuthDocument> {
-    const query = await this.authModel.findOne().sort({ createdAt: 'descending' }).exec();
-    if (query) {
-      if (new Date().getTime() > query.expiresIn.getTime()) {
+  async getLatestToken(): Promise<Auth> {
+    const allTokens = await this.authRepository.find({ order: { createdAt: "DESC" } });
+    if (allTokens.length > 0) {
+      var query = allTokens[0];
+      var currentDate = new Date();
+      if (currentDate.getTime() >= new Date(query.expiresIn).getTime()) {
         try {
           const newTokenInfo = await this.monzoService.refreshToken({ refreshToken: query.refreshToken });
           query.authToken = newTokenInfo.accessToken;
           query.refreshToken = newTokenInfo.refreshToken;
-          query.expiresIn = moment().add(newTokenInfo.expiresIn, 'seconds').toDate();
+          currentDate.setSeconds(currentDate.getSeconds() + newTokenInfo.expiresIn);
+          query.expiresIn = currentDate.toISOString();
           await this.save(query);
         } catch (error) {
           return null;

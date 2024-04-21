@@ -8,7 +8,7 @@ import { Employer } from './schemas/employer.schema';
 
 @Controller('Employer')
 export class EmployerController {
-  constructor(private readonly employerService: EmployerService) {}
+  constructor(private readonly employerService: EmployerService) { }
 
   @Get()
   async getEmployer(): Promise<Employer> {
@@ -18,7 +18,7 @@ export class EmployerController {
 
   @Put()
   async putEmployer(@Body() employerDto: Employer): Promise<Employer> {
-    const employer = await this.employerService.create(employerDto);
+    const employer = await this.employerService.save(employerDto);
     return employer;
   }
 }

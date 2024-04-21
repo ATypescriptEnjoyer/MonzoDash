@@ -49,16 +49,16 @@ export class AuthController {
       const record: Auth = {
         authToken: authResponse.accessToken,
         refreshToken: authResponse.refreshToken,
-        createdAt: new Date(),
-        expiresIn,
+        createdAt: new Date().toISOString(),
+        expiresIn: expiresIn.toISOString(),
         twoFactored: false,
       };
       await this.authService.deleteAll();
-      await this.authService.create(record);
+      await this.authService.save(record);
       const loginCode = await this.loginService.createCode();
       return response.redirect(`/login/verify?code=${loginCode}`);
     } catch (error) {
-      throw new InternalServerErrorException(error.response.data);
+      throw new InternalServerErrorException(error);
     }
   }
 

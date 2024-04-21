@@ -1,33 +1,62 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import { Entity, Column, EntitySchema, PrimaryColumn } from 'typeorm';
 
-export type TransactionsDocument = Transactions & Document;
-
-@Schema()
+@Entity()
 export class Transactions {
-  @Prop()
+  @PrimaryColumn()
   id: string;
 
-  @Prop()
-  created: Date;
+  @Column()
+  created: string;
 
-  @Prop()
+  @Column()
   logoUrl?: string;
 
-  @Prop()
+  @Column()
   amount: number;
 
-  @Prop()
+  @Column()
   type: 'incoming' | 'outgoing';
 
-  @Prop()
+  @Column()
   description: string;
 
-  @Prop()
+  @Column()
   internal?: boolean;
 
-  @Prop({ type: mongoose.Schema.Types.Mixed })
+  @Column({ type: 'json' })
   transaction?: any;
 }
 
-export const TransactionsSchema = SchemaFactory.createForClass(Transactions);
+export const TransactionsSchema = new EntitySchema<Transactions>({
+  name: Transactions.name, target: Transactions, columns: {
+    id: {
+      type: String,
+      primary: true,
+    },
+    created: {
+      type: Date,
+      default: "current_timestamp"
+    },
+    logoUrl: {
+      type: String,
+      default: ''
+    },
+    amount: {
+      type: Number,
+    },
+    type: {
+      type: String,
+      enum: ['incoming', 'outgoing']
+    },
+    description: {
+      type: String
+    },
+    internal: {
+      type: Boolean,
+      default: false
+    },
+    transaction: {
+      type: 'json'
+    }
+  }
+})

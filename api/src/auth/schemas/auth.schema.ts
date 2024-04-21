@@ -1,24 +1,48 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
 
-export type AuthDocument = Auth & Document;
-
-@Schema()
+@Entity()
 export class Auth {
-  @Prop()
+
+  @PrimaryGeneratedColumn()
+  id?: string;
+
+  @Column()
   authToken: string;
 
-  @Prop()
+  @Column()
   refreshToken: string;
 
-  @Prop()
-  createdAt: Date;
+  @Column()
+  createdAt: string;
 
-  @Prop()
-  expiresIn: Date;
+  @Column()
+  expiresIn: string;
 
-  @Prop()
+  @Column()
   twoFactored: boolean;
 }
 
-export const AuthSchema = SchemaFactory.createForClass(Auth);
+export const AuthSchema = new EntitySchema<Auth>({
+  name: Auth.name, target: Auth, columns: {
+    id: {
+      type: String,
+      primary: true,
+      generated: 'uuid'
+    },
+    authToken: {
+      type: String,
+    },
+    refreshToken: {
+      type: String
+    },
+    createdAt: {
+      type: String
+    },
+    expiresIn: {
+      type: String
+    },
+    twoFactored: {
+      type: Boolean
+    }
+  }
+});

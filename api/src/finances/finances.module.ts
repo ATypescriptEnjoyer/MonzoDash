@@ -1,15 +1,15 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { HolidaysModule } from '../holidays/holidays.module';
 import { EmployerModule } from '../employer/employer.module';
 import { MonzoModule } from '../monzo/monzo.module';
 import { FinancesController } from './finances.controller';
 import { FinancesService } from './finances.service';
-import { Finances, FinancesSchema } from './schemas/finances.schema';
+import { FinancesSchema } from './schemas/finances.schema';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Finances.name, schema: FinancesSchema }]),
+    TypeOrmModule.forFeature([FinancesSchema]),
     EmployerModule,
     forwardRef(() => MonzoModule),
     HolidaysModule,
@@ -18,4 +18,4 @@ import { Finances, FinancesSchema } from './schemas/finances.schema';
   providers: [FinancesService],
   exports: [FinancesService],
 })
-export class FinancesModule {}
+export class FinancesModule { }

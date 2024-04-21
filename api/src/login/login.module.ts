@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { MonzoModule } from '../monzo/monzo.module';
 import { LoginController } from './login.controller';
 import { LoginService } from './login.service';
-import { Login, LoginSchema } from './schemas/login.schema';
+import { LoginSchema } from './schemas/login.schema';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Login.name, schema: LoginSchema }]), MonzoModule],
+  imports: [TypeOrmModule.forFeature([LoginSchema]), MonzoModule],
   controllers: [LoginController],
   providers: [LoginService],
   exports: [LoginService],
 })
-export class LoginModule {}
+export class LoginModule { }

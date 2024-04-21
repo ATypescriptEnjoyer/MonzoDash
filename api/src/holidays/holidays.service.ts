@@ -1,17 +1,20 @@
-import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Holiday, HolidaysDocument } from './schemas/holidays.schema';
+import { Holiday } from './schemas/holidays.schema';
 import { StorageService } from '../storageService';
 import axios from 'axios';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import * as moment from 'moment';
 import async from 'async';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class HolidaysService extends StorageService<Holiday> {
-  constructor(@InjectModel(Holiday.name) private holidaysModel: Model<HolidaysDocument>) {
-    super(holidaysModel);
+  constructor(
+    @InjectRepository(Holiday)
+    holidayRepository: Repository<Holiday>,
+  ) {
+    super(holidayRepository);
   }
 
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
@@ -32,6 +35,6 @@ export class HolidaysService extends StorageService<Holiday> {
   }
 
   createBulk = async (obj: Holiday[]): Promise<Holiday[]> => {
-    return await this.holidaysModel.insertMany(obj);
+    return this.save(obj);
   };
 }

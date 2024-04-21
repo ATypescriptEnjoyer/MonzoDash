@@ -1,32 +1,37 @@
-import { Model, Document, Types } from 'mongoose';
-import { DeleteResult } from 'mongodb';
-import { IStorageService } from './';
+import { IStorageService } from './IStorageService';
+import { DeleteResult, FindOptionsWhere, Repository } from 'typeorm';
 
 export class StorageService<T> implements IStorageService<T> {
-  constructor(readonly model: Model<T & Document>) {}
+  constructor(readonly repository: Repository<T>) { }
 
-  create = async (obj: T): Promise<T & Document> => {
-    const createdModel = new this.model(obj);
-    return await createdModel.save();
+  getAll = async (where?: FindOptionsWhere<T>): Promise<T[]> => {
+    return this.repository.find(where);
   };
 
-  getAll = async (): Promise<(T & Document)[]> => {
-    return await this.model.find().exec();
+  save(obj: T): Promise<T>;
+  save(obj: T[]): Promise<T[]>;
+  save(obj: T | T[]): Promise<T | T[]> {
+    if (Array.isArray(obj)) {
+      return this.repository.save(obj);
+    }
+    return this.repository.save(obj);
   };
 
-  getById = async (id: Types.ObjectId): Promise<T & Document> => {
-    return await this.model.findById(id).exec();
-  };
+  delete(obj: T): Promise<T>;
+  delete(obj: T[]): Promise<T[]>;
 
-  save = async (obj: T & Document): Promise<T & Document> => {
-    return await obj.save();
-  };
+  delete(obj: T | T[]): Promise<T | T[]> {
+    if (Array.isArray(obj)) {
+      return this.repository.save(obj);
+    }
+    return this.repository.save(obj);
+  }
 
-  delete = async (obj: T & Document): Promise<T & Document> => {
-    return await obj.deleteOne();
-  };
+  deleteWhere = (where: FindOptionsWhere<T>): Promise<DeleteResult> => {
+    return this.repository.delete(where);
+  }
 
-  deleteAll = async (): Promise<DeleteResult> => {
-    return await this.model.deleteMany().exec();
+  deleteAll = async (): Promise<void> => {
+    return this.repository.clear();
   };
 }

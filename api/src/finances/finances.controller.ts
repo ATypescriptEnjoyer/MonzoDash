@@ -11,7 +11,7 @@ import { MonzoService } from '../monzo/monzo.service';
 import { FinancesService } from './finances.service';
 import { HolidaysService } from '../holidays/holidays.service';
 import { Holiday } from '../holidays/schemas/holidays.schema';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 @Controller('Finances')
 export class FinancesController {
   constructor(
@@ -38,11 +38,7 @@ export class FinancesController {
     const existingPots = await this.financesService.getAll();
     const financePromises = dedicatedDto.map(async (value: DedicatedFinance) => {
       const existingPot = existingPots.find(({ id }) => id === value.id);
-      if (existingPot) {
-        await existingPot.updateOne(value).exec();
-        return value;
-      }
-      return this.financesService.create(value);
+      return this.financesService.save(existingPot ? existingPot : value);
     });
 
     const finances = await Promise.all(financePromises);
@@ -66,8 +62,9 @@ export class FinancesController {
     if (typeof balance !== "number") { // Must be exception
       throw balance;
     }
-    const employer = (await this.employerService.getAll())[0];
-    if (employer) {
+    const employerArr = await this.employerService.getAll();
+    if (employerArr.length > 0) {
+      const employer = employerArr[0];
       const holidays: Holiday[] = await this.holidaysService.getAll();
       const payDate = await calculatePayDay(employer.payDay, holidays);
       let daysUntil = moment(payDate).diff(moment(), 'days');
@@ -83,6 +80,14 @@ export class FinancesController {
         perDayPence: balance / daysUntil,
       };
     }
+
+    const daysUntil = 28 - new Date().getDate();
+
+    return {
+      balancePence: balance,
+      daysTilPay: daysUntil,
+      perDayPence: balance / daysUntil,
+    };
 
     return null;
   }

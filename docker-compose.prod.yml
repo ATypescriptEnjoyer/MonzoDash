@@ -2,28 +2,16 @@ version: "3.4"
 
 services:
   monzodash:
-    image: ghcr.io/sasharyder/monzodash:latest
+    build: .
     restart: unless-stopped
-    links:
-      - mongo
+    volumes:
+      - ./data:/data
     environment:
       - TZ=Europe/London
-      - MONGO_USERNAME=${MONGO_USERNAME}
-      - MONGO_PASSWORD=${MONGO_PASSWORD}
-      - MONGO_HOST=${MONGO_HOST}
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
       - MONZODASH_WEBHOOK_DOMAIN=${MONZODASH_WEBHOOK_DOMAIN} #Optional: will fall back to MONZODASH_DOMAIN if not added
-
-  mongo:
-    image: mongo
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-    volumes:
-      - ./db:/data/db
 
 networks:
   default:

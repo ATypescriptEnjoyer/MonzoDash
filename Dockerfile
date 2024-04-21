@@ -1,4 +1,4 @@
-FROM node:lts-alpine AS api
+FROM node:lts-slim AS api
 
 COPY api /app/api
 COPY shared /app/shared
@@ -21,8 +21,9 @@ RUN \
     VITE_API_URL=/api yarn build && \
     rm rootpackage.json
 
-FROM node:lts-alpine AS build
+FROM node:lts-slim AS build
 
+RUN yarn global add typeorm
 COPY --from=api /app/api/dist/ /app/dist
 COPY --from=api /app/api/node_modules/ /app/node_modules
 COPY --from=api /app/api/package.json /app/package.json

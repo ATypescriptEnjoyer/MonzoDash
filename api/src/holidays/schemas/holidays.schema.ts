@@ -1,12 +1,24 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
 
-export type HolidaysDocument = Holiday & Document;
-
-@Schema()
+@Entity()
 export class Holiday {
-  @Prop({ unique: true })
+  @PrimaryGeneratedColumn()
+  id: string;
+
+  @Column({ unique: true })
   date: string;
 }
 
-export const HolidaysSchema = SchemaFactory.createForClass(Holiday);
+export const HolidaysSchema = new EntitySchema<Holiday>({
+  name: Holiday.name, target: Holiday, columns: {
+    id: {
+      type: String,
+      primary: true,
+      generated: 'uuid'
+    },
+    date: {
+      type: Date,
+      unique: true
+    }
+  }
+})
