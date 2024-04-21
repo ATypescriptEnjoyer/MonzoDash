@@ -18,6 +18,7 @@ export class EmployerController {
 
   @Put()
   async putEmployer(@Body() employerDto: Employer): Promise<Employer> {
+    await this.employerService.deleteAll();
     const employer = await this.employerService.save(employerDto);
     return employer;
   }

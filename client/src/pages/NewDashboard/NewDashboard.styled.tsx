@@ -156,3 +156,25 @@ export const SpendingBoxContainer = styled.div`
   box-sizing: border-box;
   overflow-y: auto;
 `;
+
+export const SalaryGroup = styled.div`
+
+display: flex;
+flex-direction: column;
+gap: 12px;
+margin: 30px;
+
+`;
+
+export const Label = styled.label`
+
+font-size: 24px;
+
+`;
+
+export const TextBox = styled.input`
+
+max-width: 300px;
+font-size: 20px;
+
+`;

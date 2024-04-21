@@ -17,6 +17,9 @@ import {
   SpendingBarItem,
   SpendingBoxContainer,
   LeftoverText,
+  Label,
+  TextBox,
+  SalaryGroup,
 } from './NewDashboard.styled';
 import { Transaction } from '../../../../shared/interfaces/transaction';
 import { ApiConnector } from '../../network';
@@ -39,6 +42,7 @@ export const NewDashboard = (): JSX.Element => {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [showSpendingModal, setShowSpendingModal] = useState(false);
 
+  const [salaryData, setSalaryData] = useState<{ employer: string, payday: number }>({ employer: "", payday: 28 });
   const [spendingData, setSpendingData] = useState<(DedicatedFinance & { amountString: string })[]>();
 
   const [chartData, setChartDate] = useState<{ day: number; amount: number | null }[]>([]);
@@ -140,6 +144,11 @@ export const NewDashboard = (): JSX.Element => {
     return spendingBarData;
   };
 
+  const submitSalaryData = async (): Promise<void> => {
+    await ApiConnector.put('/employer', { name: salaryData.employer, payDay: salaryData.payday });
+    setShowSalaryModal(false);
+  }
+
   const submitSpendingData = async (): Promise<void> => {
     const validData = spendingData?.map(({ amountString, ...val }) => ({ ...val, amount: +amountString }));
     await ApiConnector.post<DedicatedFinance[]>('/finances/dedicated', validData);
@@ -155,12 +164,21 @@ export const NewDashboard = (): JSX.Element => {
     <DashContainer>
       <Modal
         show={showSalaryModal}
-        onSubmit={() => null}
+        onSubmit={submitSalaryData}
         onClose={() => {
           setShowSalaryModal(false);
         }}
         title="Update Salary Details"
-      ></Modal>
+      >
+        <SalaryGroup>
+          <Label>Employer Name</Label>
+          <TextBox value={salaryData.employer} onChange={(e) => setSalaryData((data) => ({ ...data, employer: e.target.value }))} />
+        </SalaryGroup>
+        <SalaryGroup>
+          <Label>Payday</Label>
+          <TextBox value={salaryData.payday} type='number' max={31} min={1} onChange={(e) => setSalaryData((data) => ({ ...data, payday: e.target.valueAsNumber }))} />
+        </SalaryGroup>
+      </Modal>
       <Modal
         show={showSpendingModal}
         onSubmit={submitSpendingData}
