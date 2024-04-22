@@ -43,11 +43,9 @@ export class FinancesController {
   async postDedicatedFinances(
     @Body() dedicatedDto: DedicatedFinance[],
   ): Promise<{ status: boolean; data: DedicatedFinance[] }> {
-    const existingPots = await this.financesService.getAll();
     const financePromises = dedicatedDto.map(async (value: DedicatedFinance) => {
       return this.financesService.save(value);
     });
-
     const finances = await Promise.all(financePromises);
 
     return {
@@ -73,11 +71,11 @@ export class FinancesController {
     if (employerArr.length > 0) {
       const employer = employerArr[0];
       const holidays: Holiday[] = await this.holidaysService.getAll();
-      const payDate = await calculatePayDay(employer.payDay, holidays);
+      const payDate = await calculatePayDay(employer.payDay, holidays, new Date(), employer.paidOnHolidays);
       let daysUntil = moment(payDate).diff(moment(), 'days');
       if (daysUntil === 0) {
         payDate.setDate(employer.payDay);
-        const nextPayday = await calculatePayDay(employer.payDay, holidays, payDate);
+        const nextPayday = await calculatePayDay(employer.payDay, holidays, payDate, employer.paidOnHolidays);
         daysUntil = moment(nextPayday).diff(moment(), 'days');
       }
 

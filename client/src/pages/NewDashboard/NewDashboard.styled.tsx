@@ -178,3 +178,9 @@ max-width: 300px;
 font-size: 20px;
 
 `;
+
+export const ToggleContainer = styled.div`
+
+width: min-content;
+
+`;

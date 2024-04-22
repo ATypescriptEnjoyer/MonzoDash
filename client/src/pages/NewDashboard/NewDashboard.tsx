@@ -20,6 +20,7 @@ import {
   Label,
   TextBox,
   SalaryGroup,
+  ToggleContainer,
 } from './NewDashboard.styled';
 import { Transaction } from '../../../../shared/interfaces/transaction';
 import { ApiConnector } from '../../network';
@@ -28,12 +29,12 @@ import { XAxis, YAxis, HorizontalGridLines, FlexibleXYPlot, AreaSeries, Hint, Ar
 import { useTheme } from 'styled-components';
 import { ThemeType } from '../..';
 import moment from 'moment';
-import { Icon, Modal } from '../../components';
+import { Icon, Modal, Toggle } from '../../components';
 import { subscribe, unsubscribe, EVENT_TYPES } from '../../event';
 import { DedicatedFinance } from '../../../../shared/interfaces/finances';
 import { SpendingBox } from '../../components/SpendingBox';
 
-interface employerInfo { name: string, payDay: number };
+interface employerInfo { id: string, name: string, payDay: number, paidOnHolidays: boolean };
 
 export const NewDashboard = (): JSX.Element => {
   const [transactionIndex, setTransactionIndex] = useState<number>(0);
@@ -44,7 +45,7 @@ export const NewDashboard = (): JSX.Element => {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [showSpendingModal, setShowSpendingModal] = useState(false);
 
-  const [salaryData, setSalaryData] = useState<employerInfo>({ name: "", payDay: 28 });
+  const [salaryData, setSalaryData] = useState<employerInfo>({ id: '', name: "", payDay: 28, paidOnHolidays: false });
   const [spendingData, setSpendingData] = useState<(DedicatedFinance & { amountString: string })[]>();
 
   const [chartData, setChartDate] = useState<{ day: number; amount: number | null }[]>([]);
@@ -185,6 +186,16 @@ export const NewDashboard = (): JSX.Element => {
         <SalaryGroup>
           <Label>Payday</Label>
           <TextBox value={salaryData.payDay} type='number' max={31} min={1} onChange={(e) => setSalaryData((data) => ({ ...data, payDay: e.target.valueAsNumber }))} />
+        </SalaryGroup>
+        <SalaryGroup>
+          <Label>Paid On Holidays/Weekends</Label>
+          <ToggleContainer>
+            <Toggle
+              value={salaryData.paidOnHolidays}
+              onChange={(val) => setSalaryData((data) => ({ ...data, paidOnHolidays: val }))}
+            />
+          </ToggleContainer>
+
         </SalaryGroup>
       </Modal>
       <Modal
