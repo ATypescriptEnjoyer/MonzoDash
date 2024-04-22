@@ -31,7 +31,7 @@ export const FinancesSchema = new EntitySchema<Finances>({
       type: String
     },
     amount: {
-      type: Number
+      type: 'decimal'
     },
     dynamicPot: {
       type: Boolean,
