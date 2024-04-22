@@ -56,6 +56,9 @@ export class MonzoController {
           description: description.trim(),
           transaction: transaction.data,
         } as unknown as Transactions);
+        if (transaction.ignoreProcessing) {
+          return;
+        }
         const employer = (await this.employerService.getAll())[0];
         const finances = await this.financesService.getAll();
         if (employer && employer.name === description) {

@@ -22,4 +22,5 @@ interface WebhookTransactionData {
 export interface WebhookTransaction {
   type: 'transaction.created' | 'transaction.updated';
   data: WebhookTransactionData;
+  ignoreProcessing?: boolean;
 }
