@@ -24,11 +24,19 @@ export class FinancesController {
   @Get('dedicated')
   async dedicatedFinances(): Promise<DedicatedFinance[]> {
     const dedicated = await this.financesService.getAll();
-    if (dedicated.length > 0) {
-      return dedicated;
+    if (dedicated.length > 1) {
+      return dedicated.sort((a, b) => {
+        if (a.id === '0') {
+          return -1;
+        } else if (b.id === '0') {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
     }
     const monzoPots = await this.monzoService.getPots();
-    return monzoPots.map(({ id, name }) => ({ id, name, amount: 0, colour: '#FFFFFF', dynamicPot: false }));
+    return [...dedicated, ...monzoPots.map(({ id, name }) => ({ id, name, amount: 0, colour: '#FFFFFF', dynamicPot: false }))];
   }
 
   @Post('dedicated')
@@ -37,8 +45,7 @@ export class FinancesController {
   ): Promise<{ status: boolean; data: DedicatedFinance[] }> {
     const existingPots = await this.financesService.getAll();
     const financePromises = dedicatedDto.map(async (value: DedicatedFinance) => {
-      const existingPot = existingPots.find(({ id }) => id === value.id);
-      return this.financesService.save(existingPot ? existingPot : value);
+      return this.financesService.save(value);
     });
 
     const finances = await Promise.all(financePromises);

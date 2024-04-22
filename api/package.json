@@ -14,6 +14,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "plop": "plop",
     "migration:up": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./node_modules/.bin/typeorm migration:run -d src/config/migration.config.ts",
+    "migration:create": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./node_modules/.bin/typeorm migration:create",
     "migration:down": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./node_modules/.bin/typeorm migration:revert -d src/config/migration.config.ts",
     "migration:gen": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./node_modules/.bin/typeorm migration:generate -d src/config/migration.config.ts",
     "migration:up:prod": "typeorm migration:run -d /app/dist/api/src/config/migration.config.js"
