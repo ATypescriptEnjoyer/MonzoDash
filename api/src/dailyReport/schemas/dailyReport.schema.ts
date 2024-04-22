@@ -36,7 +36,7 @@ export const DailyReportSchema = new EntitySchema<DailyReport>({
       type: Number,
     },
     amount: {
-      type: Number
+      type: 'decimal'
     }
   }
 });

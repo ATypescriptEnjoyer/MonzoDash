@@ -42,7 +42,7 @@ export const TransactionsSchema = new EntitySchema<Transactions>({
       default: ''
     },
     amount: {
-      type: Number,
+      type: 'decimal',
     },
     type: {
       type: String,
