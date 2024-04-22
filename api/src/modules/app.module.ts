@@ -61,10 +61,10 @@ export class AppModule implements NestModule {
     consumer
       .apply(LoginMiddleware)
       .exclude(
-        { path: '/api/auth/redirectUri', method: RequestMethod.GET },
-        { path: '/api/auth/callback', method: RequestMethod.GET },
+        { path: '/auth/redirectUri', method: RequestMethod.GET },
+        { path: '/auth/callback', method: RequestMethod.GET },
         {
-          path: '/api/monzo/webhook',
+          path: '/monzo/webhook',
           method: RequestMethod.POST,
         },
       )
