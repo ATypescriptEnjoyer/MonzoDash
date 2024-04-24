@@ -1,12 +1,23 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
 
-export type {{pascalCase name}}Document = {{pascalCase name}} & Document;
-
-@Schema()
+@Entity()
 export class {{pascalCase name}} {
-  @Prop()
-  prop: string;
+@PrimaryGeneratedColumn()
+id?: string;
+
+@Column()
+prop: string;
 }
 
-export const {{pascalCase name}}Schema = SchemaFactory.createForClass({{pascalCase name}});
+export const {{pascalCase name}}Schema = new EntitySchema<{{pascalCase name}}>({
+  name: {{pascalCase name}}.name, target: {{pascalCase name}}, columns: {
+  id: {
+  type: String,
+  primary: true,
+  generated: 'uuid'
+  },
+  prop: {
+  type: String,
+  }
+  }
+  });

@@ -1,13 +1,13 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { {{pascalCase name}}Controller } from './{{name}}.controller';
 import { {{pascalCase name}}Service } from './{{name}}.service';
-import { {{pascalCase name}}, {{pascalCase name}}Schema } from './schemas/{{name}}.schema';
+import { {{pascalCase name}}Schema } from './schemas/{{name}}.schema';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: {{pascalCase name}}.name, schema: {{pascalCase name}}Schema }])],
-  controllers: [{{pascalCase name}}Controller],
-  providers: [{{pascalCase name}}Service],
-  exports: [{{pascalCase name}}Service],
+imports: [TypeOrmModule.forFeature([{{pascalCase name}}Schema])],
+controllers: [{{pascalCase name}}Controller],
+providers: [{{pascalCase name}}Service],
+exports: [{{pascalCase name}}Service],
 })
 export class {{pascalCase name}}Module {}
