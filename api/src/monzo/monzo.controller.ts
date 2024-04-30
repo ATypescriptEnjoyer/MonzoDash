@@ -32,6 +32,9 @@ export class MonzoController {
   async webhook(@Body() transaction: WebhookTransaction): Promise<void> {
     try {
       if (transaction.type === 'transaction.created') {
+        if (transaction.data.amount <= 0) {
+          return;
+        }
         let description = transaction.data.merchant?.name || transaction.data.counterparty?.name;
         const type = transaction.data.amount > 0 ? 'incoming' : 'outgoing';
         if (!description && transaction.data.description.startsWith('pot_')) {
