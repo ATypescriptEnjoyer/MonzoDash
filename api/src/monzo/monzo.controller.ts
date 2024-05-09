@@ -12,6 +12,8 @@ import { TransactionsService } from '../transactions/transactions.service';
 import { WebhookTransaction } from './monzo.interfaces';
 import { MonzoService } from './monzo.service';
 import { Transactions } from '../transactions/schemas/transactions.schema';
+import { ActualbudgetService } from '../actualbudget/actualbudget.service';
+import { Transaction as ActualBudgetTransaction } from '../actualbudget/actualbudget.interfaces';
 
 @Controller('monzo')
 export class MonzoController {
@@ -20,6 +22,7 @@ export class MonzoController {
     private readonly transactionService: TransactionsService,
     private readonly financesService: FinancesService,
     private readonly employerService: EmployerService,
+    private readonly actualBudgetService: ActualbudgetService
   ) { }
 
   @Get('getUser')
@@ -32,7 +35,7 @@ export class MonzoController {
   async webhook(@Body() transaction: WebhookTransaction): Promise<void> {
     try {
       if (transaction.type === 'transaction.created') {
-        if (transaction.data.amount <= 0) {
+        if (transaction.data.amount === 0) {
           return;
         }
         let description = transaction.data.merchant?.name || transaction.data.counterparty?.name;
@@ -49,6 +52,8 @@ export class MonzoController {
         if (description === 'Flex') {
           description = transaction.data.notes;
         }
+        const employer = (await this.employerService.getAll())[0];
+        const isPaymentFromEmployer = employer && employer.name === description;
         const amount = Math.abs(transaction.data.amount) / 100;
         await this.transactionService.save({
           id: transaction.data.id,
@@ -62,9 +67,33 @@ export class MonzoController {
         if (transaction.ignoreProcessing) {
           return;
         }
-        const employer = (await this.employerService.getAll())[0];
+        if (this.actualBudgetService.available()) {
+          console.log("Forwarding data to ActualBudget");
+          let account = await this.actualBudgetService.getAccount("Monzo");
+          if (!account) {
+            const accValue = await this.monzoService.getBalance();
+            account = await this.actualBudgetService.createAccount({ name: "Monzo", type: "checking" }, accValue);
+          }
+          const categoryText = transaction.data.category.slice(0, 1).toUpperCase() + transaction.data.category.slice(1)
+          let category = await this.actualBudgetService.getCategory(categoryText);
+          if (!category) {
+            const categoryGroup = await this.actualBudgetService.getCategoryGroup(isPaymentFromEmployer ? "Income" : "Usual Expenses");
+            category = await this.actualBudgetService.createCategory({ name: categoryText, group_id: categoryGroup.id, is_income: isPaymentFromEmployer })
+          }
+          const actualBudgetTransaction: ActualBudgetTransaction = {
+            account: account.id,
+            amount: transaction.data.amount,
+            category: category.id,
+            date: transaction.data.created.split("T")[0],
+            payee: transaction.data.merchant?.name || transaction.data.counterparty?.name,
+            cleared: true,
+            notes: transaction.data.notes,
+            imported_id: transaction.data.id
+          }
+          await this.actualBudgetService.createTransaction(account.id, actualBudgetTransaction);
+        }
         const finances = await this.financesService.getAll();
-        if (employer && employer.name === description) {
+        if (isPaymentFromEmployer) {
           const salary = finances.find((finance) => finance.id === '0').amount;
           if (amount >= salary - 100) {
             async.eachSeries(finances, async (potInfo: Finances) => {

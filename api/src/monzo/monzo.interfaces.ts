@@ -9,7 +9,7 @@ interface WebhookTransactionDataMerchant {
 
 interface WebhookTransactionData {
   id: string;
-  created: Date;
+  created: string;
   amount: number;
   merchant?: WebhookTransactionDataMerchant;
   counterparty?: WebhookTransactionDataCounterparty;

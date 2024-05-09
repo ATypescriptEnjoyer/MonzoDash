@@ -19,6 +19,10 @@ services:
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
       # - SENTRY_DSN=${SENTRY_DSN}
       - DEBUG=true
+      #Optionals
+      - ACTUALBUDGET_BASE_URL=
+      - ACTUALBUDGET_PASSWORD=
+      - ACTUALBUDGET_BUDGET_ID=
   client:
     image: node:lts-alpine
     volumes:

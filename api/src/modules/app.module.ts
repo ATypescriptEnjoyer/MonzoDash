@@ -21,6 +21,7 @@ import { SentryFilter } from '../sentry/sentry.filter';
 import { DailyReportModule } from '../dailyReport/dailyReport.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../config/datasource.config';
+import { ActualbudgetModule } from '../actualbudget/actualbudget.module';
 
 const { SENTRY_DSN } = process.env;
 
@@ -39,6 +40,7 @@ const { SENTRY_DSN } = process.env;
     LoginModule,
     TransactionsModule,
     DailyReportModule,
+    ActualbudgetModule
   ],
   providers: [
     HolidaysModule,

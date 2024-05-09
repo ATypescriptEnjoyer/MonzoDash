@@ -20,8 +20,10 @@
     "migration:up:prod": "typeorm migration:run -d /app/dist/api/src/config/migration.config.js"
   },
   "dependencies": {
+    "@actual-app/api": "^6.7.1",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.3.8",
+    "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.3.8",
     "@nestjs/mongoose": "^10.0.6",
     "@nestjs/platform-express": "^10.3.8",
