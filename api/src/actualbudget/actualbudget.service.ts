@@ -34,7 +34,7 @@ export class ActualbudgetService implements OnModuleInit {
 
   getAccount = async (accName: string): Promise<Account> => {
     const accs = await api.getAccounts() as Account[];
-    return accs.find(acc => acc.name.localeCompare(accName, "en-GB", { sensitivity: "base" }) && !acc.closed);
+    return accs.find(acc => (acc.name.localeCompare(accName, "en", { sensitivity: "base" }) === 0) && !acc.closed);
   }
 
   createCategory = async (category: Category): Promise<Category> => {
@@ -45,7 +45,7 @@ export class ActualbudgetService implements OnModuleInit {
 
   getCategory = async (catName: string): Promise<Category> => {
     const cats = await api.getCategories() as Category[];
-    return cats.find(cat => cat.name.localeCompare(catName, "en-GB", { sensitivity: "base" }));
+    return cats.find(cat => cat.name.localeCompare(catName, "en", { sensitivity: "base" }) === 0);
   }
 
   createPayee = async (payee: Payee): Promise<Payee> => {
@@ -56,7 +56,7 @@ export class ActualbudgetService implements OnModuleInit {
 
   getPayee = async (payeeName: string): Promise<Payee> => {
     const payees = await api.getPayees() as Payee[];
-    return payees.find(payee => payee.name.localeCompare(payeeName, "en-GB", { sensitivity: "base" }));
+    return payees.find(payee => payee.name.localeCompare(payeeName, "en", { sensitivity: "base" }) === 0);
   }
 
   createTransaction = async (accId: string, transaction: Transaction): Promise<boolean> => {
@@ -71,6 +71,6 @@ export class ActualbudgetService implements OnModuleInit {
 
   getCategoryGroup = async (catGroupName: string): Promise<CategoryGroup> => {
     const catGroups = await api.getCategoryGroups() as CategoryGroup[];
-    return catGroups.find(catGroup => catGroup.name.localeCompare(catGroupName, "en-GB", { sensitivity: "base" }));
+    return catGroups.find(catGroup => catGroup.name.localeCompare(catGroupName, "en-GB", { sensitivity: "base" }) === 0);
   }
 }

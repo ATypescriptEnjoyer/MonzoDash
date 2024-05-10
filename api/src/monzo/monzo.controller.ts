@@ -14,6 +14,7 @@ import { MonzoService } from './monzo.service';
 import { Transactions } from '../transactions/schemas/transactions.schema';
 import { ActualbudgetService } from '../actualbudget/actualbudget.service';
 import { Transaction as ActualBudgetTransaction } from '../actualbudget/actualbudget.interfaces';
+import { formatText } from '..//formatText';
 
 @Controller('monzo')
 export class MonzoController {
@@ -74,7 +75,7 @@ export class MonzoController {
             const accValue = await this.monzoService.getBalance();
             account = await this.actualBudgetService.createAccount({ name: "Monzo", type: "checking" }, accValue);
           }
-          const categoryText = transaction.data.category.slice(0, 1).toUpperCase() + transaction.data.category.slice(1)
+          const categoryText = formatText(transaction.data.category);
           let category = await this.actualBudgetService.getCategory(categoryText);
           if (!category) {
             const categoryGroup = await this.actualBudgetService.getCategoryGroup(isPaymentFromEmployer ? "Income" : "Usual Expenses");
@@ -85,7 +86,7 @@ export class MonzoController {
             amount: transaction.data.amount,
             category: category.id,
             date: transaction.data.created.split("T")[0],
-            payee: transaction.data.merchant?.name || transaction.data.counterparty?.name,
+            payee_name: transaction.data.merchant?.name || transaction.data.counterparty?.name,
             cleared: true,
             notes: transaction.data.notes,
             imported_id: transaction.data.id
