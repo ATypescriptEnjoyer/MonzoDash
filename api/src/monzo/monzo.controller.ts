@@ -73,7 +73,8 @@ export class MonzoController {
           let account = await this.actualBudgetService.getAccount("Monzo");
           if (!account) {
             const accValue = await this.monzoService.getBalance();
-            account = await this.actualBudgetService.createAccount({ name: "Monzo", type: "checking" }, accValue);
+            const prevAccValue = accValue - transaction.data.amount
+            account = await this.actualBudgetService.createAccount({ name: "Monzo", type: "checking" }, prevAccValue);
           }
           const categoryText = formatText(transaction.data.category);
           let category = await this.actualBudgetService.getCategory(categoryText);
