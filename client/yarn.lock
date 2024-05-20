@@ -4107,10 +4107,10 @@ magic-string@^0.25.0, magic-string@^0.25.7:
   dependencies:
     sourcemap-codec "^1.4.8"
 
-material-symbols@^0.17.4:
-  version "0.17.4"
-  resolved "https://registry.yarnpkg.com/material-symbols/-/material-symbols-0.17.4.tgz#d44f9c47860487e74b2e9735425d49d99933ec01"
-  integrity sha512-5zI+rSzAidMJxAIrQCVwnp4rMjFnx8aQg68lfFXtaDeksZzJ7m8eDl16y9bRNxMosuYbLKeDHDbOWHPJJTSLhQ==
+material-symbols@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/material-symbols/-/material-symbols-0.18.0.tgz#a915c92abd3fffcbb1648d9e4ea5f09bc2013dcc"
+  integrity sha512-U+b96KpXsN+sA9Y3b/50t6Z1rJPfh2UvHCvwsZRJtB6IlbYMhZw6E6kvfelhlOhm32qX43SSlVIemqDFkPjh/Q==
 
 merge2@^1.3.0, merge2@^1.4.1:
   version "1.4.1"
