@@ -33,7 +33,7 @@
     "@sentry/integrations": "^7.114.0",
     "@sentry/node": "^7.114.0",
     "async": "^3.2.5",
-    "axios": "^1.7.0",
+    "axios": "^1.7.2",
     "axios-cache-interceptor": "^1.5.3",
     "better-sqlite3": "^9.6.0",
     "moment": "^2.30.1",
