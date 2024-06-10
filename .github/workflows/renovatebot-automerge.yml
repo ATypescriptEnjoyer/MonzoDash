@@ -4,7 +4,7 @@ on:
     types: [opened, synchronize]
 
 env:
-  PR_AUTHOR: ${{ toJSON(github.event.sender) }}
+  PR_AUTHOR: ${{ toJSON(github.event.username) }}
 
 jobs:
   renovatebot:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - run: echo "$PR_AUTHOR"
       - name: Enable auto-merge for Renovate Bot PRs
-        if: ${{ toJSON(github.event.sender) == 'renovate-bot' }}
+        if: ${{ env.PR_AUTHOR == 'renovate-bot' }}
         run: |
           curl -X POST \
           -H "Authorization: token $GITEA_TOKEN" \
