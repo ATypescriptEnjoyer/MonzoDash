@@ -3,10 +3,14 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+env:
+  PR_AUTHOR: ${{ github.event.sender }}
+
 jobs:
   renovatebot:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "$PR_AUTHOR"
       - name: Enable auto-merge for Renovate Bot PRs
         if: ${{ toJSON(github.event.sender) == 'renovate-bot' }}
         run: |
