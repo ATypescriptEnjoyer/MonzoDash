@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
 import * as Sentry from '@sentry/node';
-import { rewriteFramesIntegration } from '@sentry/integrations';
 import { NestApplicationOptions } from '@nestjs/common';
 
 const { SENTRY_DSN, DEBUG } = process.env;
@@ -16,7 +15,7 @@ async function bootstrap() {
       environment: DEBUG === 'true' ? 'dev' : 'production',
       tracesSampleRate: 1.0,
       integrations: [
-        rewriteFramesIntegration({
+        Sentry.rewriteFramesIntegration({
           root: global['__rootdir__'],
         }),
       ],

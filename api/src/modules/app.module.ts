@@ -40,21 +40,21 @@ const { SENTRY_DSN } = process.env;
     LoginModule,
     TransactionsModule,
     DailyReportModule,
-    ActualbudgetModule
+    ActualbudgetModule,
   ],
   providers: [
     HolidaysModule,
     ...(SENTRY_DSN
       ? [
-        {
-          provide: APP_INTERCEPTOR,
-          useClass: SentryInterceptor,
-        },
-        {
-          provide: APP_FILTER,
-          useClass: SentryFilter,
-        },
-      ]
+          {
+            provide: APP_INTERCEPTOR,
+            useClass: SentryInterceptor,
+          },
+          {
+            provide: APP_FILTER,
+            useClass: SentryFilter,
+          },
+        ]
       : []),
   ],
 })
@@ -71,7 +71,5 @@ export class AppModule implements NestModule {
         },
       )
       .forRoutes(AuthController, EmployerController, FinancesController, MonzoController, TransactionsModule);
-
-    consumer.apply(Sentry.Handlers.requestHandler()).forRoutes('*');
   }
 }
