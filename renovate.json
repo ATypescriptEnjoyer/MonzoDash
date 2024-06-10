@@ -15,8 +15,8 @@
       {
         "packagePatterns": ["*"],
         "enabled": true,
-        "managers": ["docker"],
-        "pathPatterns": ["/"],
+        "managers": ["dockerfile", "docker-compose"],
+        "paths": ["/"],
         "groupName": "docker dependencies",
         "schedule": ["every weekend"]
       },
@@ -24,7 +24,7 @@
         "packagePatterns": ["*"],
         "enabled": true,
         "managers": ["npm"],
-        "pathPatterns": ["/api/"],
+        "paths": ["/api/"],
         "groupName": "API dependencies",
         "schedule": ["every weekend"],
         "packageRules": [
@@ -38,7 +38,7 @@
         "packagePatterns": ["*"],
         "enabled": true,
         "managers": ["npm"],
-        "pathPatterns": ["/client/"],
+        "paths": ["/client/"],
         "groupName": "client dependencies",
         "schedule": ["every weekend"]
       }
