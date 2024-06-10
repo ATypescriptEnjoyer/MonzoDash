@@ -44,7 +44,7 @@
     "@typescript-eslint/parser": "^7.11.0",
     "@vitejs/plugin-react": "^4.3.0",
     "eslint": "^8.57.0",
-    "prettier": "^3.3.0",
+    "prettier": "^3.3.1",
     "vite": "^5.2.12",
     "vite-plugin-pwa": "^0.20.0",
     "vite-plugin-svgr": "^4.2.0",
