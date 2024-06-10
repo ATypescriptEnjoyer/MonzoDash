@@ -1,0 +1,19 @@
+name: Renovate Bot auto-merge
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  renovatebot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge for Renovate Bot PRs
+        if: ${{ toJSON(github.event.sender) == 'renovate-bot' }}
+        run: |
+          curl -X POST \
+          -H "Authorization: token $GITEA_TOKEN" \
+          -H "Content-Type: application/json" \
+          -d '{"do": "merge"}' \
+          "${{ github.event.pull_request.url }}/merge"
+        env:
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}

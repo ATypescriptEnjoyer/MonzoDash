@@ -1,11 +1,47 @@
 {
     "extends": [
-      "config:base"  
+      "config:base"
+    ],
+    "schedule": [
+      "every weekend"
     ],
     "packageRules": [
       {
-        "updateTypes": ["minor", "patch", "pin", "digest"],
-        "automerge": false
+        "packagePatterns": ["*"],
+        "enabled": true,
+        "groupName": "all dependencies",
+        "schedule": ["every weekend"]
+      },
+      {
+        "packagePatterns": ["*"],
+        "enabled": true,
+        "managers": ["docker"],
+        "pathPatterns": ["/"],
+        "groupName": "docker dependencies",
+        "schedule": ["every weekend"]
+      },
+      {
+        "packagePatterns": ["*"],
+        "enabled": true,
+        "managers": ["npm"],
+        "pathPatterns": ["/api/"],
+        "groupName": "API dependencies",
+        "schedule": ["every weekend"],
+        "packageRules": [
+          {
+            "packagePatterns": ["^@sentry"],
+            "groupName": "sentry"
+          }
+        ]
+      },
+      {
+        "packagePatterns": ["*"],
+        "enabled": true,
+        "managers": ["npm"],
+        "pathPatterns": ["/client/"],
+        "groupName": "client dependencies",
+        "schedule": ["every weekend"]
       }
     ]
   }
+  
