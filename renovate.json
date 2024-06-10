@@ -10,7 +10,8 @@
         "packagePatterns": ["*"],
         "enabled": true,
         "groupName": "all dependencies",
-        "schedule": ["every weekend"]
+        "schedule": ["every weekend"],
+        "automerge": true
       },
       {
         "packagePatterns": ["*"],
@@ -18,7 +19,8 @@
         "managers": ["dockerfile", "docker-compose"],
         "paths": ["/"],
         "groupName": "docker dependencies",
-        "schedule": ["every weekend"]
+        "schedule": ["every weekend"],
+        "automerge": true
       },
       {
         "packagePatterns": ["*"],
@@ -32,7 +34,8 @@
             "packagePatterns": ["^@sentry"],
             "groupName": "sentry"
           }
-        ]
+        ],
+        "automerge": true
       },
       {
         "packagePatterns": ["*"],
@@ -40,7 +43,8 @@
         "managers": ["npm"],
         "paths": ["/client/"],
         "groupName": "client dependencies",
-        "schedule": ["every weekend"]
+        "schedule": ["every weekend"],
+        "automerge": true
       }
     ]
   }
