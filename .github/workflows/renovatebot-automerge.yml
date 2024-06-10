@@ -4,7 +4,7 @@ on:
     types: [opened, synchronize]
 
 env:
-  PR_AUTHOR: ${{ toJSON(github.event.username) }}
+  PR_AUTHOR: ${{ github.event.username }}
 
 jobs:
   renovatebot:
