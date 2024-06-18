@@ -28,6 +28,21 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  sonarqube:
+    name: SonarQube Trigger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out
+        uses: actions/checkout@v4
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.2.1
+        with:
+          host: ${{ vars.SONARQUBE_URL }}
+          login: ${{ secrets.SONARQUBE_TOKEN }}
+
   build-and-push-image:
     runs-on: ubuntu-latest
     permissions:
