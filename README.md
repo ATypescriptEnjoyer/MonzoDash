@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="./" target="blank"><img src="./raw/commit/9dee3f800b7e6ce486cf8ee50293bbd7bbd607fc/client/public/icon-192x192.png?raw=true" width="120" alt="MonzoDash Logo" /></a>
+  <a href="./" target="blank"><img src="./raw/branch/master/client/public/icon-192x192.png" width="120" alt="MonzoDash Logo" /></a>
 </p>
 
 <p align="center">MonzoDash is a dockerised web app for monitoring and managing your Monzo bank account.</p>
