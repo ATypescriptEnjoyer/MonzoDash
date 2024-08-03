@@ -3,9 +3,9 @@
 
 
 "@actual-app/api@^6.7.1":
-  version "6.8.2"
-  resolved "https://registry.yarnpkg.com/@actual-app/api/-/api-6.8.2.tgz#827b79986cb4ea5856eb7f4b2e32f5ec1b8b1e96"
-  integrity sha512-BI9Zqip6eBRwmgQjDgXHpPSIJYsbm6e+Yyyvj9sNRn9GbWZr7WXsA8SySlIOZH/8EsA6DpS7CIW0RfOMWuLEcg==
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/@actual-app/api/-/api-6.9.0.tgz#db0d13ec94dbc84b4d6fdcf2b67aa53f304f31cd"
+  integrity sha512-/2uwe3c+gvLDpn59io+dKLC9dDvrZyT36DEWRGxe5BR7zvgm2rFbyhxyud+q4S9OODs8W7Oc5DVaoLYWilZBJA==
   dependencies:
     "@actual-app/crdt" "^2.1.0"
     better-sqlite3 "^9.6.0"
@@ -2687,9 +2687,9 @@ comment-json@4.2.3:
     repeat-string "^1.6.1"
 
 compare-versions@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/compare-versions/-/compare-versions-6.1.0.tgz#3f2131e3ae93577df111dba133e6db876ffe127a"
-  integrity sha512-LNZQXhqUvqUTotpZ00qLSaify3b4VFD588aRr8MKFw4CMUr98ytzCW5wDH5qx/DEY5kCDXcbcRuCqL0szEf2tg==
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/compare-versions/-/compare-versions-6.1.1.tgz#7af3cc1099ba37d244b3145a9af5201b629148a9"
+  integrity sha512-4hm4VPpIecmlg59CHXnRDnqGplJFrbLG4aFEl5vl6cK1u76ws3LLvX7ikFnTDl5vo39sjWD6AaDPYodJp/NNHg==
 
 component-emitter@^1.3.0:
   version "1.3.0"
@@ -3809,9 +3809,9 @@ globby@^13.1.2, globby@^13.2.2:
     slash "^4.0.0"
 
 google-protobuf@^3.12.0-rc.1:
-  version "3.21.2"
-  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.21.2.tgz#4580a2bea8bbb291ee579d1fefb14d6fa3070ea4"
-  integrity sha512-3MSOYFO5U9mPGikIYCzK0SaThypfGgS6bHqrUGXG3DPHCrb+txNqeEcns1W0lkGfk0rCyNXm7xB9rMxnCiZOoA==
+  version "3.21.4"
+  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.21.4.tgz#2f933e8b6e5e9f8edde66b7be0024b68f77da6c9"
+  integrity sha512-MnG7N936zcKTco4Jd2PX2U96Kf9PxygAPKBug+74LHzmHXmceN16MmRcdgZv+DGef/S9YvQAfRsNCn4cjf9yyQ==
 
 gopd@^1.0.1:
   version "1.0.1"
@@ -6064,15 +6064,15 @@ semver@^7.3.4:
   dependencies:
     lru-cache "^6.0.0"
 
-semver@^7.3.5, semver@^7.5.4:
-  version "7.6.2"
-  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.2.tgz#1e3b34759f896e8f14d6134732ce798aeb0c6e13"
-  integrity sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==
-
-semver@^7.5.2, semver@^7.5.3, semver@^7.6.0:
+semver@^7.3.5, semver@^7.5.2, semver@^7.5.3, semver@^7.6.0:
   version "7.6.3"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.3.tgz#980f7b5550bc175fb4dc09403085627f9eb33143"
   integrity sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==
+
+semver@^7.5.4:
+  version "7.6.2"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-7.6.2.tgz#1e3b34759f896e8f14d6134732ce798aeb0c6e13"
+  integrity sha512-FNAIBWCx9qcRhoHcgcJ0gvU7SN1lYU2ZXuSfl04bSC5OpvDHFyJCjdNHomPXxjQlCBU67YW64PzY7/VIEH7F2w==
 
 send@0.18.0:
   version "0.18.0"
