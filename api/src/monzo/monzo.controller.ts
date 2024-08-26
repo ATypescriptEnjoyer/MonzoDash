@@ -23,8 +23,8 @@ export class MonzoController {
     private readonly transactionService: TransactionsService,
     private readonly financesService: FinancesService,
     private readonly employerService: EmployerService,
-    private readonly actualBudgetService: ActualbudgetService
-  ) { }
+    private readonly actualBudgetService: ActualbudgetService,
+  ) {}
 
   @Get('getUser')
   async getUser(): Promise<Owner> {
@@ -53,9 +53,12 @@ export class MonzoController {
         if (description === 'Flex') {
           description = transaction.data.notes;
         }
-        const employer = (await this.employerService.getAll())[0];
-        const isPaymentFromEmployer = employer && employer.name === description;
+        const finances = await this.financesService.getAll();
+        const salary = finances.find((finance) => finance.id === '0').amount ?? 99999;
         const amount = Math.abs(transaction.data.amount) / 100;
+        const isSalaryPayment = amount >= salary - salary / 20;
+        const employer = (await this.employerService.getAll())[0];
+        const isPaymentFromEmployer = (employer && employer.name === description) || isSalaryPayment; //Allow empty employer name for cases of unsure employer bank name.
         await this.transactionService.save({
           id: transaction.data.id,
           amount,
@@ -69,35 +72,39 @@ export class MonzoController {
           return;
         }
         if (this.actualBudgetService.available()) {
-          console.log("Forwarding data to ActualBudget");
-          let account = await this.actualBudgetService.getAccount("Monzo");
+          console.log('Forwarding data to ActualBudget');
+          let account = await this.actualBudgetService.getAccount('Monzo');
           if (!account) {
             const accValue = await this.monzoService.getBalance();
-            const prevAccValue = accValue - transaction.data.amount
-            account = await this.actualBudgetService.createAccount({ name: "Monzo", type: "checking" }, prevAccValue);
+            const prevAccValue = accValue - transaction.data.amount;
+            account = await this.actualBudgetService.createAccount({ name: 'Monzo', type: 'checking' }, prevAccValue);
           }
           const categoryText = formatText(transaction.data.category);
           let category = await this.actualBudgetService.getCategory(categoryText);
           if (!category) {
-            const categoryGroup = await this.actualBudgetService.getCategoryGroup(isPaymentFromEmployer ? "Income" : "Usual Expenses");
-            category = await this.actualBudgetService.createCategory({ name: categoryText, group_id: categoryGroup.id, is_income: isPaymentFromEmployer })
+            const categoryGroup = await this.actualBudgetService.getCategoryGroup(
+              isPaymentFromEmployer ? 'Income' : 'Usual Expenses',
+            );
+            category = await this.actualBudgetService.createCategory({
+              name: categoryText,
+              group_id: categoryGroup.id,
+              is_income: isPaymentFromEmployer,
+            });
           }
           const actualBudgetTransaction: ActualBudgetTransaction = {
             account: account.id,
             amount: transaction.data.amount,
             category: category.id,
-            date: transaction.data.created.split("T")[0],
+            date: transaction.data.created.split('T')[0],
             payee_name: transaction.data.merchant?.name || transaction.data.counterparty?.name,
             cleared: true,
             notes: transaction.data.notes,
-            imported_id: transaction.data.id
-          }
+            imported_id: transaction.data.id,
+          };
           await this.actualBudgetService.createTransaction(account.id, actualBudgetTransaction);
         }
-        const finances = await this.financesService.getAll();
         if (isPaymentFromEmployer) {
-          const salary = finances.find((finance) => finance.id === '0').amount;
-          if (amount >= salary - 100) {
+          if (isSalaryPayment) {
             async.eachSeries(finances, async (potInfo: Finances) => {
               if (potInfo.id !== '0' && potInfo.amount > 0) {
                 await this.monzoService.depositToPot(
