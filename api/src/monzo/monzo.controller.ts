@@ -58,7 +58,8 @@ export class MonzoController {
         const amount = Math.abs(transaction.data.amount) / 100;
         const isSalaryPayment = amount >= salary - salary / 20;
         const employer = (await this.employerService.getAll())[0];
-        const isPaymentFromEmployer = (employer && employer.name === description) || isSalaryPayment; //Allow empty employer name for cases of unsure employer bank name.
+        const employerName = employer ? employer.name : '';
+        const isPaymentFromEmployer = employerName === '' ? isSalaryPayment : employerName === description; //Allow empty employer name for cases of unsure employer bank name.
         await this.transactionService.save({
           id: transaction.data.id,
           amount,
