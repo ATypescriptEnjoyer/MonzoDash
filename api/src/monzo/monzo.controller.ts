@@ -60,6 +60,10 @@ export class MonzoController {
         const employer = (await this.employerService.getAll())[0];
         const employerName = employer ? employer.name : '';
         const isPaymentFromEmployer = employerName === '' ? isSalaryPayment : employerName === description; //Allow empty employer name for cases of unsure employer bank name.
+        if (employerName === '' && isSalaryPayment) {
+          employer.name = description;
+          await this.employerService.save(employer);
+        }
         await this.transactionService.save({
           id: transaction.data.id,
           amount,
