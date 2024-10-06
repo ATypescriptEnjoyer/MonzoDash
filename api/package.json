@@ -20,7 +20,7 @@
     "migration:up:prod": "typeorm migration:run -d /app/dist/api/src/config/migration.config.js"
   },
   "dependencies": {
-    "@actual-app/api": "^6.7.1",
+    "@actual-app/api": "^24.0.0",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.3.8",
     "@nestjs/config": "^3.2.2",
@@ -47,8 +47,8 @@
     "@nestjs/schematics": "^10.1.1",
     "@nestjs/testing": "^10.3.8",
     "@types/async": "^3.2.24",
-    "@types/express": "^4.17.21",
-    "@types/jest": "29.5.12",
+    "@types/express": "^5.0.0",
+    "@types/jest": "29.5.13",
     "@types/node": "^20.14.0",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
