@@ -39,7 +39,7 @@
     "rxjs": "^7.8.1",
     "sha512-crypt-ts": "^0.1.27",
     "typeorm": "^0.3.20",
-    "uuid": "^10.0.0",
+    "uuid": "^11.0.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
