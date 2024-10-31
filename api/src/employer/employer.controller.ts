@@ -18,7 +18,8 @@ export class EmployerController {
 
   @Put()
   async putEmployer(@Body() employerDto: Employer): Promise<Employer> {
-    const employer = await this.employerService.save(employerDto);
+    const body: Employer = { ...employerDto, paidOnHolidays: employerDto.paidOnHolidays || false, payDay: employerDto.payDay || 31 }
+    const employer = await this.employerService.save(body);
     return employer;
   }
 }
