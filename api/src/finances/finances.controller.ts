@@ -1,9 +1,5 @@
-/*
-https://docs.nestjs.com/controllers#controllers
-*/
-
 import { Body, Controller, forwardRef, Get, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
-import * as moment from 'moment';
+import moment from 'moment';
 import { CurrentFinances, DedicatedFinance } from '../../../shared/interfaces/finances';
 import { calculatePayDay } from '../util/calculatePayDay';
 import { EmployerService } from '../employer/employer.service';
@@ -12,7 +8,8 @@ import { FinancesService } from './finances.service';
 import { HolidaysService } from '../holidays/holidays.service';
 import { Holiday } from '../holidays/schemas/holidays.schema';
 import axios from 'axios';
-@Controller('Finances')
+
+@Controller('finances')
 export class FinancesController {
   constructor(
     private readonly financesService: FinancesService,
@@ -21,7 +18,7 @@ export class FinancesController {
     private readonly holidaysService: HolidaysService,
   ) { }
 
-  @Get('dedicated')
+  @Get()
   async dedicatedFinances(): Promise<DedicatedFinance[]> {
     const dedicated = await this.financesService.getAll();
     if (dedicated.length > 1) {
@@ -39,7 +36,7 @@ export class FinancesController {
     return [...dedicated, ...monzoPots.map(({ id, name }) => ({ id, name, amount: 0, colour: '#FFFFFF', dynamicPot: false }))];
   }
 
-  @Post('dedicated')
+  @Post()
   async postDedicatedFinances(
     @Body() dedicatedDto: DedicatedFinance[],
   ): Promise<{ status: boolean; data: DedicatedFinance[] }> {
@@ -93,7 +90,5 @@ export class FinancesController {
       daysTilPay: daysUntil,
       perDayPence: balance / daysUntil,
     };
-
-    return null;
   }
 }

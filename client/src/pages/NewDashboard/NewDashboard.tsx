@@ -78,7 +78,7 @@ export const NewDashboard = (): JSX.Element => {
     const getMonthlySpend = async (): Promise<void> => {
       const now = moment();
       const { data } = await ApiConnector.get<{ day: number; month: number; year: number; amount: number }[]>(
-        `/DailyReport/by-date/${now.year()}/${now.month() + 1}`,
+        `/daily-report/by-date/${now.year()}/${now.month() + 1}`,
       );
       const labels = Array.from(new Array(moment().daysInMonth() + 1).keys()).splice(1);
       const datesData = labels.map((val) => {
@@ -108,7 +108,7 @@ export const NewDashboard = (): JSX.Element => {
   };
 
   const getDedicatedSpending = async (): Promise<void> => {
-    const { data } = await ApiConnector.get<DedicatedFinance[]>('/finances/dedicated');
+    const { data } = await ApiConnector.get<DedicatedFinance[]>('/finances');
     const mappedData: (DedicatedFinance & { amountString: string })[] = data.map((finance) => ({
       ...finance,
       amountString: finance.amount.toFixed(2),
@@ -160,7 +160,7 @@ export const NewDashboard = (): JSX.Element => {
 
   const submitSpendingData = async (): Promise<void> => {
     const validData = spendingData?.map(({ amountString, ...val }) => ({ ...val, amount: +amountString }));
-    await ApiConnector.post<DedicatedFinance[]>('/finances/dedicated', validData);
+    await ApiConnector.post<DedicatedFinance[]>('/finances', validData);
     setShowSpendingModal(false);
   };
 

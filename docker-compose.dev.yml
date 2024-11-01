@@ -1,5 +1,3 @@
-version: "3.4"
-
 services:
   api:
     image: node:lts-slim
@@ -17,12 +15,7 @@ services:
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
-      # - SENTRY_DSN=${SENTRY_DSN}
       - DEBUG=true
-      #Optionals
-      - ACTUALBUDGET_BASE_URL=
-      - ACTUALBUDGET_PASSWORD=
-      - ACTUALBUDGET_BUDGET_ID=
   client:
     image: node:lts-alpine
     volumes:
