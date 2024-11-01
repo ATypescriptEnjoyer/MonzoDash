@@ -3,7 +3,9 @@ FROM node:lts-slim AS api
 COPY api /app/api
 COPY shared /app/shared
 WORKDIR /app/api
-RUN yarn install && \
+RUN apt update && \
+    apt install python3 make g++ -y && \
+    yarn install && \
     yarn build && \
     rm -rf shared && \
     yarn install --production
