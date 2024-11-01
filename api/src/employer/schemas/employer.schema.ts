@@ -13,6 +13,9 @@ export class Employer {
 
   @Column()
   paidOnHolidays: boolean;
+
+  @Column()
+  paidLastWorkingDay: boolean;
 }
 
 export const EmployerSchema = new EntitySchema<Employer>({
@@ -29,6 +32,9 @@ export const EmployerSchema = new EntitySchema<Employer>({
       type: String
     },
     paidOnHolidays: {
+      type: Boolean
+    },
+    paidLastWorkingDay: {
       type: Boolean
     }
   }

@@ -12,7 +12,6 @@ import { TransactionsService } from '../transactions/transactions.service';
 import { WebhookTransaction } from './monzo.interfaces';
 import { MonzoService } from './monzo.service';
 import { Transactions } from '../transactions/schemas/transactions.schema';
-import { formatText } from '..//formatText';
 
 @Controller('monzo')
 export class MonzoController {

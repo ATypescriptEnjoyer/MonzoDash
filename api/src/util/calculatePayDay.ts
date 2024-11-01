@@ -1,7 +1,16 @@
 import * as moment from 'moment';
 import { Holiday } from '../holidays/schemas/holidays.schema';
 
-export const calculatePayDay = async (day: number, holidays: Holiday[], fromDate: Date = new Date(), paidOnHolidays = false): Promise<Date> => {
+const getLastNonWeekend = (date: moment.Moment): moment.Moment => {
+  if (date.isoWeekday() === 6) {
+    return date.clone().subtract('1', 'day');
+  } else if (date.isoWeekday() === 7) {
+    return date.clone().subtract('2', 'days');
+  }
+  return date;
+}
+
+export const calculatePayDay = async (day: number, holidays: Holiday[], fromDate: Date = new Date(), paidOnHolidays = false, paidLastWorkingDay = false): Promise<Date> => {
   const dateNow = fromDate;
   let year = dateNow.getFullYear();
   let month = dateNow.getDate() >= day ? dateNow.getMonth() + 2 : dateNow.getMonth() + 1;
@@ -9,21 +18,21 @@ export const calculatePayDay = async (day: number, holidays: Holiday[], fromDate
     month = 1;
     year = year + 1;
   }
-  const proposedNextPayday = moment(new Date(`${year}-${month}-${day}`));
+  let proposedNextPayday = moment(new Date(`${year}-${month}-${day}`));
+  if (paidLastWorkingDay) {
+    return getLastNonWeekend(proposedNextPayday.endOf('month')).toDate();
+  }
   if (!paidOnHolidays) {
-    if (proposedNextPayday.isoWeekday() === 6) {
-      proposedNextPayday.subtract('1', 'day');
-    } else if (proposedNextPayday.isoWeekday() === 7) {
-      proposedNextPayday.subtract('2', 'days');
-    }
-    const isBankHoliday = holidays.some(({ date }) => proposedNextPayday.isSame(date));
+    const finalWorkingDay = getLastNonWeekend(proposedNextPayday);
+    const isBankHoliday = holidays.some(({ date }) => finalWorkingDay.isSame(date));
     if (isBankHoliday) {
-      if (proposedNextPayday.isoWeekday() <= 5 && proposedNextPayday.isoWeekday() >= 2) {
-        proposedNextPayday.subtract('1', 'day');
-      } else if (proposedNextPayday.isoWeekday() === 1) {
-        proposedNextPayday.subtract('3', 'days');
+      if (finalWorkingDay.isoWeekday() <= 5 && finalWorkingDay.isoWeekday() >= 2) {
+        finalWorkingDay.subtract('1', 'day');
+      } else if (finalWorkingDay.isoWeekday() === 1) {
+        finalWorkingDay.subtract('3', 'days');
       }
     }
+    proposedNextPayday = finalWorkingDay;
   }
   proposedNextPayday.add('1', 'day');
   return proposedNextPayday.toDate();
