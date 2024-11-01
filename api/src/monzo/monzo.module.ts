@@ -7,7 +7,6 @@ import { FinancesModule } from '../finances/finances.module';
 import { EmployerModule } from '../employer/employer.module';
 import { HttpModule } from '@nestjs/axios';
 import { LoginModule } from 'src/login/login.module';
-import { ActualbudgetModule } from 'src/actualbudget/actualbudget.module';
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { ActualbudgetModule } from 'src/actualbudget/actualbudget.module';
     FinancesModule,
     EmployerModule,
     HttpModule.register({ baseURL: 'https://api.monzo.com/' }),
-    ActualbudgetModule
   ],
   controllers: [MonzoController],
   providers: [MonzoService],

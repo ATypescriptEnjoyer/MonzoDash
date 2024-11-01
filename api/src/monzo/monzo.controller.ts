@@ -12,8 +12,6 @@ import { TransactionsService } from '../transactions/transactions.service';
 import { WebhookTransaction } from './monzo.interfaces';
 import { MonzoService } from './monzo.service';
 import { Transactions } from '../transactions/schemas/transactions.schema';
-import { ActualbudgetService } from '../actualbudget/actualbudget.service';
-import { Transaction as ActualBudgetTransaction } from '../actualbudget/actualbudget.interfaces';
 import { formatText } from '..//formatText';
 
 @Controller('monzo')
@@ -23,8 +21,7 @@ export class MonzoController {
     private readonly transactionService: TransactionsService,
     private readonly financesService: FinancesService,
     private readonly employerService: EmployerService,
-    private readonly actualBudgetService: ActualbudgetService,
-  ) {}
+  ) { }
 
   @Get('getUser')
   async getUser(): Promise<Owner> {
@@ -75,38 +72,6 @@ export class MonzoController {
         } as unknown as Transactions);
         if (transaction.ignoreProcessing) {
           return;
-        }
-        if (this.actualBudgetService.available()) {
-          console.log('Forwarding data to ActualBudget');
-          let account = await this.actualBudgetService.getAccount('Monzo');
-          if (!account) {
-            const accValue = await this.monzoService.getBalance();
-            const prevAccValue = accValue - transaction.data.amount;
-            account = await this.actualBudgetService.createAccount({ name: 'Monzo', type: 'checking' }, prevAccValue);
-          }
-          const categoryText = formatText(transaction.data.category);
-          let category = await this.actualBudgetService.getCategory(categoryText);
-          if (!category) {
-            const categoryGroup = await this.actualBudgetService.getCategoryGroup(
-              isPaymentFromEmployer ? 'Income' : 'Usual Expenses',
-            );
-            category = await this.actualBudgetService.createCategory({
-              name: categoryText,
-              group_id: categoryGroup.id,
-              is_income: isPaymentFromEmployer,
-            });
-          }
-          const actualBudgetTransaction: ActualBudgetTransaction = {
-            account: account.id,
-            amount: transaction.data.amount,
-            category: category.id,
-            date: transaction.data.created.split('T')[0],
-            payee_name: transaction.data.merchant?.name || transaction.data.counterparty?.name,
-            cleared: true,
-            notes: transaction.data.notes,
-            imported_id: transaction.data.id,
-          };
-          await this.actualBudgetService.createTransaction(account.id, actualBudgetTransaction);
         }
         if (isPaymentFromEmployer) {
           if (isSalaryPayment) {

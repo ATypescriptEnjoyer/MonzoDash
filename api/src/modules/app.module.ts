@@ -18,7 +18,6 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { DailyReportModule } from '../dailyReport/dailyReport.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../config/datasource.config';
-import { ActualbudgetModule } from '../actualbudget/actualbudget.module';
 
 @Module({
   imports: [
@@ -35,7 +34,6 @@ import { ActualbudgetModule } from '../actualbudget/actualbudget.module';
     LoginModule,
     TransactionsModule,
     DailyReportModule,
-    ActualbudgetModule,
   ],
   providers: [
     HolidaysModule,
