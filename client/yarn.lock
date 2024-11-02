@@ -3817,10 +3817,10 @@ magic-string@^0.25.0, magic-string@^0.25.7:
   dependencies:
     sourcemap-codec "^1.4.8"
 
-material-symbols@^0.25.0:
-  version "0.25.3"
-  resolved "https://registry.yarnpkg.com/material-symbols/-/material-symbols-0.25.3.tgz#238153b6c736b0f4be0cc9460d6965b82bf9ae34"
-  integrity sha512-AJnO1Izh62Wm4kKdpum3utD8VD8DiQWEbg8jOg8Rd9b2qKJxRNaLYxolzKu2umPoElk+cW5qOtUUtFbzadSYyw==
+material-symbols@^0.26.0:
+  version "0.26.0"
+  resolved "https://registry.yarnpkg.com/material-symbols/-/material-symbols-0.26.0.tgz#4a709e2ff989e35478a0a5bca189130d48dccb30"
+  integrity sha512-7WefpjuZLsXjE4MHlbi7QVca9y6M45YJws8oC3l7UITfpGDxVwEddQaaqYqtGMGVRFeBw/dIxmlazR5eeZH0rg==
 
 merge2@^1.3.0:
   version "1.4.1"
