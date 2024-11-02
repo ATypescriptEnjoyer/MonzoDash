@@ -1,29 +1,20 @@
 import * as moment from 'moment';
 import { Holiday } from '../holidays/schemas/holidays.schema';
 
-const getLastNonWeekend = (date: moment.Moment): moment.Moment => {
-  if (date.isoWeekday() === 6) {
-    return date.clone().subtract('1', 'day');
-  } else if (date.isoWeekday() === 7) {
-    return date.clone().subtract('2', 'days');
-  }
-  return date;
-}
+const getLastNonWeekend = (date: moment.Moment): moment.Moment =>
+  date.isoWeekday() > 5 ? date.clone().subtract(date.isoWeekday() - 5, 'days') : date.clone();
 
-export const calculatePayDay = async (day: number, holidays: Holiday[], fromDate: Date = new Date(), paidOnHolidays = false, paidLastWorkingDay = false): Promise<Date> => {
-  const dateNow = fromDate;
-  let year = dateNow.getFullYear();
-  let month = dateNow.getDate() >= day ? dateNow.getMonth() + 2 : dateNow.getMonth() + 1;
-  if (month >= 13) {
-    month = 1;
-    year = year + 1;
-  }
-  let proposedNextPayday = moment(new Date(`${year}-${month}-${day}`));
+
+export const calculatePayDay = async (day: number, holidays: Holiday[], dateNow: Date = new Date(), paidOnHolidays = false, paidLastWorkingDay = false): Promise<Date> => {
   if (paidLastWorkingDay) {
-    return getLastNonWeekend(proposedNextPayday.endOf('month')).toDate();
+    return getLastNonWeekend(moment().endOf('month')).toDate();
   }
+  let momentDate = moment(dateNow);
+  if (momentDate.date() >= day)
+    momentDate = momentDate.add("1", "month");
+  momentDate.set("date", day);
   if (!paidOnHolidays) {
-    const finalWorkingDay = getLastNonWeekend(proposedNextPayday);
+    const finalWorkingDay = getLastNonWeekend(momentDate);
     const isBankHoliday = holidays.some(({ date }) => finalWorkingDay.isSame(date));
     if (isBankHoliday) {
       if (finalWorkingDay.isoWeekday() <= 5 && finalWorkingDay.isoWeekday() >= 2) {
@@ -32,8 +23,7 @@ export const calculatePayDay = async (day: number, holidays: Holiday[], fromDate
         finalWorkingDay.subtract('3', 'days');
       }
     }
-    proposedNextPayday = finalWorkingDay;
+    return finalWorkingDay.toDate();
   }
-  proposedNextPayday.add('1', 'day');
-  return proposedNextPayday.toDate();
+  return momentDate.toDate();
 };

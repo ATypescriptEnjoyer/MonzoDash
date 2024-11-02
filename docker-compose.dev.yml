@@ -5,9 +5,10 @@ services:
       - ./shared:/app/shared
       - ./api:/app/api
       - ./data:/data
+      - node_modules_api:/app/api/node_modules
     working_dir: /app/api
     command: >
-      sh -c "apt-get update && apt-get install procps -y -qq && yarn install && yarn start:dev"
+      sh -c "apt-get update && apt-get install python3 make g++ procps -y -qq && yarn install && yarn start:dev"
     ports:
       - 5000:5000
     environment:
@@ -20,6 +21,7 @@ services:
     image: node:lts-alpine
     volumes:
       - ./:/app
+      - node_modules_client:/app/node_modules
     working_dir: /app/client
     environment:
       - VITE_API_URL=/api
@@ -35,3 +37,7 @@ services:
     environment:
       - NGINX_HOST=localhost
       - NGINX_PORT=80
+
+volumes:
+  node_modules_api:
+  node_modules_client:
