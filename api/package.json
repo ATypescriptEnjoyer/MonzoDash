@@ -47,7 +47,7 @@
     "@nestjs/testing": "^10.3.8",
     "@types/async": "^3.2.24",
     "@types/express": "^5.0.0",
-    "@types/jest": "29.5.13",
+    "@types/jest": "29.5.14",
     "@types/node": "^20.14.0",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^10.0.0",
