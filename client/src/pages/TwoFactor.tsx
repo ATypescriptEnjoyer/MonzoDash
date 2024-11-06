@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { StyledActionBox, StyledContainer, StyledSubtitle, StyledTitle } from './TwoFactor.styled';
-import { ApiConnector } from '../../network';
+import { ApiConnector } from '../network';
+import { Box, Stack, Typography } from '@mui/material';
 
 export const TwoFactor = (): JSX.Element => {
   useEffect(() => {
@@ -15,11 +15,9 @@ export const TwoFactor = (): JSX.Element => {
   }, []);
 
   return (
-    <StyledContainer>
-      <StyledActionBox>
-        <StyledTitle>2FA Required</StyledTitle>
-        <StyledSubtitle>Check your Monzo app to verify the login!</StyledSubtitle>
-      </StyledActionBox>
-    </StyledContainer>
+    <Stack justifyContent='center' alignItems='center' flex={1} gap={1.5}>
+      <Typography variant='h1' fontSize='3em' >2FA Required</Typography>
+      <Typography variant='subtitle1' fontSize='1.5em' textAlign='center' >Check your Monzo app to verify the login!</Typography>
+    </Stack>
   );
 };

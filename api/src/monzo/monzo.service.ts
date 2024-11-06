@@ -138,7 +138,10 @@ export class MonzoService {
   }
 
   async getPots(): Promise<Pot[]> {
-    const authToken = (await this.authService.getLatestToken()).authToken;
+    const authToken = (await this.authService.getLatestToken())?.authToken;
+    if (!authToken) {
+      return [];
+    }
 
     const headers = {
       Authorization: `Bearer ${authToken}`,

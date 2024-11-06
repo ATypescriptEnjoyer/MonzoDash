@@ -2,10 +2,10 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.scss';
 import App from './App';
-import { ThemeProvider } from 'styled-components';
 import 'material-symbols';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 
 const root = document.getElementById('root');
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -20,10 +20,17 @@ const theme = {
   blue: '#4ee0fe',
 };
 
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark'
+  }
+})
+
 export type ThemeType = typeof theme;
 
 rootContainer.render(
-  <ThemeProvider theme={theme}>
+  <ThemeProvider theme={darkTheme}>
+    <CssBaseline />
     <Router>
       <App />
     </Router>

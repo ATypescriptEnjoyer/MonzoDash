@@ -1,7 +1,9 @@
 {
   "dependencies": {
-    "@emotion/react": "^11.11.4",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@mui/lab": "^5.0.0-alpha.170",
+    "@mui/material": "^6.1.6",
     "axios": "^1.7.2",
     "material-symbols": "^0.26.0",
     "moment": "^2.30.1",

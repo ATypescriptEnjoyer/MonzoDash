@@ -30,7 +30,7 @@ export class AuthController {
   getRedirectUri(): string {
     const { MONZO_CLIENT_ID: clientId, MONZODASH_DOMAIN } = process.env;
     const redirectUri = `${MONZODASH_DOMAIN}/api/auth/callback`;
-    return `https://auth.monzo.com?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+    return `https://auth.monzo.com?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&state=state`;
   }
 
   @Get('callback')
