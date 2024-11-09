@@ -63,7 +63,16 @@ export const AppBar = (): JSX.Element => {
         </Stack>
         <DesktopOnlyIcon
           icon="logout"
-          onClick={() => logoutMutation.mutate({}, { onSuccess: () => (location.href = '/') })}
+          onClick={() =>
+            logoutMutation.mutate(
+              {},
+              {
+                onSuccess: () => {
+                  location.href = '/';
+                },
+              },
+            )
+          }
         />
       </Stack>
     </>
