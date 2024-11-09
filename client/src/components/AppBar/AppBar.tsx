@@ -1,88 +1,72 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { GetAppName, GetAppVersion } from '../../utils';
 import { Icon } from '../';
-import { DesktopOnlyIcon, Group, Link, Logo, MobileGroup, MobileOnlyIcon, Splitter, StyledHeader, Tablet, TabletItem } from './AppBar.styled';
-import { ApiConnector } from '../../network';
+import { DesktopOnlyIcon, Link, Logo, Splitter, Tablet, TabletItem } from './AppBar.styled';
 import { publish, EVENT_TYPES } from '../../event';
 import { CurrentFinances } from '../../../../shared/interfaces/finances';
-import axios from 'axios';
+import { Stack } from '@mui/material';
+import { useMutation, useQuery } from '../../network/api';
+import { Loader } from '../Loader';
+import { useNavigate } from 'react-router-dom';
 
 export const AppBar = (): JSX.Element => {
-  const [finances, setFinances] = useState<CurrentFinances>();
   const [visible, setVisible] = useState<boolean>(false);
+  const finances = useQuery<CurrentFinances>('finances/current');
+  const logoutMutation = useMutation('auth/signout', { method: 'POST' });
 
-  useEffect(() => {
-    const getPerDayData = async (): Promise<void> => {
-      try {
-        const { data } = await ApiConnector.get<CurrentFinances>(`/finances/current`);
-        setFinances(data);
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          if (error.response.status === 403) {
-            await HandleSignOutClick();
-          }
-        }
-      }
-    };
-    getPerDayData();
-  }, []);
-
-  const HandleSignOutClick = async (): Promise<void> => {
-    try {
-      await ApiConnector.post('/auth/signout');
-    } catch (error) {
-      console.error(error);
-    }
-    window.location.href = '/login';
-  };
-
-  const financesElement = (mobile?: boolean) => {
-    return finances ? (
-      <Tablet $isMobile={mobile}>
+  const financesElement = () => {
+    return finances.data ? (
+      <Tablet>
         <TabletItem>
-          £{(finances.balancePence / 100).toFixed(2)} / {finances.daysTilPay} days
+          £{(finances.data.balancePence / 100).toFixed(2)} / {finances.data.daysTilPay} days
         </TabletItem>
         <Splitter />
-        <TabletItem>£{(finances.perDayPence / 100).toFixed(2)} / day</TabletItem>
+        <TabletItem>£{(finances.data.perDayPence / 100).toFixed(2)} / day</TabletItem>
       </Tablet>
-    ) :
-      (
-        <Tablet $isMobile={mobile}>
-          <TabletItem>
-            Loading
-          </TabletItem>
-          <Splitter />
-          <TabletItem>Finance Data</TabletItem>
-        </Tablet>
-      )
-  }
+    ) : (
+      <Tablet>
+        <TabletItem>Loading</TabletItem>
+        <Splitter />
+        <TabletItem>Finance Data</TabletItem>
+      </Tablet>
+    );
+  };
 
   const onUpdateDedicatedSpending = () => {
     publish(EVENT_TYPES.DEDICATED_SPENDING_OPEN, null);
     setVisible(false);
-  }
+  };
 
-  return (
+  return finances.isFetching ? (
+    <Loader />
+  ) : (
     <>
-      <MobileGroup $direction='row'>
-        <MobileOnlyIcon icon='menu' onClick={() => setVisible(!visible)} />
-        {financesElement(true)}
-        <MobileOnlyIcon icon='logout' onClick={HandleSignOutClick} />
-      </MobileGroup>
-      <StyledHeader $visible={visible}>
-        <Group $direction='row'>
-          <Logo src="/logo.png" alt={`${GetAppName()} v${GetAppVersion()}`} title={`${GetAppName()} v${GetAppVersion()}`} />
-          <MobileOnlyIcon icon='close' onClick={() => setVisible(!visible)} />
-        </Group>
-        <Group>
+      <Stack sx={{ display: { xs: 'flex', md: 'none' } }}>
+        <Icon icon="menu" onClick={() => setVisible(!visible)} />
+        {financesElement()}
+        <Icon icon="logout" onClick={() => logoutMutation.mutate({}, { onSuccess: () => (location.href = '/') })} />
+      </Stack>
+      <Stack
+        sx={{ display: { xs: 'none', md: 'flex' }, width: '100%', height: '95px' }}
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Logo
+          src="/logo.png"
+          alt={`${GetAppName()} v${GetAppVersion()}`}
+          title={`${GetAppName()} v${GetAppVersion()}`}
+        />
+        <Stack direction="row" alignItems="center" justifyContent="center">
           <Link onClick={() => publish(EVENT_TYPES.SALARY_DETAILS_OPEN, null)}>Update Salary Details</Link>
           {financesElement()}
-          <Link onClick={() => onUpdateDedicatedSpending()}>Update Dedicated Spending</Link>
-        </Group>
-        <Group>
-          <DesktopOnlyIcon icon="logout" onClick={HandleSignOutClick} />
-        </Group>
-      </StyledHeader>
+          <Link onClick={onUpdateDedicatedSpending}>Update Dedicated Spending</Link>
+        </Stack>
+        <DesktopOnlyIcon
+          icon="logout"
+          onClick={() => logoutMutation.mutate({}, { onSuccess: () => (location.href = '/') })}
+        />
+      </Stack>
     </>
   );
 };

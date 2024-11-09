@@ -1,7 +1,6 @@
-import React from 'react';
 import { BackContainer, Body, Header, MainContainer, Title, Footer } from './Modal.styled';
 import { Icon } from '../Icon';
-import { Button } from '../Button';
+import { Dialog, Button, Typography } from '@mui/material';
 
 interface Props {
   title: string;
@@ -15,7 +14,7 @@ type ModalProps = Props & React.HTMLAttributes<HTMLDivElement>;
 
 export const Modal = ({ title, onClose, show, children, saveText, onSubmit, ...rest }: ModalProps) => {
   return (
-    <BackContainer $show={show}>
+    <Dialog open={show} fullWidth maxWidth="lg">
       <MainContainer>
         <Header>
           <Title>{title}</Title>
@@ -23,9 +22,13 @@ export const Modal = ({ title, onClose, show, children, saveText, onSubmit, ...r
         </Header>
         <Body>{children}</Body>
         <Footer>
-          <Button onClick={onSubmit}>{saveText || 'Submit'}</Button>
+          <Button onClick={onSubmit} variant="outlined" fullWidth sx={{ maxWidth: '60%' }}>
+            <Typography variant="button" fontSize="1em">
+              {saveText || 'Submit'}
+            </Typography>
+          </Button>
         </Footer>
       </MainContainer>
-    </BackContainer>
+    </Dialog>
   );
 };

@@ -1,57 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import { ApiConnector } from '../network';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Button, Stack, TextField, Typography, useTheme } from '@mui/material';
+import { useMutation } from '../network/api';
+import { useLocalStorage } from '@uidotdev/usehooks';
 
 export const AppLogin = (): JSX.Element => {
-  const [authCodeSent, setAuthCodeSent] = useState(false);
-  const [authCode, setAuthCode] = useState('');
-  const navigate = useNavigate();
   const theme = useTheme();
+  const sendAuthCodeMutation = useMutation<boolean>('login/auth-code', { method: 'POST' });
+  const submitAuthCodeMutation = useMutation<boolean, { code: string }>('login/auth-code');
+  const signOutMutation = useMutation('auth/signout', { method: 'POST' });
+  const [_, setCode] = useLocalStorage('auth-code');
 
-
-  useEffect(() => {
-    const validateCode = async (): Promise<void> => {
-      const { data } = await ApiConnector.post<boolean>('/login/auth-code', { code: authCode });
-      if (data) {
-        localStorage.setItem('auth-code', authCode);
-        window.location.reload();
-      }
-    };
-
-    if (authCode.length === 6) {
-      validateCode();
+  const handleCodeChange = (value: string) => {
+    if (value.length === 6) {
+      submitAuthCodeMutation.mutate(
+        { code: value },
+        {
+          onSuccess: (response) => {
+            if (response) {
+              setCode(value);
+              window.location.reload();
+            }
+          },
+        },
+      );
     }
-  }, [authCode]);
-
-  const sendAuthRequest = async (): Promise<void> => {
-    try {
-      await ApiConnector.get('/login/auth-code');
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        if (error.response.status === 403) {
-          await ApiConnector.post('/auth/signout').finally(() => navigate('/login'));
-        }
-      }
-    }
-    setAuthCodeSent(true);
   };
 
+  const handleSendAuthCode = () =>
+    sendAuthCodeMutation.mutate(
+      {},
+      {
+        onError: () =>
+          signOutMutation.mutate(
+            {},
+            {
+              onSuccess: () => {
+                location.href = '/';
+              },
+            },
+          ),
+      },
+    );
+
   return (
-    <Stack flex={1} justifyContent='center' alignItems='center' gap={4}>
-      <Stack justifyContent='center' alignItems='center'>
-        <Typography variant='h2' fontWeight='bold' >Login Expired</Typography>
-        <Typography variant='subtitle1' fontSize='1.5em'>Please re-authenticate with MonzoDash</Typography>
+    <Stack flex={1} justifyContent="center" alignItems="center" gap={4}>
+      <Stack justifyContent="center" alignItems="center">
+        <Typography variant="h2" fontWeight="bold">
+          Login Expired
+        </Typography>
+        <Typography variant="subtitle1" fontSize="1.5em">
+          Please re-authenticate with MonzoDash
+        </Typography>
       </Stack>
-      {authCodeSent && (
-        <TextField variant='outlined' onChange={(value) => setAuthCode(value.currentTarget.value)} value={authCode} />
+      {sendAuthCodeMutation.isSuccess && (
+        <TextField variant="outlined" onChange={(event) => handleCodeChange(event.currentTarget.value)} />
       )}
-      {!authCodeSent &&
-        <Button onClick={sendAuthRequest} sx={{ width: '50%', marginTop: theme.spacing(2) }} variant='outlined' >
-          <Typography padding={theme.spacing(1)} variant='button' fontSize='1.5em'>Login With Monzo</Typography>
+      {sendAuthCodeMutation.isIdle && (
+        <Button onClick={handleSendAuthCode} sx={{ width: '50%', marginTop: theme.spacing(2) }} variant="outlined">
+          <Typography padding={theme.spacing(1)} variant="button" fontSize="1.5em">
+            Login With Monzo
+          </Typography>
         </Button>
-      }
+      )}
     </Stack>
   );
 };

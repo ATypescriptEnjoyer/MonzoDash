@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Body, Controller, Get, HttpException, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, Post, Put } from '@nestjs/common';
 import { MonzoService } from '../monzo/monzo.service';
 import { LoginService } from './login.service';
 import axios from 'axios';
@@ -11,7 +11,7 @@ import axios from 'axios';
 export class LoginController {
   constructor(private readonly loginService: LoginService, private readonly monzoService: MonzoService) { }
 
-  @Get('auth-code')
+  @Post('auth-code')
   async getAuthCode(): Promise<void> {
     const generatedAuthCode = await this.loginService.createCode();
     try {
@@ -29,7 +29,7 @@ export class LoginController {
     }
   }
 
-  @Post('auth-code')
+  @Put('auth-code')
   async postAuthCode(@Body() { code }: { code: string }): Promise<boolean> {
     return await this.loginService.validateCode(code, true);
   }

@@ -34,7 +34,6 @@ export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid ${(props) => props.theme.blue};
   box-sizing: border-box;
 `;
 
@@ -42,7 +41,6 @@ export const Title = styled.h1``;
 
 export const Body = styled.div`
   flex: 1;
-  overflow-y: auto;
 `;
 
 export const Footer = styled.div`

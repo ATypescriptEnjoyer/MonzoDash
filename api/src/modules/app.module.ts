@@ -14,7 +14,6 @@ import { FinancesController } from '../finances/finances.controller';
 import { MonzoController } from '../monzo/monzo.controller';
 import { TransactionsModule } from '../transactions/transactions.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { DailyReportModule } from '../dailyReport/dailyReport.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../config/datasource.config';
@@ -46,6 +45,7 @@ export class AppModule implements NestModule {
       .exclude(
         { path: '/auth/redirectUri', method: RequestMethod.GET },
         { path: '/auth/callback', method: RequestMethod.GET },
+        { path: '/auth/isauthed', method: RequestMethod.GET },
         {
           path: '/monzo/webhook',
           method: RequestMethod.POST,

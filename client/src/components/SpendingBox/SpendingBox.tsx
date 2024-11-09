@@ -2,41 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { Header, StyledSpendingBox, Title, Value, Option } from './SpendingBox.styled';
 import { DedicatedFinance } from '../../../../shared/interfaces/finances';
 import { Toggle } from '../Toggle';
+import { UseFormGetValues, UseFormRegister } from 'react-hook-form';
 
 interface Props {
-  spendingValue: DedicatedFinance & { amountString: string };
-  onValueChange: (finance: DedicatedFinance & { amountString: string }) => void;
+  register: UseFormRegister<{
+    data: DedicatedFinance[];
+  }>;
+  value: DedicatedFinance;
+  index: number;
 }
 
 export const SpendingBox = (props: Props) => {
-  const formatAmountString = (value: string) => {
-    if (!Number.isNaN(+value)) {
-      props.onValueChange({ ...props.spendingValue, amountString: value });
-    }
-  };
+  const { index, register, value } = props;
 
-  return props.spendingValue ? (
-    <StyledSpendingBox $borderColor={props.spendingValue.colour}>
-      <Title>{props.spendingValue.name}</Title>
+  return (
+    <StyledSpendingBox $borderColor={value.colour}>
+      <Title>{value.name}</Title>
       <Option>
         <Header>Amount</Header>
-        <Value value={props.spendingValue.amountString} onChange={(ev) => formatAmountString(ev.currentTarget.value)} />
+        <Value type="number" {...register(`data.${index}.amount`, { valueAsNumber: true })} />
       </Option>
       <Option>
         <Header>Colour</Header>
-        <Value
-          type="color"
-          value={props.spendingValue.colour}
-          onChange={(ev) => props.onValueChange({ ...props.spendingValue, colour: ev.currentTarget.value })}
-        />
-      </Option>
-      <Option style={{ visibility: props.spendingValue.id === '0' ? 'hidden' : 'visible' }}>
-        <Header>Dynamic</Header>
-        <Toggle
-          value={!!props.spendingValue.dynamicPot}
-          onChange={(ev) => props.onValueChange({ ...props.spendingValue, dynamicPot: ev })}
-        />
+        <Value {...register(`data.${index}.colour`)} />
       </Option>
     </StyledSpendingBox>
-  ) : null;
+  );
 };

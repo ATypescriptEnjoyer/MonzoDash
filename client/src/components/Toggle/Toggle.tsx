@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyledToggle, ToggleInner } from './Toggle.styled';
 
 interface Props {
@@ -9,7 +8,7 @@ interface Props {
 
 export const Toggle = (props: Props) => {
   return (
-    <StyledToggle $status={props.value} onClick={() => props.disabled ? null : props.onChange(!props.value)}>
+    <StyledToggle $status={props.value} onClick={() => (props.disabled ? null : props.onChange(!props.value))}>
       {!props.disabled && <ToggleInner $status={props.value} />}
     </StyledToggle>
   );

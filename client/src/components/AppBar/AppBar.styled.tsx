@@ -28,7 +28,9 @@ export const StyledHeader = styled.header<{ $visible: boolean }>`
   @media (max-width: 600px) {
     width: 0px;
     display: none;
-    ${({ $visible, ...props }) => $visible && `
+    ${({ $visible, ...props }) =>
+      $visible &&
+      `
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -81,9 +83,8 @@ export const Splitter = styled.div`
   transition: all 0.25s ease-in-out;
 `;
 
-export const Tablet = styled.div<{ $isMobile?: boolean }>`
+export const Tablet = styled.div`
   padding: 8px 24px;
-  display: ${(props) => props.$isMobile ? 'none' : 'flex'};
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -94,10 +95,6 @@ export const Tablet = styled.div<{ $isMobile?: boolean }>`
       border-color: ${(props) => props.theme.pink};
     }
   }
-
-  @media (max-width: 600px) {
-    display: ${(props) => props.$isMobile ? 'flex' : 'none'};
-  }
 `;
 
 export const TabletItem = styled.div`
@@ -106,23 +103,16 @@ export const TabletItem = styled.div`
   text-align: center;
 `;
 
-export const MobileOnlyIcon = styled(Icon)`
-display: none;
-@media (max-width: 600px) {
-  display: block;
-}
-`;
-
 export const DesktopOnlyIcon = styled(Icon)`
-display: none;
-@media (min-width: 600px) {
-  display: block;
-}
+  display: none;
+  @media (min-width: 600px) {
+    display: block;
+  }
 `;
 
 export const MobileGroup = styled(Group)`
-display: none;
-@media (max-width: 600px) {
-  display: flex;
-}
+  display: none;
+  @media (max-width: 600px) {
+    display: flex;
+  }
 `;

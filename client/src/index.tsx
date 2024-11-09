@@ -1,38 +1,25 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import './index.scss';
 import App from './App';
 import 'material-symbols';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { theme } from './theme';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 
+const queryClient = new QueryClient();
 const root = document.getElementById('root');
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const rootContainer = createRoot(root!);
 
-const theme = {
-  black: '#0e1217',
-  grey: '#2b333e',
-  lightGrey: '#838d9e',
-  white: '#F5F5F5',
-  pink: '#fe648f',
-  blue: '#4ee0fe',
-};
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark'
-  }
-})
-
-export type ThemeType = typeof theme;
-
 rootContainer.render(
-  <ThemeProvider theme={darkTheme}>
+  <ThemeProvider theme={theme}>
     <CssBaseline />
     <Router>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </Router>
   </ThemeProvider>,
 );

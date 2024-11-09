@@ -1,4 +1,3 @@
-import React from 'react';
 import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 import { AppLayout } from './layouts';
 import { StyledAppRoute } from './Routes.styled';
