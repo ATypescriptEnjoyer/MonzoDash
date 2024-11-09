@@ -4,7 +4,6 @@ https://docs.nestjs.com/controllers#controllers
 
 import { Controller, Get, Param } from '@nestjs/common';
 import { DailyReportService } from './dailyReport.service';
-import { DailyReport } from './schemas/dailyReport.schema';
 
 interface ReportData { month: number; year: number; data: { [k: number]: number } }
 
@@ -15,7 +14,7 @@ export class DailyReportController {
   @Get('by-date/:year/:month')
   async byDate(@Param('year') year: number, @Param('month') month: number): Promise<ReportData> {
     const reportData = await this.dailyReportService.getByDate(month, year);
-    const mappedData = reportData.reduce((prev, curr) => ({[curr.day]: curr.amount}), {});
+    const mappedData = reportData.reduce((prev, curr) => ({...prev, [curr.day]: curr.amount}), {});
 
     return {
       year,
