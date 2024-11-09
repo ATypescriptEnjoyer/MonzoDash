@@ -15,7 +15,11 @@ function App(): JSX.Element {
     navigate('/app-login');
   }
 
-  return <Stack className="App">{isAuthed.isFetched ? routing : null}</Stack>;
+  return (
+    <Stack height="100vh" width="100vw" className="App">
+      {isAuthed.isFetched ? routing : null}
+    </Stack>
+  );
 }
 
 export default App;
