@@ -1,5 +1,5 @@
 import { Stack, Typography, useTheme, Button } from '@mui/material';
-import { useQuery } from '../network/api';
+import { useQuery } from '../api';
 
 export const Login = (): JSX.Element => {
   const theme = useTheme();

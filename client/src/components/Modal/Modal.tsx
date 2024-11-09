@@ -1,6 +1,6 @@
-import { BackContainer, Body, Header, MainContainer, Title, Footer } from './Modal.styled';
+import { Header, MainContainer } from './Modal.styled';
 import { Icon } from '../Icon';
-import { Dialog, Button, Typography } from '@mui/material';
+import { Dialog, Button, Typography, Box, Stack } from '@mui/material';
 
 interface Props {
   title: string;
@@ -17,17 +17,17 @@ export const Modal = ({ title, onClose, show, children, saveText, onSubmit, ...r
     <Dialog open={show} fullWidth maxWidth="lg">
       <MainContainer>
         <Header>
-          <Title>{title}</Title>
+          <Typography variant="h5">{title}</Typography>
           <Icon icon="close" onClick={onClose} />
         </Header>
-        <Body>{children}</Body>
-        <Footer>
+        <Box flex={1}>{children}</Box>
+        <Stack justifyContent="center" alignItems="center">
           <Button onClick={onSubmit} variant="outlined" fullWidth sx={{ maxWidth: '60%' }}>
             <Typography variant="button" fontSize="1em">
               {saveText || 'Submit'}
             </Typography>
           </Button>
-        </Footer>
+        </Stack>
       </MainContainer>
     </Dialog>
   );

@@ -4,7 +4,7 @@ import { subscribe, unsubscribe, EVENT_TYPES } from '../event';
 import { DedicatedFinance } from '../../../shared/interfaces/finances';
 import { Loader } from '../components/Loader';
 import { SalaryData, SalaryModal } from '../components/SalaryModal';
-import { useMutation, useQuery } from '../network/api';
+import { useMutation, useQuery } from '../api';
 import { useQueryClient } from '@tanstack/react-query';
 import { Stack } from '@mui/material';
 import { SpendingModal } from '../components/SpendingModal';

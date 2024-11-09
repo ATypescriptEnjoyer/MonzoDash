@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { colours } from '../theme';
@@ -22,11 +22,12 @@ export const Chart = (props: Props) => {
   return (
     <Stack flex={1}>
       <Typography variant="h5">{moment(`${data.year}-${data.month}`).format('MMMM YYYY')}</Typography>
-      <LineChart
-        sx={{ flex: 1 }}
-        series={[{ data: mapData.reduce((prev, curr) => [...prev, curr.y], [] as number[]) }]}
-        xAxis={[{ data: mapData.reduce((prev, curr) => [...prev, curr.x], [] as number[]) }]}
-      />
+      <Box height={450}>
+        <LineChart
+          series={[{ data: mapData.reduce((prev, curr) => [...prev, curr.y], [] as number[]) }]}
+          xAxis={[{ data: mapData.reduce((prev, curr) => [...prev, curr.x], [] as number[]) }]}
+        />
+      </Box>
     </Stack>
   );
 };

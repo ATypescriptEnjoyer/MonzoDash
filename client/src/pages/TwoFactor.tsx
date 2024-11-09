@@ -1,5 +1,5 @@
 import { Stack, Typography } from '@mui/material';
-import { useQuery } from '../network/api';
+import { useQuery } from '../api';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useLocalStorage } from '@uidotdev/usehooks';
 

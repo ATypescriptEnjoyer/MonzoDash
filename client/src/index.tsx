@@ -6,11 +6,10 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from './theme';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 const root = document.getElementById('root');
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const rootContainer = createRoot(root!);
 
 rootContainer.render(

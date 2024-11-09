@@ -5,9 +5,8 @@ import { DesktopOnlyIcon, Link, Logo, Splitter, Tablet, TabletItem } from './App
 import { publish, EVENT_TYPES } from '../../event';
 import { CurrentFinances } from '../../../../shared/interfaces/finances';
 import { Stack } from '@mui/material';
-import { useMutation, useQuery } from '../../network/api';
+import { useMutation, useQuery } from '../../api';
 import { Loader } from '../Loader';
-import { useNavigate } from 'react-router-dom';
 
 export const AppBar = (): JSX.Element => {
   const [visible, setVisible] = useState<boolean>(false);

@@ -1,8 +1,8 @@
 import { useLocation, useNavigate, useRoutes } from 'react-router-dom';
-import { StyledApp } from './App.styled';
 import routes from './Routes';
-import { useQuery } from './network/api';
+import { useQuery } from './api';
 import { useLocalStorage } from '@uidotdev/usehooks';
+import { Stack } from '@mui/material';
 
 function App(): JSX.Element {
   const isAuthed = useQuery<boolean | '2FA pending'>('auth/isauthed');
@@ -15,7 +15,7 @@ function App(): JSX.Element {
     navigate('/app-login');
   }
 
-  return <StyledApp className="App">{isAuthed.isFetched ? routing : null}</StyledApp>;
+  return <Stack className="App">{isAuthed.isFetched ? routing : null}</Stack>;
 }
 
 export default App;

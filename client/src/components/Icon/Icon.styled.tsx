@@ -1,8 +1,9 @@
-import styled from 'styled-components';
+import { styled } from '@mui/material/styles';
+import { colours } from '../../theme';
 
-export const StyledIcon = styled.span<{ $clickable?: boolean; hidden?: boolean }>`
-  background-color: ${(props) => props.theme.grey};
-  color: ${(props) => props.theme.lightGrey};
+export const StyledIcon = styled('span')<{ $clickable?: boolean; hidden?: boolean }>`
+  background-color: ${colours.grey};
+  color: ${colours.lightGrey};
   border-radius: 50%;
   cursor: ${(props) => (props.$clickable ? 'pointer' : 'default')};
   font-size: 1.5rem;
@@ -19,8 +20,8 @@ export const StyledIcon = styled.span<{ $clickable?: boolean; hidden?: boolean }
     `
     :hover {
       visibility: ${props.hidden ? 'hidden' : 'visible'};
-      color: ${props.theme.white};
-      background-color: ${props.theme.pink};
+      color: ${colours.white};
+      background-color: ${colours.pink};
     }
   `};
 `;
