@@ -1,8 +1,12 @@
 {
-  "eslint.workingDirectories": ["src"],
+  "eslint.workingDirectories": ["./api", "./client"],
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": "explicit",
+    "source.removeUnusedImports": "explicit",
+    "source.fixAll.ts": "explicit",
+    "source.sortImports": "explicit",
+    "source.removeUnused.ts": "explicit"
   },
   "editor.formatOnSave": true,
-  "eslint.validate": ["javascript", "typescript"]
+  
 }

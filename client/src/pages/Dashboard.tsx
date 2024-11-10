@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
-import { Transaction } from '../../../shared/interfaces/transaction';
-import { subscribe, unsubscribe, EVENT_TYPES } from '../event';
+import { Stack } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { DedicatedFinance } from '../../../shared/interfaces/finances';
+import { Transaction } from '../../../shared/interfaces/transaction';
+import { useMutation, useQuery } from '../api';
+import { Chart } from '../components/Chart';
 import { Loader } from '../components/Loader';
 import { SalaryData, SalaryModal } from '../components/SalaryModal';
-import { useMutation, useQuery } from '../api';
-import { useQueryClient } from '@tanstack/react-query';
-import { Stack } from '@mui/material';
 import { SpendingModal } from '../components/SpendingModal';
 import { Transactions } from '../components/Transactions';
-import { Chart } from '../components/Chart';
+import { EVENT_TYPES, subscribe, unsubscribe } from '../event';
 
 export const Dashboard = (): JSX.Element => {
   const queryClient = useQueryClient();
