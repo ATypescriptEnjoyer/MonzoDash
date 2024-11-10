@@ -14,7 +14,7 @@ interface Props {
 
 export const SpendingModal = (props: Props) => {
   const { data, onClose, onSubmit, open } = props;
-  const { control, handleSubmit, register, getValues, watch } = useForm({ values: { data } });
+  const { control, handleSubmit, getValues, watch } = useForm({ values: { data } });
   const { fields } = useFieldArray({
     control,
     name: 'data' as never,
@@ -71,12 +71,12 @@ export const SpendingModal = (props: Props) => {
       title="Update Dedicated Spending"
     >
       <Stack direction="row" gap={2}>
-        <Stack gap={1} padding={3} maxHeight="600px" flex={0.7} sx={{ overflowY: 'auto' }}>
+        <Stack gap={1} padding={3} maxHeight="600px" flex={0.6} sx={{ overflowY: 'auto' }}>
           {fields?.map((field, index) => (
-            <SpendingBox key={field.id} register={register} value={getValues().data[index]} index={index} />
+            <SpendingBox key={field.id} control={control} value={getValues().data[index]} index={index} />
           ))}
         </Stack>
-        <Stack flex={0.3} alignItems="center" justifyContent="space-evenly">
+        <Stack flex={0.4} alignItems="center" justifyContent="space-evenly">
           <Box height="60%">{spendingBar}</Box>
           {leftoverText}
         </Stack>
