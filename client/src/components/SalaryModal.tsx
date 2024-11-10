@@ -20,7 +20,7 @@ interface Props {
 export const SalaryModal = (props: Props) => {
   const { onClose, onSubmit, open, data } = props;
 
-  const { control, handleSubmit, getValues } = useForm({ values: data });
+  const { control, handleSubmit } = useForm({ values: data });
 
   return (
     <Modal show={open} onSubmit={handleSubmit(onSubmit)} onClose={onClose} title="Update Salary Details">

@@ -29,7 +29,7 @@ export const SpendingModal = (props: Props) => {
     const leftover = (salary?.amount || 0) - potPayments;
     return (
       <Typography textAlign="center" sx={{ color }}>
-        You'll have £{leftover.toFixed(2)} leftover in your current account!
+        {`You'll have £${leftover.toFixed(2)} leftover in your current account!`}
       </Typography>
     );
   }, [formWatch]);

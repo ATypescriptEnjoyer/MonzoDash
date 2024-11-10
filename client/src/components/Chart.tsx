@@ -1,7 +1,6 @@
 import { Box, Stack, Typography } from '@mui/material';
 import moment from 'moment';
-import { useMemo, useState } from 'react';
-import { colours } from '../theme';
+import { useMemo } from 'react';
 import { LineChart } from '@mui/x-charts';
 import { Icon } from './Icon';
 
@@ -19,11 +18,13 @@ export const Chart = (props: Props) => {
 
   const mapData = useMemo(
     () =>
-      [...Array(momentDate.daysInMonth()).keys()].map((index) => ({
-        x: index + 1,
-        y: data.data[index + 1] ?? null,
-      })),
-    [data],
+      Object.keys(data.data).length == 0
+        ? []
+        : [...Array(momentDate.daysInMonth()).keys()].map((index) => ({
+            x: index + 1,
+            y: data.data[index + 1] ?? null,
+          })),
+    [data.data, momentDate],
   );
 
   const handleDateChange = (direction: 'f' | 'b') => {

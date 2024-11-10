@@ -7,7 +7,7 @@ export const AppLogin = (): JSX.Element => {
   const sendAuthCodeMutation = useMutation<boolean>('login/auth-code', { method: 'POST' });
   const submitAuthCodeMutation = useMutation<boolean, { code: string }>('login/auth-code');
   const signOutMutation = useMutation('auth/signout', { method: 'POST' });
-  const [_, setCode] = useLocalStorage('auth-code');
+  const [, setCode] = useLocalStorage('auth-code');
 
   const handleCodeChange = (value: string) => {
     if (value.length === 6) {

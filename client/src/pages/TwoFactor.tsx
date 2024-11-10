@@ -1,12 +1,12 @@
 import { Stack, Typography } from '@mui/material';
 import { useQuery } from '../api';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { useLocalStorage } from '@uidotdev/usehooks';
 
 export const TwoFactor = () => {
   const { pathname } = useLocation();
   const { data } = useQuery<boolean>('auth/verified', { refetchInterval: 5000 });
-  const [_, setCode] = useLocalStorage('auth-code');
+  const [, setCode] = useLocalStorage('auth-code');
   const [params] = useSearchParams();
 
   if (params.has('code')) {

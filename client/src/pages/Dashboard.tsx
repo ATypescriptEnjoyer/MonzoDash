@@ -36,7 +36,7 @@ export const Dashboard = (): JSX.Element => {
   const finance = useQuery<DedicatedFinance[]>('finances');
   const mutateFinance = useMutation<DedicatedFinance[], DedicatedFinance[]>('finances', { method: 'POST' });
 
-  const [chartDate, setChartDate] = useState<{ month: Number; year: Number }>({
+  const [chartDate, setChartDate] = useState<{ month: number; year: number }>({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
   });

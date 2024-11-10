@@ -1,15 +1,4 @@
-import {
-  Avatar,
-  Input,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Avatar, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import { Transaction } from '../../../shared/interfaces/transaction';
 import { Icon } from './Icon';
 import moment from 'moment';
