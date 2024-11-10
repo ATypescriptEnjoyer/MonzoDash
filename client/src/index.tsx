@@ -8,7 +8,13 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from './theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 const root = document.getElementById('root');
 const rootContainer = createRoot(root!);
 

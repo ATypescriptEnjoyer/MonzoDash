@@ -1,7 +1,7 @@
 import { Navigate, Outlet, RouteObject } from 'react-router-dom';
 import { AppLayout } from './layouts';
 import { StyledAppRoute } from './Routes.styled';
-import { NewDashboard } from './pages/NewDashboard';
+import { Dashboard } from './pages/Dashboard';
 import { TwoFactor } from './pages/TwoFactor';
 import { Login } from './pages/Login';
 import { AppLogin } from './pages/AppLogin';
@@ -20,7 +20,7 @@ const routes = (isMonzoAuthed: boolean): RouteObject[] => [
     children: [
       {
         path: '/app/dashboard',
-        element: <NewDashboard />,
+        element: <Dashboard />,
       },
       {
         path: '/app',

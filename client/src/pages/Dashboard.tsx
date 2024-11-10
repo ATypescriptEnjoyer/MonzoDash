@@ -11,7 +11,7 @@ import { SpendingModal } from '../components/SpendingModal';
 import { Transactions } from '../components/Transactions';
 import { Chart } from '../components/Chart';
 
-export const NewDashboard = (): JSX.Element => {
+export const Dashboard = (): JSX.Element => {
   const queryClient = useQueryClient();
 
   const [showSalaryModal, setShowSalaryModal] = useState(false);
@@ -36,17 +36,23 @@ export const NewDashboard = (): JSX.Element => {
   const finance = useQuery<DedicatedFinance[]>('finances');
   const mutateFinance = useMutation<DedicatedFinance[], DedicatedFinance[]>('finances', { method: 'POST' });
 
+  const [chartDate, setChartDate] = useState<{ month: Number; year: Number }>({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+  });
   const chart = useQuery<{ month: number; year: number; data: { [k: number]: number } }>(
-    `daily-report/by-date/${new Date().getFullYear()}/${new Date().getMonth() + 1}`,
+    `daily-report/by-date/${chartDate.year}/${chartDate.month}`,
   );
 
   const [page, setPage] = useState(1);
-  const transactions = useQuery<Transaction[]>('transactions');
+  const transactions = useQuery<{ data: Transaction[]; pagination: { page: number; count: number } }>(
+    `transactions?page=${page}`,
+  );
 
   return employer.isFetching ? (
     <Loader />
   ) : (
-    <Stack direction="column">
+    <Stack direction="column" maxHeight="calc(100% - 95px)">
       {employer.data && (
         <SalaryModal
           data={employer.data}
@@ -77,8 +83,16 @@ export const NewDashboard = (): JSX.Element => {
           }
         />
       )}
-      {chart.data && <Chart data={chart.data} />}
-      {transactions.data && <Transactions data={transactions.data} page={page} onPageChange={setPage} />}
+      {chart.data && <Chart onChangeDate={(month, year) => setChartDate({ month, year })} data={chart.data} />}
+      {transactions.data && (
+        <Transactions
+          key={page}
+          data={transactions.data.data}
+          count={transactions.data.pagination.count}
+          page={page}
+          onPageChange={setPage}
+        />
+      )}
     </Stack>
   );
 };
