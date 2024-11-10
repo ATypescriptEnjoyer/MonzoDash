@@ -36,7 +36,7 @@ export const Chart = (props: Props) => {
 
   return (
     <Stack flex={1}>
-      <Stack direction="row" alignItems="center" gap={2}>
+      <Stack direction="row" alignItems="center" gap={2} sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}>
         <Icon
           icon="keyboard_double_arrow_left"
           disabled={chartDate === '2020-01'}
