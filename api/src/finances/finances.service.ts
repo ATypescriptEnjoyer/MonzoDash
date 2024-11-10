@@ -18,6 +18,10 @@ export class FinancesService extends StorageService<Finances> {
     super(financesRepository);
   }
 
+  async getOrderedFinances(): Promise<Finances[]> {
+    return this.repository.find({order: {id: {direction: 'ASC'}}})
+  }
+
   @Cron(CronExpression.EVERY_HOUR)
   async updatePotNames(): Promise<void> {
     console.log('Running pot name update cycle');

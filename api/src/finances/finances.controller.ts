@@ -1,6 +1,6 @@
 import { Body, Controller, forwardRef, Get, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
 import * as moment from 'moment';
-import { CurrentFinances, DedicatedFinance } from '../../../shared/interfaces/finances';
+import { CurrentFinances } from '../../../shared/interfaces/finances';
 import { calculatePayDay } from '../util/calculatePayDay';
 import { EmployerService } from '../employer/employer.service';
 import { MonzoService } from '../monzo/monzo.service';
@@ -8,6 +8,7 @@ import { FinancesService } from './finances.service';
 import { HolidaysService } from '../holidays/holidays.service';
 import { Holiday } from '../holidays/schemas/holidays.schema';
 import axios from 'axios';
+import { Finances } from './schemas/finances.schema';
 
 @Controller('finances')
 export class FinancesController {
@@ -19,18 +20,10 @@ export class FinancesController {
   ) { }
 
   @Get()
-  async dedicatedFinances(): Promise<DedicatedFinance[]> {
-    const dedicated = await this.financesService.getAll();
-    if (dedicated.length > 1) {
-      return dedicated.sort((a, b) => {
-        if (a.id === '0') {
-          return -1;
-        } else if (b.id === '0') {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+  async dedicatedFinances(): Promise<Finances[]> {
+    const dedicated = await this.financesService.getOrderedFinances();
+    if(dedicated.length > 0) {
+      return dedicated;
     }
     const monzoPots = await this.monzoService.getPots();
     return [...dedicated, ...monzoPots.map(({ id, name }) => ({ id, name, amount: 0, colour: '#FFFFFF', dynamicPot: false }))];
@@ -38,9 +31,9 @@ export class FinancesController {
 
   @Post()
   async postDedicatedFinances(
-    @Body() dedicatedDto: DedicatedFinance[],
-  ): Promise<{ status: boolean; data: DedicatedFinance[] }> {
-    const financePromises = dedicatedDto.map(async (value: DedicatedFinance) => {
+    @Body() dedicatedDto: Finances[],
+  ): Promise<{ status: boolean; data: Finances[] }> {
+    const financePromises = dedicatedDto.map(async (value: Finances) => {
       return this.financesService.save(value);
     });
     const finances = await Promise.all(financePromises);

@@ -12,8 +12,7 @@ export class EmployerController {
 
   @Get()
   async getEmployer(): Promise<Employer> {
-    const employers = await this.employerService.getAll();
-    return employers.length > 0 ? employers[0] : null;
+    return await this.employerService.getAll()[0] ?? null;
   }
 
   @Put()

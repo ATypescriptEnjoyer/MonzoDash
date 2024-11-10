@@ -17,6 +17,7 @@ import { AuthService } from './auth.service';
 import { MonzoService } from '../monzo/monzo.service';
 import { Auth } from './schemas/auth.schema';
 import { LoginService } from '../login/login.service';
+import moment from 'moment';
 
 @Controller('Auth')
 export class AuthController {
@@ -43,8 +44,7 @@ export class AuthController {
         authCode: code,
       });
 
-      const expiresIn = new Date();
-      expiresIn.setSeconds(+expiresIn.getSeconds() + authResponse.expiresIn);
+      const expiresIn = moment().add(authResponse.expiresIn, "seconds");
 
       const record: Auth = {
         authToken: authResponse.accessToken,
@@ -65,8 +65,7 @@ export class AuthController {
   @Get('isAuthed')
   async isAuthed(): Promise<boolean> {
     try {
-      const token = await this.authService.getLatestToken();
-      return token?.twoFactored ? !!token : false;
+      return ((await this.authService.getLatestToken()).twoFactored)
     } catch (error) {
       if (error instanceof HttpException) {
         await this.authService.deleteAll();
