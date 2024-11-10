@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel, Stack, TextField } from '@mui/material';
-import { Modal } from './Modal';
 import { Controller, useForm } from 'react-hook-form';
+import { Modal } from './Modal';
 
 export interface SalaryData {
   id: string;
@@ -23,7 +23,7 @@ export const SalaryModal = (props: Props) => {
   const { control, handleSubmit } = useForm({ values: data });
 
   return (
-    <Modal show={open} onSubmit={handleSubmit(onSubmit)} onClose={onClose} title="Update Salary Details">
+    <Modal open={open} onSubmit={handleSubmit(onSubmit)} onClose={onClose} title="Update Salary Details">
       <Stack gap={2.5}>
         <Controller
           control={control}

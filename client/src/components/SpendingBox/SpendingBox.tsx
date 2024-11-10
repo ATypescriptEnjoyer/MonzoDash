@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Header, StyledSpendingBox, Title, Value, Option } from './SpendingBox.styled';
+import { UseFormRegister } from 'react-hook-form';
 import { DedicatedFinance } from '../../../../shared/interfaces/finances';
-import { Toggle } from '../Toggle';
-import { UseFormGetValues, UseFormRegister } from 'react-hook-form';
+import { Header, Option, StyledSpendingBox, Title, Value } from './SpendingBox.styled';
 
 interface Props {
   register: UseFormRegister<{

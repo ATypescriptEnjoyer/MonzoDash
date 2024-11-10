@@ -1,8 +1,8 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { LineChart } from '@mui/x-charts';
 import moment from 'moment';
 import { useMemo } from 'react';
-import { LineChart } from '@mui/x-charts';
-import { Icon } from './Icon';
 
 interface Props {
   data: { month: number; year: number; data: { [k: number]: number } };
@@ -38,15 +38,15 @@ export const Chart = (props: Props) => {
   return (
     <Stack flex={1}>
       <Stack direction="row" alignItems="center" gap={2} sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}>
-        <Icon
-          icon="keyboard_double_arrow_left"
-          disabled={chartDate === '2020-01'}
-          onClick={() => handleDateChange('b')}
-        />
+        <IconButton disabled={chartDate === '2020-01'} onClick={() => handleDateChange('b')}>
+          <ChevronLeft />
+        </IconButton>
         <Typography width="200px" textAlign="center" variant="h5">
           {momentDate.format('MMMM YYYY')}
         </Typography>
-        <Icon icon="keyboard_double_arrow_right" disabled={fwdDisabled} onClick={() => handleDateChange('f')} />
+        <IconButton disabled={fwdDisabled} onClick={() => handleDateChange('f')}>
+          <ChevronRight />
+        </IconButton>
       </Stack>
       <Box height={450}>
         <LineChart

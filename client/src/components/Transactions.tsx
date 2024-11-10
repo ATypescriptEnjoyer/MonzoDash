@@ -1,8 +1,19 @@
-import { Avatar, Stack, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
-import { Transaction } from '../../../shared/interfaces/transaction';
-import { Icon } from './Icon';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import {
+  Avatar,
+  IconButton,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material';
 import moment from 'moment';
 import { useState } from 'react';
+import { Transaction } from '../../../shared/interfaces/transaction';
 
 interface Props {
   data: Transaction[];
@@ -13,7 +24,6 @@ interface Props {
 
 export const Transactions = (props: Props) => {
   const { data, onPageChange, page, count } = props;
-
   const [innerPage, setInnerPage] = useState(page);
 
   return (
@@ -22,7 +32,9 @@ export const Transactions = (props: Props) => {
         <Typography variant="h5" width="100%">
           Transactions
         </Typography>
-        <Icon icon="keyboard_double_arrow_left" disabled={page === 1} onClick={() => onPageChange(page - 1)} />
+        <IconButton disabled={page === 1} onClick={() => onPageChange(page - 1)}>
+          <ChevronLeft />
+        </IconButton>
         <TextField
           sx={{ width: '100px' }}
           value={innerPage}
@@ -30,7 +42,9 @@ export const Transactions = (props: Props) => {
           onChange={(ev) => setInnerPage(+ev.target.value)}
           onKeyUp={(ev) => ev.key === 'Enter' && onPageChange(innerPage)}
         />
-        <Icon icon="keyboard_double_arrow_right" disabled={page * 5 >= count} onClick={() => onPageChange(page + 1)} />
+        <IconButton disabled={page * 5 >= count} onClick={() => onPageChange(page + 1)}>
+          <ChevronRight />
+        </IconButton>
       </Stack>
       <Table>
         <TableHead>

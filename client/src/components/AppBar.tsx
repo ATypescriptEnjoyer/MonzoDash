@@ -1,12 +1,11 @@
+import { Logout, Menu } from '@mui/icons-material';
+import { Box, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { GetAppName, GetAppVersion } from '../utils';
-import { Icon } from '.';
-import { publish, EVENT_TYPES } from '../event';
 import { CurrentFinances } from '../../../shared/interfaces/finances';
-import { Box, Divider, Stack, styled, Typography } from '@mui/material';
 import { useMutation, useQuery } from '../api';
-import { Loader } from './Loader';
 import { colours } from '../theme';
+import { GetAppName, GetAppVersion } from '../utils';
+import { Loader } from './Loader';
 
 const FinanceText = styled(Typography)({
   fontWeight: 'bold',
@@ -26,7 +25,13 @@ const Link = styled(Typography)`
   }
 `;
 
-export const AppBar = (): JSX.Element => {
+interface Props {
+  onShowSalary: () => void;
+  onShowDedicatedSpending: () => void;
+}
+
+export const AppBar = (props: Props): JSX.Element => {
+  const { onShowDedicatedSpending, onShowSalary } = props;
   const [visible, setVisible] = useState<boolean>(false);
   const finances = useQuery<CurrentFinances>('finances/current');
   const logoutMutation = useMutation('auth/signout', { method: 'POST' });
@@ -51,16 +56,10 @@ export const AppBar = (): JSX.Element => {
     [finances],
   );
 
-  const onUpdateSalaryDetails = () => {
-    publish(EVENT_TYPES.SALARY_DETAILS_OPEN, null);
-  };
-
-  const onUpdateDedicatedSpending = () => {
-    publish(EVENT_TYPES.DEDICATED_SPENDING_OPEN, null);
-  };
-
   const logoutButton = (
-    <Icon icon="logout" onClick={() => logoutMutation.mutate({}, { onSuccess: () => (location.href = '/') })} />
+    <IconButton onClick={() => logoutMutation.mutate({}, { onSuccess: () => (location.href = '/') })}>
+      <Logout />
+    </IconButton>
   );
 
   return finances.isFetching ? (
@@ -74,7 +73,9 @@ export const AppBar = (): JSX.Element => {
         alignItems="center"
         gap={2}
       >
-        <Icon icon="menu" onClick={() => setVisible(!visible)} />
+        <IconButton onClick={() => setVisible(!visible)}>
+          <Menu />
+        </IconButton>
         {moneyLeft}
         {logoutButton}
       </Stack>
@@ -85,8 +86,8 @@ export const AppBar = (): JSX.Element => {
         alignItems="center"
         justifyContent="space-evenly"
       >
-        <Link onClick={onUpdateSalaryDetails}>Update Salary Details</Link>
-        <Link onClick={onUpdateDedicatedSpending}>Update Dedicated Spending</Link>
+        <Link onClick={onShowSalary}>Update Salary Details</Link>
+        <Link onClick={onShowDedicatedSpending}>Update Dedicated Spending</Link>
       </Stack>
 
       <Stack
@@ -103,9 +104,9 @@ export const AppBar = (): JSX.Element => {
           title={`${GetAppName()} v${GetAppVersion()}`}
         />
         <Stack direction="row" alignItems="center" justifyContent="center" gap={4}>
-          <Link onClick={onUpdateSalaryDetails}>Update Salary Details</Link>
+          <Link onClick={onShowSalary}>Update Salary Details</Link>
           {moneyLeft}
-          <Link onClick={onUpdateDedicatedSpending}>Update Dedicated Spending</Link>
+          <Link onClick={onShowDedicatedSpending}>Update Dedicated Spending</Link>
         </Stack>
         {logoutButton}
       </Stack>

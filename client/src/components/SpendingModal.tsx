@@ -1,9 +1,9 @@
 import { Box, Stack, Typography } from '@mui/material';
-import { DedicatedFinance } from '../../../shared/interfaces/finances';
-import { SpendingBox } from './SpendingBox';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { Modal } from './Modal';
 import { useMemo } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { DedicatedFinance } from '../../../shared/interfaces/finances';
+import { Modal } from './Modal';
+import { SpendingBox } from './SpendingBox';
 
 interface Props {
   open: boolean;
@@ -65,7 +65,7 @@ export const SpendingModal = (props: Props) => {
 
   return (
     <Modal
-      show={open}
+      open={open}
       onSubmit={handleSubmit(({ data }) => onSubmit(data))}
       onClose={onClose}
       title="Update Dedicated Spending"

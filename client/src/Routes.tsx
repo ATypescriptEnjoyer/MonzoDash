@@ -1,22 +1,13 @@
 import { Navigate, Outlet, RouteObject } from 'react-router-dom';
-import { StyledAppRoute } from './Routes.styled';
-import { Dashboard } from './pages/Dashboard';
-import { TwoFactor } from './pages/TwoFactor';
-import { Login } from './pages/Login';
 import { AppLogin } from './pages/AppLogin';
-import { AppBar } from './components';
+import { Dashboard } from './pages/Dashboard';
+import { Login } from './pages/Login';
+import { TwoFactor } from './pages/TwoFactor';
 
 const routes = (isMonzoAuthed: boolean): RouteObject[] => [
   {
     path: '/app',
-    element: isMonzoAuthed ? (
-      <StyledAppRoute>
-        <AppBar />
-        <Outlet />
-      </StyledAppRoute>
-    ) : (
-      <Navigate to="/login" />
-    ),
+    element: isMonzoAuthed ? <Outlet /> : <Navigate to="/login" />,
     children: [
       {
         path: '/app/dashboard',
