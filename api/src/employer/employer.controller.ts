@@ -6,13 +6,21 @@ import { Body, Controller, Get, Put } from '@nestjs/common';
 import { EmployerService } from './employer.service';
 import { Employer } from './schemas/employer.schema';
 
+const defaultEmployer: Employer = {
+  name: '',
+  paidLastWorkingDay: false,
+  paidOnHolidays: false,
+  payDay: 1
+}
+
 @Controller('Employer')
 export class EmployerController {
   constructor(private readonly employerService: EmployerService) { }
 
   @Get()
   async getEmployer(): Promise<Employer> {
-    return await this.employerService.getAll()[0] ?? null;
+    const employers = await this.employerService.getAll();
+    return (employers.length > 0) ? employers[0] : defaultEmployer;
   }
 
   @Put()
