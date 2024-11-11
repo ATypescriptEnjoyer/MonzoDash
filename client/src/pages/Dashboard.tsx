@@ -37,7 +37,7 @@ export const Dashboard = (): JSX.Element => {
   );
 
   return (
-    <Stack padding={(theme) => theme.spacing(0, 4)}>
+    <Stack height="100vh" padding={(theme) => theme.spacing(0, 4)}>
       <AppBar
         onShowDedicatedSpending={() => setShowSpendingModal(true)}
         onShowSalary={() => setShowSalaryModal(true)}
@@ -45,7 +45,7 @@ export const Dashboard = (): JSX.Element => {
       {employer.isFetching ? (
         <Loader />
       ) : (
-        <Stack direction="column" maxHeight="calc(100% - 95px)">
+        <Stack direction="column" height="calc(100vh - 95px)">
           {employer.data && (
             <SalaryModal
               data={employer.data}

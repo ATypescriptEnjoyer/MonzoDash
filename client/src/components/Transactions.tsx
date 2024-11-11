@@ -6,6 +6,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   TextField,
@@ -27,7 +28,7 @@ export const Transactions = (props: Props) => {
   const [innerPage, setInnerPage] = useState(page);
 
   return (
-    <Stack flex={1} height="100%">
+    <Stack flex={1} sx={{ height: '1px' }}>
       <Stack direction="row" alignItems="center" gap={2}>
         <Typography variant="h5" width="100%">
           Transactions
@@ -46,31 +47,33 @@ export const Transactions = (props: Props) => {
           <ChevronRight />
         </IconButton>
       </Stack>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Amount</TableCell>
-            <TableCell>Date</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody sx={{ overflowY: 'auto' }}>
-          {data.map((transaction, indx) => (
-            <TableRow key={transaction.id + indx}>
-              <TableCell>
-                <Stack direction="row" alignItems="center" gap={4}>
-                  <Avatar src={transaction.logoUrl || '/icon-192x192.png'} />
-                  {transaction.description}
-                </Stack>
-              </TableCell>
-              <TableCell>
-                {transaction.type === 'incoming' ? '+' : '-'}£{transaction.amount.toFixed(2)}
-              </TableCell>
-              <TableCell>{moment(transaction.created).format('MMM Do YYYY, hh:mm A')}</TableCell>
+      <TableContainer>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Amount</TableCell>
+              <TableCell>Date</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {data.map((transaction, indx) => (
+              <TableRow key={transaction.id + indx}>
+                <TableCell>
+                  <Stack direction="row" alignItems="center" gap={4}>
+                    <Avatar src={transaction.logoUrl || '/icon-192x192.png'} />
+                    {transaction.description}
+                  </Stack>
+                </TableCell>
+                <TableCell>
+                  {transaction.type === 'incoming' ? '+' : '-'}£{transaction.amount.toFixed(2)}
+                </TableCell>
+                <TableCell>{moment(transaction.created).format('MMM Do YYYY, hh:mm A')}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Stack>
   );
 };
