@@ -44,13 +44,12 @@ export class AuthController {
         authCode: code,
       });
 
-      const expiresIn = moment().add(authResponse.expiresIn, "seconds");
 
       const record: Auth = {
         authToken: authResponse.accessToken,
         refreshToken: authResponse.refreshToken,
         createdAt: new Date().toISOString(),
-        expiresIn: expiresIn.toISOString(),
+        expiresIn: new Date(Date.now() + authResponse.expiresIn).toISOString(),
         twoFactored: false,
       };
       await this.authService.deleteAll();

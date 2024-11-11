@@ -10,6 +10,16 @@ export const colours = {
 };
 
 export const theme = createTheme({
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderColor: colours.pink,
+          color: colours.white
+        }
+      }
+    }
+  },
   palette: {
     mode: 'dark',
     background: {
