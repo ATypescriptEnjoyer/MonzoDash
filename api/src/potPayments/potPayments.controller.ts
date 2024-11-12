@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Body, Controller, Get, NotFoundException, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Put } from '@nestjs/common';
 import { PotPaymentsService } from './potPayments.service';
 import { TransactionsService } from 'src/transactions/transactions.service';
 
@@ -29,11 +29,16 @@ export class PotPaymentsController {
     if (!transaction || !transaction.groupId) {
       return new NotFoundException('Merchant Group ID not found.');
     }
-    const existingPotPayment = await this.potPaymentsService.getAll({ groupId: transaction.groupId });
+    const existingPotPayment = await this.potPaymentsService.getAll({ where: { groupId: transaction.groupId } });
     return this.potPaymentsService.save({
       id: existingPotPayment.length > 0 ? existingPotPayment[0].id : undefined,
       groupId: transaction.groupId,
       potId: potPayment.potId,
     });
+  }
+
+  @Delete(':id')
+  async deletePotPayment(@Param('id') id: string) {
+    await this.potPaymentsService.deleteWhere({ id });
   }
 }

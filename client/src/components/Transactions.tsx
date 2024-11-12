@@ -45,6 +45,7 @@ export const Transactions = (props: Props) => {
   const pots = useQuery<Record<string, string>>('monzo/pots');
   const potPayments = useQuery<PotPayment[]>('potpayments');
   const createPotPayment = useMutation<PotPayment, PotPaymentRequest>('potpayments', { method: 'PUT' });
+  const deletePotPayment = useMutation<boolean, string>('potpayments', { method: 'DELETE', dataIsParam: true });
 
   const handlePayFromPot = (transactionId: string, potId: string) => {
     createPotPayment.mutate(
@@ -57,11 +58,23 @@ export const Transactions = (props: Props) => {
     );
   };
 
+  const handleDeletePotPayment = (id: string) => {
+    deletePotPayment.mutate(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['potpayments'] });
+      },
+    });
+  };
+
   const detailedTransactions = useMemo(
     () =>
       data.map((transaction) => {
         const potPayment = potPayments.data?.find((potPayment) => potPayment.groupId === transaction.groupId);
-        return { ...transaction, potName: potPayment && pots.data ? pots.data[potPayment.potId] : null };
+        return {
+          ...transaction,
+          potName: potPayment && pots.data ? pots.data[potPayment.potId] : null,
+          potPaymentId: potPayment?.id,
+        };
       }),
     [data, potPayments.data, pots.data],
   );
@@ -131,6 +144,11 @@ export const Transactions = (props: Props) => {
                           </MenuItem>
                         ))}
                       </SubMenu>
+                      {transaction.potPaymentId && (
+                        <MenuItem onClick={() => handleDeletePotPayment(transaction.potPaymentId!)}>
+                          Stop paying from pot
+                        </MenuItem>
+                      )}
                     </Menu>
                   )}
                 </TableCell>

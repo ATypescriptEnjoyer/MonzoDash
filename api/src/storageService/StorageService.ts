@@ -1,10 +1,10 @@
 import { IStorageService } from './IStorageService';
-import { DeleteResult, FindOptionsWhere, Repository } from 'typeorm';
+import { DeleteResult, FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
 
 export class StorageService<T> implements IStorageService<T> {
   constructor(readonly repository: Repository<T>) {}
 
-  getAll = async (where?: FindOptionsWhere<T>): Promise<T[]> => {
+  getAll = async (where?: FindManyOptions<T>): Promise<T[]> => {
     return this.repository.find(where);
   };
 
