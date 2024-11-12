@@ -7,11 +7,13 @@ import { FinancesModule } from '../finances/finances.module';
 import { EmployerModule } from '../employer/employer.module';
 import { HttpModule } from '@nestjs/axios';
 import { LoginModule } from 'src/login/login.module';
+import { PotPaymentsModule } from 'src/potPayments/potPayments.module';
 
 @Module({
   imports: [
     forwardRef(() => AuthModule),
     forwardRef(() => LoginModule),
+    PotPaymentsModule,
     TransactionsModule,
     FinancesModule,
     EmployerModule,
@@ -21,4 +23,4 @@ import { LoginModule } from 'src/login/login.module';
   providers: [MonzoService],
   exports: [MonzoService],
 })
-export class MonzoModule { }
+export class MonzoModule {}

@@ -1,3 +1,4 @@
+import { WebhookTransactionData } from '../../monzo/monzo.interfaces';
 import { Entity, Column, EntitySchema, PrimaryColumn } from 'typeorm';
 
 @Entity()
@@ -9,7 +10,7 @@ export class Transactions {
   created: string;
 
   @Column()
-  logoUrl?: string;
+  logoUrl: string;
 
   @Column()
   amount: number;
@@ -21,42 +22,51 @@ export class Transactions {
   description: string;
 
   @Column()
-  internal?: boolean;
+  internal: boolean;
+
+  @Column()
+  groupId: string;
 
   @Column({ type: 'json' })
-  transaction?: any;
+  transaction?: WebhookTransactionData;
 }
 
 export const TransactionsSchema = new EntitySchema<Transactions>({
-  name: Transactions.name, target: Transactions, columns: {
+  name: Transactions.name,
+  target: Transactions,
+  columns: {
     id: {
       type: String,
       primary: true,
     },
     created: {
       type: Date,
-      default: "current_timestamp"
+      default: 'current_timestamp',
     },
     logoUrl: {
       type: String,
-      default: ''
+      default: '',
     },
     amount: {
       type: 'decimal',
     },
     type: {
       type: String,
-      enum: ['incoming', 'outgoing']
+      enum: ['incoming', 'outgoing'],
     },
     description: {
-      type: String
+      type: String,
     },
     internal: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    groupId: {
+      type: String,
+      default: '',
     },
     transaction: {
-      type: 'json'
-    }
-  }
-})
+      type: 'json',
+    },
+  },
+});

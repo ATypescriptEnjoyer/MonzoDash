@@ -17,6 +17,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { DailyReportModule } from '../dailyReport/dailyReport.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../config/datasource.config';
+import { PotPaymentsModule } from 'src/potPayments/potPayments.module';
 
 @Module({
   imports: [
@@ -33,10 +34,9 @@ import { getConfig } from '../config/datasource.config';
     LoginModule,
     TransactionsModule,
     DailyReportModule,
+    PotPaymentsModule,
   ],
-  providers: [
-    HolidaysModule,
-  ],
+  providers: [HolidaysModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

@@ -6,14 +6,26 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class TransactionsService extends StorageService<Transactions> {
-  constructor(@InjectRepository(Transactions)
-  transactionsRepository: Repository<Transactions>,) {
+  constructor(
+    @InjectRepository(Transactions)
+    transactionsRepository: Repository<Transactions>,
+  ) {
     super(transactionsRepository);
   }
 
+  getById = async (id: string) => {
+    return this.repository.findOneBy({ id });
+  };
+
   getPage = async (page: number, count: number): Promise<[Transactions[], number]> => {
-    return this.repository.findAndCount({take: count, skip: (page - 1) * count, order: {created: {
-      direction: "DESC"
-    }}});
+    return this.repository.findAndCount({
+      take: count,
+      skip: (page - 1) * count,
+      order: {
+        created: {
+          direction: 'DESC',
+        },
+      },
+    });
   };
 }

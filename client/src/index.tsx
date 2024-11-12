@@ -7,6 +7,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from './theme';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import '@szhsin/react-menu/dist/index.css';
+import '@szhsin/react-menu/dist/theme-dark.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {

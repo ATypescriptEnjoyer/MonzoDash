@@ -10,8 +10,9 @@ import { FinancesService } from '../finances/finances.service';
 import { Finances } from '../finances/schemas/finances.schema';
 import { TransactionsService } from '../transactions/transactions.service';
 import { WebhookTransaction } from './monzo.interfaces';
-import { MonzoService } from './monzo.service';
+import { MonzoService, Pot } from './monzo.service';
 import { Transactions } from '../transactions/schemas/transactions.schema';
+import { PotPaymentsService } from 'src/potPayments/potPayments.service';
 
 @Controller('monzo')
 export class MonzoController {
@@ -20,12 +21,19 @@ export class MonzoController {
     private readonly transactionService: TransactionsService,
     private readonly financesService: FinancesService,
     private readonly employerService: EmployerService,
-  ) { }
+    private readonly potPaymentsService: PotPaymentsService,
+  ) {}
 
   @Get('getUser')
   async getUser(): Promise<Owner> {
     const userInfo = await this.monzoService.getUserInfo();
     return userInfo;
+  }
+
+  @Get('pots')
+  async getPots(): Promise<Set<string>> {
+    const pots = await this.monzoService.getPots();
+    return pots.reduce((prev, curr) => ({ ...prev, [curr.id]: curr.name }), new Set<string>());
   }
 
   @Post('webhook')
@@ -68,7 +76,8 @@ export class MonzoController {
           logoUrl: transaction.data.merchant?.logo,
           description: description.trim(),
           transaction: transaction.data,
-        } as unknown as Transactions);
+          groupId: transaction.data.merchant.group_id,
+        } as Transactions);
         if (transaction.ignoreProcessing) {
           return;
         }
@@ -85,11 +94,14 @@ export class MonzoController {
             });
           }
         } else {
-          const dynamicPot = finances.find((finance) => finance.dynamicPot && finance.name === description);
-          if (dynamicPot) {
+          const potPayments = await this.potPaymentsService.getAll();
+          const possiblePayPot = potPayments.find(
+            (potPayment) => potPayment.groupId === transaction.data.merchant.group_id,
+          );
+          if (possiblePayPot) {
             await this.monzoService.withdrawFromPot(
-              dynamicPot.id,
-              Math.trunc(dynamicPot.amount * 100),
+              possiblePayPot.potId,
+              transaction.data.amount,
               transaction.data.account_id,
             );
           }

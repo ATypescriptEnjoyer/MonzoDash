@@ -6,4 +6,5 @@ export interface Transaction {
   type: "incoming" | "outgoing";
   description: string;
   internal?: boolean;
+  groupId: string;
 }

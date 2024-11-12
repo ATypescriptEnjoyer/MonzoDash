@@ -15,10 +15,17 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           borderColor: colours.pink,
-          color: colours.white
-        }
-      }
-    }
+          color: colours.white,
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        caption: {
+          color: colours.blue,
+        },
+      },
+    },
   },
   palette: {
     mode: 'dark',

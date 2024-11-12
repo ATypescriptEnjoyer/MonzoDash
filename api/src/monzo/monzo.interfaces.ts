@@ -5,9 +5,10 @@ interface WebhookTransactionDataCounterparty {
 interface WebhookTransactionDataMerchant {
   name: string;
   logo: string;
+  group_id: string;
 }
 
-interface WebhookTransactionData {
+export interface WebhookTransactionData {
   id: string;
   created: string;
   amount: number;
