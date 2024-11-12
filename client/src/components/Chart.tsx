@@ -3,31 +3,34 @@ import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
 import moment from 'moment';
 import { useMemo } from 'react';
+import { colours } from '../theme';
 
 interface Props {
-  data: { month: number; year: number; data: { [k: number]: number } };
+  data?: { month: number; year: number; data: { [k: number]: number } };
   onChangeDate: (month: number, year: number) => void;
+  isLoading: boolean;
 }
 
 export const Chart = (props: Props) => {
-  const { data, onChangeDate } = props;
-  const chartDate = `${data.year}-${data.month.toString().padStart(2, '0')}`;
+  const { data, isLoading, onChangeDate } = props;
+  const chartDate = data ? `${data.year}-${data.month.toString().padStart(2, '0')}` : 'Loading';
   const momentDate = moment(chartDate);
 
   const fwdDisabled = useMemo(() => moment().format('YYYY-MM') === chartDate, [chartDate]);
 
   const mapData = useMemo(
     () =>
-      Object.keys(data.data).length == 0
+      !data || Object.keys(data.data).length == 0
         ? []
         : [...Array(momentDate.daysInMonth()).keys()].map((index) => ({
             x: index + 1,
             y: data.data[index + 1] ?? null,
           })),
-    [data.data, momentDate],
+    [data, momentDate],
   );
 
   const handleDateChange = (direction: 'f' | 'b') => {
+    if (!data) return;
     if (direction === 'f' && !fwdDisabled) {
       onChangeDate(data.month + 1 === 13 ? 1 : data.month + 1, data.month + 1 === 13 ? data.year + 1 : data.year);
     } else if (direction === 'b') {
@@ -50,7 +53,8 @@ export const Chart = (props: Props) => {
       </Stack>
       <Box height={450}>
         <LineChart
-          series={[{ data: mapData.reduce((prev, curr) => [...prev, curr.y], [] as number[]) }]}
+          loading={isLoading}
+          series={[{ data: mapData.reduce((prev, curr) => [...prev, curr.y], [] as number[]), color: colours.pink }]}
           xAxis={[{ data: mapData.reduce((prev, curr) => [...prev, curr.x], [] as number[]) }]}
         />
       </Box>

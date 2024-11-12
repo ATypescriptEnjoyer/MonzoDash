@@ -5,7 +5,6 @@ import { CurrentFinances } from '../../../shared/interfaces/finances';
 import { useMutation, useQuery } from '../api';
 import { colours } from '../theme';
 import { GetAppName, GetAppVersion } from '../utils';
-import { Loader } from './Loader';
 
 const FinanceText = styled(Typography)({
   fontWeight: 'bold',
@@ -62,9 +61,7 @@ export const AppBar = (props: Props): JSX.Element => {
     </IconButton>
   );
 
-  return finances.isFetching ? (
-    <Loader />
-  ) : (
+  return (
     <>
       <Stack
         direction="row"

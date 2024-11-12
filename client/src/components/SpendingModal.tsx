@@ -4,17 +4,19 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { DedicatedFinance } from '../../../shared/interfaces/finances';
 import { Modal } from './Modal';
 import { SpendingBox } from './SpendingBox';
+import { Loader } from './Loader';
 
 interface Props {
   open: boolean;
   onSubmit: (data: DedicatedFinance[]) => void;
   onClose: () => void;
-  data: DedicatedFinance[];
+  data?: DedicatedFinance[];
+  isLoading: boolean;
 }
 
 export const SpendingModal = (props: Props) => {
-  const { data, onClose, onSubmit, open } = props;
-  const { control, handleSubmit, getValues, watch } = useForm({ values: { data } });
+  const { data, onClose, onSubmit, open, isLoading } = props;
+  const { control, handleSubmit, getValues, watch } = useForm({ values: { data: data ?? [] } });
   const { fields } = useFieldArray({
     control,
     name: 'data' as never,
@@ -35,6 +37,9 @@ export const SpendingModal = (props: Props) => {
   }, [formWatch]);
 
   const spendingBar = useMemo(() => {
+    if (!formWatch.data) {
+      return null;
+    }
     const salary = formWatch.data.find((val) => val.id === '0');
     const restSum = formWatch.data.filter((val) => val.id !== '0').reduce((prev, curr) => (prev += curr.amount), 0);
 
@@ -70,17 +75,20 @@ export const SpendingModal = (props: Props) => {
       onClose={onClose}
       title="Update Dedicated Spending"
     >
-      <Stack direction="row" gap={2}>
-        <Stack gap={1} padding={3} maxHeight="600px" flex={0.6} sx={{ overflowY: 'auto' }}>
-          {fields?.map((field, index) => (
-            <SpendingBox key={field.id} control={control} value={getValues().data[index]} index={index} />
-          ))}
+      {isLoading && <Loader />}
+      {!isLoading && (
+        <Stack direction="row" gap={2}>
+          <Stack gap={1} padding={3} maxHeight="600px" flex={0.6} sx={{ overflowY: 'auto' }}>
+            {fields?.map((field, index) => (
+              <SpendingBox key={field.id} control={control} value={getValues().data[index]} index={index} />
+            ))}
+          </Stack>
+          <Stack flex={0.4} alignItems="center" justifyContent="space-evenly">
+            <Box height="60%">{spendingBar}</Box>
+            {leftoverText}
+          </Stack>
         </Stack>
-        <Stack flex={0.4} alignItems="center" justifyContent="space-evenly">
-          <Box height="60%">{spendingBar}</Box>
-          {leftoverText}
-        </Stack>
-      </Stack>
+      )}
     </Modal>
   );
 };

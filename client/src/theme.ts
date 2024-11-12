@@ -29,8 +29,18 @@ export const theme = createTheme({
   },
   palette: {
     mode: 'dark',
+    primary: {
+      main: colours.blue,
+    },
+    secondary: {
+      main: colours.pink,
+    },
     background: {
-      default: '#0e1217',
+      default: colours.black,
+    },
+    common: {
+      black: colours.black,
+      white: colours.white,
     },
   },
 });
