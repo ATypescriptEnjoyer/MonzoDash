@@ -79,9 +79,10 @@ export const AppBar = (props: Props): JSX.Element => {
 
       <Stack
         sx={(theme) => ({ display: visible ? 'flex' : 'none', padding: theme.spacing(2) })}
-        direction="row"
+        direction="column"
         alignItems="center"
         justifyContent="space-evenly"
+        gap={2}
       >
         <Link onClick={onShowSalary}>Update Salary Details</Link>
         <Link onClick={onShowDedicatedSpending}>Update Dedicated Spending</Link>

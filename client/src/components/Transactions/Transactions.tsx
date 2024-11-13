@@ -108,7 +108,7 @@ export const Transactions = (props: Props) => {
           <ChevronRight />
         </IconButton>
       </Stack>
-      <TableContainer>
+      <TableContainer sx={{ overflowX: { xs: 'visible', md: 'auto' } }}>
         <Table stickyHeader>
           <TableHead>
             <TableRow>

@@ -36,7 +36,7 @@ export const Dashboard = (): JSX.Element => {
   );
 
   return (
-    <Stack height="100vh" padding={(theme) => theme.spacing(0, 4)}>
+    <Stack height="100vh" padding={(theme) => ({ xs: theme.spacing(0, 1), md: theme.spacing(0, 4) })}>
       <AppBar
         onShowDedicatedSpending={() => setShowSpendingModal(true)}
         onShowSalary={() => setShowSalaryModal(true)}
