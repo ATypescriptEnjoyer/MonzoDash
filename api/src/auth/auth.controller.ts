@@ -2,10 +2,9 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, forwardRef, Get, Inject, InternalServerErrorException, Post, Query, Res } from '@nestjs/common';
+import { Controller, forwardRef, Get, Inject, Post, Query, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MonzoService } from '../monzo/monzo.service';
-import { Auth } from './schemas/auth.schema';
 import { LoginService } from '../login/login.service';
 
 const webhookDomain = process.env.MONZODASH_WEBHOOK_DOMAIN

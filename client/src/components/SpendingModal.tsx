@@ -26,7 +26,7 @@ export const SpendingModal = (props: Props) => {
   const leftoverText = useMemo(() => {
     const salary = formWatch.data?.find((val) => val.id === '0');
     const potPayments =
-      formWatch.data?.filter((val) => val.id !== '0').reduce((prev, curr) => (prev += curr.amount), 0) || 0;
+      formWatch.data?.filter((val) => val.id !== '0').reduce((prev, curr) => prev + curr.amount, 0) || 0;
     const color = salary?.colour || 'green';
     const leftover = (salary?.amount || 0) - potPayments;
     return (
@@ -41,7 +41,7 @@ export const SpendingModal = (props: Props) => {
       return null;
     }
     const salary = formWatch.data.find((val) => val.id === '0');
-    const restSum = formWatch.data.filter((val) => val.id !== '0').reduce((prev, curr) => (prev += curr.amount), 0);
+    const restSum = formWatch.data.filter((val) => val.id !== '0').reduce((prev, curr) => prev + curr.amount, 0);
 
     const spendingBarData = formWatch.data
       .filter((value) => value.amount !== 0)

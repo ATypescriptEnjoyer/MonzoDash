@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, Menu as MenuIcon } from '@mui/icons-material';
 import {
   Avatar,
   IconButton,
@@ -15,7 +15,6 @@ import {
 import moment from 'moment';
 import { useMemo, useState } from 'react';
 import { Transaction } from '../../../../shared/interfaces/transaction';
-import { Menu as MenuIcon } from '@mui/icons-material';
 import { Menu, MenuItem, SubMenu } from '@szhsin/react-menu';
 import { useMutation, useQuery } from '../../api';
 import { useQueryClient } from '@tanstack/react-query';
@@ -120,8 +119,8 @@ export const Transactions = (props: Props) => {
           </TableHead>
           <TableBody>
             {!isLoading ? (
-              detailedTransactions.map((transaction, indx) => (
-                <TableRow key={transaction.id + indx}>
+              detailedTransactions.map((transaction) => (
+                <TableRow key={transaction.id}>
                   <TableCell>
                     <Stack direction="row" alignItems="center" gap={4}>
                       <Avatar src={transaction.logoUrl || '/icon-192x192.png'} />

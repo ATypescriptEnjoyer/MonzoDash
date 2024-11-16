@@ -10,7 +10,7 @@ import { FinancesService } from '../finances/finances.service';
 import { Finances } from '../finances/schemas/finances.schema';
 import { TransactionsService } from '../transactions/transactions.service';
 import { WebhookTransaction } from './monzo.interfaces';
-import { MonzoService, Pot } from './monzo.service';
+import { MonzoService } from './monzo.service';
 import { Transactions } from '../transactions/schemas/transactions.schema';
 import { PotPaymentsService } from 'src/potPayments/potPayments.service';
 import { getTransactionDescription } from 'src/util/getTransactionDescription';

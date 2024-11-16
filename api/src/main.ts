@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './modules/app.module';
-import { NestApplicationOptions } from '@nestjs/common';
 
 const { DEBUG } = process.env;
 

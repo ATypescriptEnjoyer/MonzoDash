@@ -46,16 +46,14 @@ export const useMutation = <TResponse, TRequest = object>(
   useBaseMutation<TResponse, Error, TRequest>({
     mutationKey: [endpoint],
     mutationFn: async (data) => {
-      const response = await axios<TResponse>(
-        `${import.meta.env.VITE_API_URL}/${endpoint}${dataIsParam ? `/${data}` : ''}`,
-        {
-          method,
-          headers: {
-            Authorization: localStorage.getItem('auth-code') ?? '',
-          },
-          data: dataIsParam ? undefined : data,
+      const urlData = dataIsParam ? `/${data}` : '';
+      const response = await axios<TResponse>(`${import.meta.env.VITE_API_URL}/${endpoint}${urlData}`, {
+        method,
+        headers: {
+          Authorization: localStorage.getItem('auth-code') ?? '',
         },
-      );
+        data: dataIsParam ? undefined : data,
+      });
       return response.data;
     },
   });

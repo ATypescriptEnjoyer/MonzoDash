@@ -22,9 +22,9 @@ export class StorageService<T> implements IStorageService<T> {
 
   delete(obj: T | T[]): Promise<T | T[]> {
     if (Array.isArray(obj)) {
-      return this.repository.save(obj);
+      return this.repository.remove(obj);
     }
-    return this.repository.save(obj);
+    return this.repository.remove(obj);
   }
 
   deleteWhere = (where: FindOptionsWhere<T>): Promise<DeleteResult> => {

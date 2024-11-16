@@ -4,5 +4,9 @@
     "source.fixAll.eslint": "explicit"
   },
   "editor.formatOnSave": true,
+  "sonarlint.connectedMode.project": {
+    "connectionId": "https-sonarqube-sashie-me",
+    "projectKey": "MonzoDash"
+  },
   
 }
