@@ -50,7 +50,7 @@ export const SalaryModal = (props: Props) => {
               <FormControlLabel
                 hidden={data?.paidLastWorkingDay}
                 label="Paid on holidays/weekends"
-                control={<Checkbox value={value} onChange={onChange} />}
+                control={<Checkbox checked={value} onChange={onChange} />}
               />
             )}
           />
@@ -61,7 +61,7 @@ export const SalaryModal = (props: Props) => {
               <FormControlLabel
                 hidden={data?.paidOnHolidays}
                 label="Paid Last working day"
-                control={<Checkbox value={value} onChange={onChange} />}
+                control={<Checkbox checked={value} onChange={onChange} />}
               />
             )}
           />
