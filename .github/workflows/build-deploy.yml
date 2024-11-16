@@ -29,6 +29,7 @@ env:
 
 jobs:
   sonarqube:
+    if: vars.SONARQUBE_URL != ''
     name: SonarQube Trigger
     runs-on: ubuntu-latest
     steps:
