@@ -5,10 +5,13 @@ import { LoginService } from './login.service';
 
 @Injectable()
 export class LoginMiddleware implements NestMiddleware {
-  constructor(private readonly loginService: LoginService, private readonly authService: AuthService) {}
+  constructor(
+    private readonly loginService: LoginService,
+    private readonly authService: AuthService,
+  ) {}
 
   async use(req: Request, _: Response, next: NextFunction): Promise<void> {
-    const latestToken = await this.authService.getLatestToken();
+    const latestToken = await this.authService.getToken();
     if (latestToken) {
       const authIsValid =
         req.headers.authorization || (await this.loginService.validateCode(req.headers.authorization, false));

@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { LoginService } from 'src/login/login.service';
+import { isAxiosError } from 'axios';
 
 export interface MonzoAuthResponse {
   access_token: string;
@@ -47,12 +48,11 @@ export interface PotsResponse {
 
 @Injectable()
 export class MonzoService {
-
   constructor(
     private httpService: HttpService,
     private loginService: LoginService,
     @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService,
-  ) { }
+  ) {}
 
   async usingAuthCode({ authCode }: AuthRequest): Promise<AuthResponse> {
     const { MONZO_CLIENT_ID: clientId, MONZO_CLIENT_SECRET: clientSecret, MONZODASH_DOMAIN } = process.env;
@@ -99,33 +99,37 @@ export class MonzoService {
   }
 
   async getAccountId(): Promise<string> {
-    const authToken = (await this.authService.getLatestToken()).authToken;
+    const authToken = (await this.authService.getToken()).authToken;
 
     const headers = {
       Authorization: `Bearer ${authToken}`,
     };
 
-    const { data } = await firstValueFrom(this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
-      headers,
-    }));
+    const { data } = await firstValueFrom(
+      this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
+        headers,
+      }),
+    );
     return data.accounts.find((acc) => !acc.closed).id;
   }
 
   async getUserInfo(): Promise<Owner> {
-    const authToken = (await this.authService.getLatestToken()).authToken;
+    const authToken = (await this.authService.getToken()).authToken;
 
     const headers = {
       Authorization: `Bearer ${authToken}`,
     };
 
-    const { data } = await firstValueFrom(this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
-      headers,
-    }));
+    const { data } = await firstValueFrom(
+      this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
+        headers,
+      }),
+    );
     return data.accounts[0].owners[0];
   }
 
   async getBalance(): Promise<number> {
-    const authToken = (await this.authService.getLatestToken()).authToken;
+    const authToken = (await this.authService.getToken()).authToken;
 
     const headers = {
       Authorization: `Bearer ${authToken}`,
@@ -133,12 +137,14 @@ export class MonzoService {
 
     const accountId = await this.getAccountId();
 
-    const { data } = await firstValueFrom(this.httpService.get<Balances>(`balance?account_id=${accountId}`, { headers }));
+    const { data } = await firstValueFrom(
+      this.httpService.get<Balances>(`balance?account_id=${accountId}`, { headers }),
+    );
     return data.balance;
   }
 
   async getPots(): Promise<Pot[]> {
-    const authToken = (await this.authService.getLatestToken())?.authToken;
+    const authToken = (await this.authService.getToken())?.authToken;
     if (!authToken) {
       return [];
     }
@@ -149,12 +155,14 @@ export class MonzoService {
 
     const accountId = await this.getAccountId();
 
-    const { data } = await firstValueFrom(this.httpService.get<PotsResponse>(`pots?current_account_id=${accountId}`, { headers }));
+    const { data } = await firstValueFrom(
+      this.httpService.get<PotsResponse>(`pots?current_account_id=${accountId}`, { headers }),
+    );
     return data.pots.filter((pot) => !pot.deleted).map(({ id, name, balance }) => ({ id, name, balance }));
   }
 
   async depositToPot(potId: string, valuePence: number, accountId: string): Promise<Pot> {
-    const authToken = (await this.authService.getLatestToken()).authToken;
+    const authToken = (await this.authService.getToken()).authToken;
 
     const headers = {
       Authorization: `Bearer ${authToken}`,
@@ -167,12 +175,14 @@ export class MonzoService {
     };
     const requestDataString = new URLSearchParams(requestData).toString();
 
-    const { data } = await firstValueFrom(this.httpService.put<Pot>(`pots/${potId}/deposit`, requestDataString, { headers }));
+    const { data } = await firstValueFrom(
+      this.httpService.put<Pot>(`pots/${potId}/deposit`, requestDataString, { headers }),
+    );
     return data;
   }
 
   async withdrawFromPot(potId: string, valuePence: number, accountId: string): Promise<Pot> {
-    const authToken = (await this.authService.getLatestToken()).authToken;
+    const authToken = (await this.authService.getToken()).authToken;
 
     const headers = {
       Authorization: `Bearer ${authToken}`,
@@ -185,12 +195,14 @@ export class MonzoService {
     };
     const requestDataString = new URLSearchParams(requestData).toString();
 
-    const { data } = await firstValueFrom(this.httpService.put<Pot>(`pots/${potId}/withdraw`, requestDataString, { headers }));
+    const { data } = await firstValueFrom(
+      this.httpService.put<Pot>(`pots/${potId}/withdraw`, requestDataString, { headers }),
+    );
     return data;
   }
 
   async sendNotification(title: string, message: string): Promise<void> {
-    const authToken = (await this.authService.getLatestToken()).authToken;
+    const authToken = (await this.authService.getToken()).authToken;
 
     const headers = {
       Authorization: `Bearer ${authToken}`,
@@ -213,7 +225,7 @@ export class MonzoService {
   }
 
   async configureWebhooks({ accountId, webhookUrl }: { accountId: string; webhookUrl: string }): Promise<boolean> {
-    const authToken = (await this.authService.getLatestToken()).authToken;
+    const authToken = (await this.authService.getToken()).authToken;
 
     const headers = {
       Authorization: `Bearer ${authToken}`,
@@ -238,6 +250,42 @@ export class MonzoService {
       return true;
     } catch (error) {
       return false;
+    }
+  }
+
+  async isAuthenticated() {
+    const authToken = (await this.authService.getToken())?.authToken;
+    if (!authToken) {
+      return {
+        status: false,
+        error: 'Auth Token not present',
+      };
+    }
+    const headers = {
+      Authorization: `Bearer ${authToken}`,
+    };
+
+    const { data } = await firstValueFrom(this.httpService.get<{ authenticated: boolean }>('ping/whoami', { headers }));
+    if (!data.authenticated) {
+      return {
+        status: false,
+        error: 'Auth token no longer valid',
+      };
+    }
+    try {
+      await this.getAccountId();
+      return { status: true };
+    } catch (error) {
+      if (isAxiosError(error) && error.status === 403) {
+        return {
+          status: false,
+          error: '2FA Pending',
+        };
+      }
+      return {
+        status: false,
+        error: error,
+      };
     }
   }
 }

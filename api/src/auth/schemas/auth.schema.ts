@@ -1,8 +1,12 @@
 import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
 
+const dateTransformer = {
+  from: (value: string) => new Date(value),
+  to: (value: Date) => value.toISOString(),
+};
+
 @Entity()
 export class Auth {
-
   @PrimaryGeneratedColumn()
   id?: string;
 
@@ -12,37 +16,39 @@ export class Auth {
   @Column()
   refreshToken: string;
 
-  @Column()
-  createdAt: string;
+  @Column({ transformer: dateTransformer })
+  createdAt: Date;
 
-  @Column()
-  expiresIn: string;
+  @Column({ transformer: dateTransformer })
+  expiresIn: Date;
 
   @Column()
   twoFactored: boolean;
 }
 
 export const AuthSchema = new EntitySchema<Auth>({
-  name: Auth.name, target: Auth, columns: {
+  name: Auth.name,
+  target: Auth,
+  columns: {
     id: {
       type: String,
       primary: true,
-      generated: 'uuid'
+      generated: 'uuid',
     },
     authToken: {
       type: String,
     },
     refreshToken: {
-      type: String
+      type: String,
     },
     createdAt: {
-      type: String
+      type: Date,
     },
     expiresIn: {
-      type: String
+      type: Date,
     },
     twoFactored: {
-      type: Boolean
-    }
-  }
+      type: Boolean,
+    },
+  },
 });
