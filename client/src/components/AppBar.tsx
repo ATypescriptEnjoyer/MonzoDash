@@ -1,5 +1,5 @@
 import { Logout, Menu } from '@mui/icons-material';
-import { Box, Divider, IconButton, Stack, styled, Typography } from '@mui/material';
+import { Box, Divider, IconButton, Stack, styled, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { CurrentFinances } from '../../../shared/interfaces/finances';
 import { useMutation, useQuery } from '../api';
@@ -34,6 +34,8 @@ export const AppBar = (props: Props): JSX.Element => {
   const [visible, setVisible] = useState<boolean>(false);
   const finances = useQuery<CurrentFinances>('finances/current');
   const logoutMutation = useMutation('auth/signout', { method: 'POST' });
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const moneyLeft = useMemo(
     () =>
@@ -78,7 +80,7 @@ export const AppBar = (props: Props): JSX.Element => {
       </Stack>
 
       <Stack
-        sx={(theme) => ({ display: visible ? 'flex' : 'none', padding: theme.spacing(2) })}
+        sx={(theme) => ({ display: visible && isMobile ? 'flex' : 'none', padding: theme.spacing(2) })}
         direction="column"
         alignItems="center"
         justifyContent="space-evenly"
