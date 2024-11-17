@@ -24,6 +24,7 @@ export const Modal = ({ title, onClose, open, children, saveText, onSubmit }: Pr
       scroll="paper"
       PaperProps={{
         sx: (theme) => ({
+          justifyContent: 'space-between',
           gap: theme.spacing(2),
           backgroundColor: colours.black,
           border: `2px solid ${colours.pink}`,
