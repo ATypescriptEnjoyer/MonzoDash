@@ -28,7 +28,12 @@ export const SalaryModal = (props: Props) => {
     <Modal open={open} onSubmit={handleSubmit(onSubmit)} onClose={onClose} title="Update Salary Details">
       {isLoading && <Loader />}
       {!isLoading && (
-        <Stack gap={2.5}>
+        <Stack
+          gap={2.5}
+          sx={(theme) => ({
+            padding: theme.spacing(2),
+          })}
+        >
           <Controller
             control={control}
             name="name"
