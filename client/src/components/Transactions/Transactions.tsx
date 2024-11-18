@@ -123,7 +123,7 @@ export const Transactions = (props: Props) => {
                 <TableRow key={transaction.id}>
                   <TableCell>
                     <Stack direction="row" alignItems="center" gap={4}>
-                      <Avatar src={transaction.logoUrl ?? '/icon-192x192.png'} />
+                      <Avatar src={transaction.logoUrl || '/icon-192x192.png'} />
                       <Stack>
                         <Typography variant="body1">{transaction.description}</Typography>
                         {transaction.potName && (
