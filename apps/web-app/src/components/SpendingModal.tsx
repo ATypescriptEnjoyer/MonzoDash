@@ -1,7 +1,7 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
-import { DedicatedFinance } from '../../../shared/interfaces/finances';
+import { DedicatedFinance } from '@api/finances/finances.interfaces';
 import { Modal } from './Modal';
 import { SpendingBox } from './SpendingBox';
 import { Loader } from './Loader';

@@ -3,7 +3,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
-import viteTsconfigPaths from 'vite-tsconfig-paths';
 import svgrPlugin from 'vite-plugin-svgr';
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
 
@@ -56,13 +55,13 @@ export default defineConfig({
     port: 4300,
     host: 'localhost',
   },
-  plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md']), viteTsconfigPaths(), svgrPlugin(), VitePWA(manifestForPlugin)],
+  plugins: [react(), nxViteTsPaths(), nxCopyAssetsPlugin(['*.md']), svgrPlugin(), VitePWA(manifestForPlugin)],
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [ nxViteTsPaths() ],
   // },
   build: {
-    outDir: '../../dist/apps/web-app',
+    outDir: '../../dist/apps/api/client',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {

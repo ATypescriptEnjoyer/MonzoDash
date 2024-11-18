@@ -12,12 +12,4 @@
   "compilerOptions": {
     "esModuleInterop": true
   },
-  "exclude": [
-    "plop-templates/**",
-    "./dist/**"
-  ],
-  "include": [
-    "src",
-    "migrations"
-  ]
 }

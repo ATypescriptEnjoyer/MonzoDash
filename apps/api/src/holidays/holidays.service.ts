@@ -3,7 +3,7 @@ import { Holiday } from './schemas/holidays.schema';
 import { StorageService } from '../storageService';
 import axios from 'axios';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import * as moment from 'moment';
+import moment from 'moment';
 import async from 'async';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

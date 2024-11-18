@@ -1,5 +1,5 @@
 import { Control, Controller } from 'react-hook-form';
-import { DedicatedFinance } from '../../../shared/interfaces/finances';
+import { DedicatedFinance } from '@api/finances/finances.interfaces';
 import { Stack, TextField, Typography } from '@mui/material';
 
 interface Props {

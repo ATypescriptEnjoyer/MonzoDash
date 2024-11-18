@@ -1,5 +1,5 @@
-import { WebhookTransactionData } from 'src/monzo/monzo.interfaces';
-import { Pot } from 'src/monzo/monzo.service';
+import { WebhookTransactionData } from '@api/monzo/monzo.interfaces';
+import { Pot } from '@api/monzo/monzo.service';
 
 export const getTransactionDescription = (transaction: WebhookTransactionData, pots: Pot[]): string => {
   let description = transaction.merchant?.name || transaction.counterparty?.name;

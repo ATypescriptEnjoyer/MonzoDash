@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Login } from './schemas/login.schema';
 import { StorageService } from '../storageService';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { sha512 } from 'sha512-crypt-ts';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,10 +19,11 @@ export class LoginService extends StorageService<Login> {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async clearCodes(): Promise<void> {
     console.log('Running login code clear cycle');
-    const deleted = await this.repository.createQueryBuilder()
+    const deleted = await this.repository
+      .createQueryBuilder()
       .delete()
-      .where("expiresAt < :currentDate", { currentDate: new Date() })
-      .orWhere("used = :used", { used: false })
+      .where('expiresAt < :currentDate', { currentDate: new Date() })
+      .orWhere('used = :used', { used: false })
       .execute();
     console.log(`${deleted.affected} expired logins deleted.`);
   }
@@ -43,7 +44,9 @@ export class LoginService extends StorageService<Login> {
   async validateCode(codeString: string, onlyUnused: boolean): Promise<boolean> {
     const codeHash = sha512.crypt(codeString, process.env.CRYPT_SALT || 'monzodash');
     const codes = await this.getAll();
-    const code = codes.find((code) => code.code === codeHash && new Date(code.expiresAt).getTime() > new Date().getTime());
+    const code = codes.find(
+      (code) => code.code === codeHash && new Date(code.expiresAt).getTime() > new Date().getTime(),
+    );
     if (onlyUnused && code?.used) {
       return false;
     }

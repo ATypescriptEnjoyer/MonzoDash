@@ -17,14 +17,14 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { DailyReportModule } from '../dailyReport/dailyReport.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '../config/datasource.config';
-import { PotPaymentsModule } from 'src/potPayments/potPayments.module';
+import { PotPaymentsModule } from '@api/potPayments/potPayments.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot(getConfig()),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client'),
+      rootPath: join(__dirname, 'client'),
     }),
     AuthModule,
     MonzoModule,

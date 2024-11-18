@@ -2,7 +2,7 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { DailyReport } from './schemas/dailyReport.schema';
 import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import * as moment from 'moment';
+import moment from 'moment';
 import { MonzoService } from '../monzo/monzo.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -33,10 +33,10 @@ export class DailyReportService extends StorageService<DailyReport> {
   getByDate = async (month: number, year: number, day?: number): Promise<DailyReport[]> => {
     const param = day
       ? {
-        year,
-        month,
-        day,
-      }
+          year,
+          month,
+          day,
+        }
       : { year, month };
 
     return this.dailyReportRepository.findBy(param);

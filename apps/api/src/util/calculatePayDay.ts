@@ -1,18 +1,22 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import { Holiday } from '../holidays/schemas/holidays.schema';
 
 const getLastNonWeekend = (date: moment.Moment): moment.Moment =>
   date.isoWeekday() > 5 ? date.clone().subtract(date.isoWeekday() - 5, 'days') : date.clone();
 
-
-export const calculatePayDay = async (day: number, holidays: Holiday[], dateNow: Date = new Date(), paidOnHolidays = false, paidLastWorkingDay = false): Promise<Date> => {
+export const calculatePayDay = async (
+  day: number,
+  holidays: Holiday[],
+  dateNow: Date = new Date(),
+  paidOnHolidays = false,
+  paidLastWorkingDay = false,
+): Promise<Date> => {
   if (paidLastWorkingDay) {
     return getLastNonWeekend(moment().endOf('month')).toDate();
   }
   let momentDate = moment(dateNow);
-  if (momentDate.date() >= day)
-    momentDate = momentDate.add("1", "month");
-  momentDate.set("date", day);
+  if (momentDate.date() >= day) momentDate = momentDate.add('1', 'month');
+  momentDate.set('date', day);
   if (!paidOnHolidays) {
     const finalWorkingDay = getLastNonWeekend(momentDate);
     const isBankHoliday = holidays.some(({ date }) => finalWorkingDay.isSame(date));

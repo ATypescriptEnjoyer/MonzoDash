@@ -6,8 +6,8 @@ import { TransactionsModule } from '../transactions/transactions.module';
 import { FinancesModule } from '../finances/finances.module';
 import { EmployerModule } from '../employer/employer.module';
 import { HttpModule } from '@nestjs/axios';
-import { LoginModule } from 'src/login/login.module';
-import { PotPaymentsModule } from 'src/potPayments/potPayments.module';
+import { LoginModule } from '@api/login/login.module';
+import { PotPaymentsModule } from '@api/potPayments/potPayments.module';
 
 @Module({
   imports: [

@@ -3,13 +3,13 @@ https://docs.nestjs.com/providers#services
 */
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { Owner, Account } from '../../../shared/interfaces/monzo';
+import { Owner, Account } from '@api/monzo/monzo.interfaces';
 import { AuthService } from '../auth/auth.service';
 import async from 'async';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { LoginService } from 'src/login/login.service';
+import { LoginService } from '@api/login/login.service';
 import { isAxiosError } from 'axios';
 
 export interface MonzoAuthResponse {
