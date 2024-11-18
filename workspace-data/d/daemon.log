@@ -1,0 +1,11 @@
+[NX Daemon Server] - 2024-11-18T10:51:12.658Z - Started listening on: /tmp/927f4bcff4/d.sock
+[NX Daemon Server] - 2024-11-18T10:51:12.662Z - [WATCHER]: Subscribed to changes within: /home/sasha/repos/MonzoDashNx/monzodash (native)
+[NX Daemon Server] - 2024-11-18T10:51:12.667Z - Established a connection. Number of open connections: 1
+[NX Daemon Server] - 2024-11-18T10:51:12.669Z - Established a connection. Number of open connections: 2
+[NX Daemon Server] - 2024-11-18T10:51:12.675Z - Closed a connection. Number of open connections: 1
+[NX Daemon Server] - 2024-11-18T10:51:12.678Z - [REQUEST]: Responding to the client. Shutdown initiated
+[NX Daemon Server] - 2024-11-18T10:51:12.679Z - Done responding to the client Shutdown initiated
+[NX Daemon Server] - 2024-11-18T10:51:12.680Z - Handled FORCE_SHUTDOWN. Handling time: 1. Response time: 2.
+[NX Daemon Server] - 2024-11-18T10:51:12.682Z - Closed a connection. Number of open connections: 0
+[NX Daemon Server] - 2024-11-18T10:51:12.683Z - [WATCHER]: Stopping the watcher for /home/sasha/repos/MonzoDashNx/monzodash (sources)
+[NX Daemon Server] - 2024-11-18T10:51:12.683Z - [WATCHER]: Stopping the watcher for /home/sasha/repos/MonzoDashNx/monzodash (outputs)

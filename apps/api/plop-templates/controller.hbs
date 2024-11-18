@@ -1,0 +1,11 @@
+/*
+https://docs.nestjs.com/controllers#controllers
+*/
+
+import { Controller } from '@nestjs/common';
+import { {{pascalCase name}}Service } from './{{name}}.service';
+
+@Controller('{{pascalCase name}}')
+export class {{pascalCase name}}Controller {
+constructor(private readonly {{name}}Service: {{pascalCase name}}Service) {}
+}
