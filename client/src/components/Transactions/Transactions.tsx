@@ -72,20 +72,17 @@ export const Transactions = (props: Props) => {
     });
   };
 
-  const detailedTransactions = useMemo(
-    () =>
-      !data
-        ? []
-        : data.data.map((transaction) => {
-            const potPayment = potPayments.data?.find((potPayment) => potPayment.groupId === transaction.groupId);
-            return {
-              ...transaction,
-              potName: potPayment && pots.data ? pots.data[potPayment.potId] : null,
-              potPaymentId: potPayment?.id,
-            };
-          }),
-    [data, potPayments.data, pots.data],
-  );
+  const detailedTransactions = useMemo(() => {
+    if (!data) return [];
+    return data.data.map((transaction) => {
+      const potPayment = potPayments.data?.find((potPayment) => potPayment.groupId === transaction.groupId);
+      return {
+        ...transaction,
+        potName: potPayment && pots.data ? pots.data[potPayment.potId] : null,
+        potPaymentId: potPayment?.id,
+      };
+    });
+  }, [data, potPayments.data, pots.data]);
 
   return (
     <Stack flex={1} sx={{ height: '1px' }}>
