@@ -12,12 +12,13 @@ name: Create and publish a Docker image
 on:
   push:
     branches:
-      - "master"
+      - 'master'
+      - 'develop'
     tags:
-      - "v*"
+      - 'v*'
   pull_request:
     branches:
-      - "master"
+      - 'master'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

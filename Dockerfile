@@ -1,36 +1,22 @@
-FROM node:lts-slim AS api
-
-COPY api /app/api
-COPY shared /app/shared
-WORKDIR /app/api
-RUN apt update && \
-    apt install python3 make g++ -y && \
-    yarn install && \
-    yarn build && \
-    rm -rf shared && \
-    yarn install --production
-
-FROM node:lts-alpine AS client
-
-COPY client /app/client
-COPY shared /app/shared
-WORKDIR /app/client
-COPY package.json rootpackage.json
-RUN \
-    yarn install && \
-    export VITE_APP_VERSION=$(node -pe "require('./rootpackage.json').version") && \
-    export VITE_APP_NAME=$(node -pe "require('./rootpackage.json').name") && \
-    VITE_API_URL=/api yarn build && \
-    rm rootpackage.json
-
 FROM node:lts-slim AS build
 
-RUN yarn global add typeorm
-COPY --from=api /app/api/dist/ /app/dist
-COPY --from=api /app/api/node_modules/ /app/node_modules
-COPY --from=api /app/api/package.json /app/package.json
-COPY --from=client /app/client/dist /app/dist/api/src/client
+COPY . /app
+WORKDIR /app
+
+RUN apt update && apt install python3 make g++ -y
+RUN yarn install
+
+RUN npx nx build api web-app
+RUN VITE_APP_NAME=MonzoDash \
+    VITE_APP_VERSION=$(node -pe "require('./package.json').version") \
+    VITE_API_URL=/api \
+    npx nx build web-app
+
+FROM node:lts-slim AS final
+
+COPY --from=build /app/dist/apps/api/ /app/dist
+COPY --from=build /app/node_modules /app/node_modules
 EXPOSE 5000
 WORKDIR /app
 
-CMD [ "/bin/sh", "-c", "yarn start:prod" ]
+CMD ["node", "dist/main"]
