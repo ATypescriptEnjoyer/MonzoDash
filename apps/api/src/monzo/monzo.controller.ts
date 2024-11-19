@@ -4,7 +4,7 @@ https://docs.nestjs.com/controllers#controllers
 
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import async from 'async';
-import { Owner } from '@api/monzo/monzo.interfaces';
+import { Owner } from '@monzodash/api/monzo/monzo.interfaces';
 import { EmployerService } from '../employer/employer.service';
 import { FinancesService } from '../finances/finances.service';
 import { Finances } from '../finances/schemas/finances.schema';
@@ -12,8 +12,8 @@ import { TransactionsService } from '../transactions/transactions.service';
 import { WebhookTransaction } from './monzo.interfaces';
 import { MonzoService } from './monzo.service';
 import { Transactions } from '../transactions/schemas/transactions.schema';
-import { PotPaymentsService } from '@api/potPayments/potPayments.service';
-import { getTransactionDescription } from '@api/util/getTransactionDescription';
+import { PotPaymentsService } from '@monzodash/api/potPayments/potPayments.service';
+import { getTransactionDescription } from '@monzodash/api/util/getTransactionDescription';
 
 @Controller('monzo')
 export class MonzoController {

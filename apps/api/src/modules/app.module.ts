@@ -16,8 +16,8 @@ import { TransactionsModule } from '../transactions/transactions.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { DailyReportModule } from '../dailyReport/dailyReport.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { getConfig } from '../config/datasource.config';
-import { PotPaymentsModule } from '@api/potPayments/potPayments.module';
+import { getConfig } from '@monzodash/db';
+import { PotPaymentsModule } from '@monzodash/api/potPayments/potPayments.module';
 
 @Module({
   imports: [

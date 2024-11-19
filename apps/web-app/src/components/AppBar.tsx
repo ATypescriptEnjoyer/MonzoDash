@@ -1,7 +1,7 @@
 import { Logout, Menu } from '@mui/icons-material';
 import { Box, Divider, IconButton, Stack, styled, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useMemo, useState } from 'react';
-import { CurrentFinances } from '@api/finances/finances.interfaces';
+import { CurrentFinances } from '@monzodash/api/finances/finances.interfaces';
 import { useMutation, useQuery } from '../api';
 import { colours } from '../theme';
 import { GetAppName, GetAppVersion } from '../utils';

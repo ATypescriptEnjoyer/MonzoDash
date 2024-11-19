@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import moment from 'moment';
 import { useMemo, useState } from 'react';
-import { Transaction } from '@api/transactions/transactions.interfaces';
+import { Transaction } from '@monzodash/api/transactions/transactions.interfaces';
 import { Menu, MenuItem, SubMenu } from '@szhsin/react-menu';
 import { useMutation, useQuery } from '../../api';
 import { useQueryClient } from '@tanstack/react-query';

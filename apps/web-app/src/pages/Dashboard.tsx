@@ -1,8 +1,8 @@
 import { Stack } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { DedicatedFinance } from '@api/finances/finances.interfaces';
-import { Transaction } from '@api/transactions/transactions.interfaces';
+import { DedicatedFinance } from '@monzodash/api/finances/finances.interfaces';
+import { Transaction } from '@monzodash/api/transactions/transactions.interfaces';
 import { useMutation, useQuery } from '../api';
 import { AppBar } from '../components/AppBar';
 import { Chart } from '../components/Chart';

@@ -15,8 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@api/*": ["apps/api/src/*"],
-      "@web-app/*": ["apps/web-app/src/*"]
+      "@monzodash/api/*": ["apps/api/src/*"],
+      "@monzodash/db": ["libs/db/src/index.ts"],
+      "@monzodash/web-app/*": ["apps/web-app/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

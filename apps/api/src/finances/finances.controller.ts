@@ -1,6 +1,6 @@
 import { Body, Controller, forwardRef, Get, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
 import moment from 'moment';
-import { CurrentFinances } from '@api/finances/finances.interfaces';
+import { CurrentFinances } from '@monzodash/api/finances/finances.interfaces';
 import { calculatePayDay } from '../util/calculatePayDay';
 import { EmployerService } from '../employer/employer.service';
 import { MonzoService } from '../monzo/monzo.service';
