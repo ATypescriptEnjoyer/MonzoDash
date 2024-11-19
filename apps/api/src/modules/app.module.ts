@@ -18,11 +18,12 @@ import { DailyReportModule } from '../dailyReport/dailyReport.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '@monzodash/db';
 import { PotPaymentsModule } from '@monzodash/api/potPayments/potPayments.module';
+import * as entities from '@monzodash/api/entities';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forRoot({ ...getConfig(), autoLoadEntities: true }),
+    TypeOrmModule.forRoot({ ...getConfig(), entities }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'client'),
     }),
