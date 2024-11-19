@@ -22,7 +22,7 @@ import { PotPaymentsModule } from '@api/potPayments/potPayments.module';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forRoot(getConfig()),
+    TypeOrmModule.forRoot({ ...getConfig(), autoLoadEntities: true }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'client'),
     }),
