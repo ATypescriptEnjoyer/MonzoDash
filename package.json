@@ -3,9 +3,15 @@
   "version": "4.0.0",
   "license": "MIT",
   "scripts": {
-    "create-entities-index": "ts-node --pretty --project=tools/tsconfig.tools.json tools/create-entities-index.ts"
+    "create-entities-index": "ts-node --pretty --project=tools/tsconfig.tools.json tools/create-entities-index.ts",
+    "web-app:docker": "nx serve web-app --host=0.0.0.0",
+    "api:docker": "nx serve api --host=0.0.0.0",
+    "start:dev": "docker compose --env-file .env -f development/docker-compose.yml up -d",
+    "stop:dev": "docker compose --env-file .env -f development/docker-compose.yml down",
+    "restart:dev": "yarn stop:dev && yarn start:dev",
+    "logs:dev": "docker compose --env-file .env -f development/docker-compose.yml logs -f"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",

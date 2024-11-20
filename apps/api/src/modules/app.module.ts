@@ -20,13 +20,19 @@ import { getConfig } from '@monzodash/db';
 import { PotPaymentsModule } from '@monzodash/api/potPayments/potPayments.module';
 import * as entities from '@monzodash/api/entities';
 
+const { DEBUG } = process.env;
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({ ...getConfig(), entities }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, 'client'),
-    }),
+    ...(!DEBUG
+      ? [
+          ServeStaticModule.forRoot({
+            rootPath: join(__dirname, 'client'),
+          }),
+        ]
+      : []),
     AuthModule,
     MonzoModule,
     EmployerModule,

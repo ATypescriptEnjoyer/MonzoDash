@@ -3,7 +3,7 @@ FROM node:lts-slim AS build
 COPY . /app
 WORKDIR /app
 
-RUN apt update && apt install python3 make g++ -y
+RUN apt-get update && apt-get install python3 make g++ -y
 RUN yarn install
 
 RUN VITE_APP_NAME=MonzoDash \

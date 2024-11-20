@@ -1,0 +1,9 @@
+FROM node:lts-slim
+WORKDIR /app
+RUN apt-get update && apt-get install python3 make g++ procps -y -qq
+
+COPY . .
+
+RUN yarn install
+
+CMD ["yarn", 'nx serve web-app']
