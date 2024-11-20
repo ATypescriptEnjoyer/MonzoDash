@@ -9,7 +9,7 @@ import axios from 'axios';
 
 @Controller('Login')
 export class LoginController {
-  constructor(private readonly loginService: LoginService, private readonly monzoService: MonzoService) { }
+  constructor(private readonly loginService: LoginService, private readonly monzoService: MonzoService) {}
 
   @Post('auth-code')
   async getAuthCode(): Promise<void> {

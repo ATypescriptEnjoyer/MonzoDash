@@ -8,14 +8,9 @@ import { FinancesSchema } from './schemas/finances.schema';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([FinancesSchema]),
-    EmployerModule,
-    forwardRef(() => MonzoModule),
-    HolidaysModule,
-  ],
+  imports: [TypeOrmModule.forFeature([FinancesSchema]), EmployerModule, forwardRef(() => MonzoModule), HolidaysModule],
   controllers: [FinancesController],
   providers: [FinancesService],
   exports: [FinancesService],
 })
-export class FinancesModule { }
+export class FinancesModule {}

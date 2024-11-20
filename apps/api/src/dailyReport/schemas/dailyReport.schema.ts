@@ -2,7 +2,6 @@ import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class DailyReport {
-
   @PrimaryGeneratedColumn()
   id?: string;
 
@@ -20,11 +19,13 @@ export class DailyReport {
 }
 
 export const DailyReportSchema = new EntitySchema<DailyReport>({
-  name: DailyReport.name, target: DailyReport, columns: {
+  name: DailyReport.name,
+  target: DailyReport,
+  columns: {
     id: {
       type: String,
       primary: true,
-      generated: 'uuid'
+      generated: 'uuid',
     },
     day: {
       type: Number,
@@ -36,7 +37,7 @@ export const DailyReportSchema = new EntitySchema<DailyReport>({
       type: Number,
     },
     amount: {
-      type: 'decimal'
-    }
-  }
+      type: 'decimal',
+    },
+  },
 });

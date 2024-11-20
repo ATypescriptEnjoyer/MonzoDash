@@ -19,11 +19,13 @@ export class Login {
 }
 
 export const LoginSchema = new EntitySchema<Login>({
-  name: Login.name, target: Login, columns: {
+  name: Login.name,
+  target: Login,
+  columns: {
     id: {
       type: String,
       primary: true,
-      generated: 'uuid'
+      generated: 'uuid',
     },
     code: {
       type: String,
@@ -31,14 +33,14 @@ export const LoginSchema = new EntitySchema<Login>({
     },
     createdAt: {
       type: Date,
-      default: "current_timestamp"
+      default: 'current_timestamp',
     },
     expiresAt: {
       type: Date,
     },
     used: {
       type: Boolean,
-      default: false
-    }
-  }
-})
+      default: false,
+    },
+  },
+});

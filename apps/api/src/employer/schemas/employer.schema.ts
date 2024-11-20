@@ -19,23 +19,25 @@ export class Employer {
 }
 
 export const EmployerSchema = new EntitySchema<Employer>({
-  name: Employer.name, target: Employer, columns: {
+  name: Employer.name,
+  target: Employer,
+  columns: {
     id: {
       type: String,
       primary: true,
-      generated: 'uuid'
+      generated: 'uuid',
     },
     name: {
-      type: String
+      type: String,
     },
     payDay: {
-      type: String
+      type: String,
     },
     paidOnHolidays: {
-      type: Boolean
+      type: Boolean,
     },
     paidLastWorkingDay: {
-      type: Boolean
-    }
-  }
-})
+      type: Boolean,
+    },
+  },
+});

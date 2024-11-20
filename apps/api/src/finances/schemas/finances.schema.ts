@@ -19,23 +19,25 @@ export class Finances {
 }
 
 export const FinancesSchema = new EntitySchema<Finances>({
-  name: Finances.name, target: Finances, columns: {
+  name: Finances.name,
+  target: Finances,
+  columns: {
     id: {
       type: String,
-      primary: true
+      primary: true,
     },
     name: {
-      type: String
+      type: String,
     },
     colour: {
-      type: String
+      type: String,
     },
     amount: {
-      type: 'decimal'
+      type: 'decimal',
     },
     dynamicPot: {
       type: Boolean,
-      default: false
-    }
-  }
-})
+      default: false,
+    },
+  },
+});

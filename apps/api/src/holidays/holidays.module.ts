@@ -9,4 +9,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [HolidaysService],
   exports: [HolidaysService],
 })
-export class HolidaysModule { }
+export class HolidaysModule {}

@@ -6,12 +6,9 @@ import { MonzoModule } from '../monzo/monzo.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([DailyReportSchema]),
-    forwardRef(() => MonzoModule),
-  ],
+  imports: [TypeOrmModule.forFeature([DailyReportSchema]), forwardRef(() => MonzoModule)],
   controllers: [DailyReportController],
   providers: [DailyReportService],
   exports: [DailyReportService],
 })
-export class DailyReportModule { }
+export class DailyReportModule {}

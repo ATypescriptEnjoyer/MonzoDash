@@ -7,13 +7,9 @@ import { AuthSchema } from './schemas/auth.schema';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AuthSchema]),
-    forwardRef(() => MonzoModule),
-    LoginModule,
-  ],
+  imports: [TypeOrmModule.forFeature([AuthSchema]), forwardRef(() => MonzoModule), LoginModule],
   controllers: [AuthController],
   providers: [AuthService],
   exports: [AuthService],
 })
-export class AuthModule { }
+export class AuthModule {}

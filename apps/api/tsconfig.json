@@ -11,5 +11,5 @@
   ],
   "compilerOptions": {
     "esModuleInterop": true
-  },
+  }
 }

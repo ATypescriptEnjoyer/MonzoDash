@@ -11,4 +11,4 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   providers: [LoginService],
   exports: [LoginService],
 })
-export class LoginModule { }
+export class LoginModule {}

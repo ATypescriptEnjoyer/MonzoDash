@@ -19,7 +19,7 @@ export class FinancesService extends StorageService<Finances> {
   }
 
   async getOrderedFinances(): Promise<Finances[]> {
-    return this.repository.find({order: {id: {direction: 'ASC'}}})
+    return this.repository.find({ order: { id: { direction: 'ASC' } } });
   }
 
   @Cron(CronExpression.EVERY_HOUR)
@@ -36,13 +36,12 @@ export class FinancesService extends StorageService<Finances> {
           matchedPot.name = extPot.name;
           await this.save(matchedPot);
         }
-      }
-      else {
+      } else {
         await this.save({
           ...extPot,
           colour: generateColour(),
           amount: 0,
-          dynamicPot: false
+          dynamicPot: false,
         });
       }
     });

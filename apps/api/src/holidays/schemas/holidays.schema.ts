@@ -10,15 +10,17 @@ export class Holiday {
 }
 
 export const HolidaysSchema = new EntitySchema<Holiday>({
-  name: Holiday.name, target: Holiday, columns: {
+  name: Holiday.name,
+  target: Holiday,
+  columns: {
     id: {
       type: String,
       primary: true,
-      generated: 'uuid'
+      generated: 'uuid',
     },
     date: {
       type: Date,
-      unique: true
-    }
-  }
-})
+      unique: true,
+    },
+  },
+});
