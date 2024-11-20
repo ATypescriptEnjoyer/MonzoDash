@@ -16,16 +16,11 @@ If you've been using this thusfar, please pin to v2 to continue using MongoDB. I
 - Transaction logging
 - None direct debit/standing order handling via pots
 
-## Planned feature list
-
-- Full transactional report
-- Budgetting tools (to be decided)
-
 ## Technology In Use
 
 - [NestJS (Typescript)](https://docs.nestjs.com/)
 - [React (Typescript)](https://reactjs.org/)
-- [MongoDB](https://www.mongodb.com/)
+- [SQLite](https://www.sqlite.org/index.html)
 - [Docker](https://www.docker.com/)
 
 ## Installation
@@ -41,34 +36,18 @@ services:
   monzodash:
     image: ghcr.io/sasharyder/monzodash:latest
     restart: unless-stopped
-    links:
-      - mongo
     environment:
       - TZ=Europe/London
-      - MONGO_USERNAME=${MONGO_USERNAME}
-      - MONGO_PASSWORD=${MONGO_PASSWORD}
-      - MONGO_HOST=${MONGO_HOST}
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
       - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
-      - MONZODASH_WEBHOOK_DOMAIN=${MONZODASH_WEBHOOK_DOMAIN} #Optional: will fall back to MONZODASH_DOMAIN if not added
-
-  mongo:
-    image: mongo
-    restart: unless-stopped
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
-      - ./db:/data/db
+      - ./data:/data
 ```
 
 Before doing this, create a `.env` file along side your `docker-compose.yml` file.
 
 ```bash
-MONGO_USERNAME=monzodash
-MONGO_PASSWORD=monzodash
-MONGO_HOST=mongo
 MONZO_CLIENT_ID=
 MONZO_CLIENT_SECRET=
 MONZODASH_DOMAIN=http://localhost
