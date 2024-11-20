@@ -8,7 +8,14 @@
   "targets": {
     "build": {
       "webpackConfig": ".webpack/react-dev.config.js"
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["src/**/*.ts"],
+        "fix": true
+      }
     }
-  
   }
 }
