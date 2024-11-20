@@ -5,7 +5,7 @@ export class AddPotpaymentsTable1731425368726 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      `CREATE TABLE "pot_payments" ("id" varchar PRIMARY KEY NOT NULL, "groupId" varchar NOT NULL, "potId" varchar NOT NULL)`,
+      `CREATE TABLE "pot_payments" ("id" varchar PRIMARY KEY NOT NULL, "groupId" varchar NOT NULL, "potId" varchar NOT NULL)`
     );
   }
 
