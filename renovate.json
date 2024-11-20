@@ -1,56 +1,56 @@
 {
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "schedule": [
     "every weekend"
   ],
   "packageRules": [
     {
-      "packagePatterns": [
-        "*"
-      ],
       "enabled": true,
       "groupName": "all dependencies",
       "schedule": [
         "every weekend"
       ],
-      "automerge": true
+      "automerge": true,
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
-      "packagePatterns": [
-        "*"
-      ],
       "enabled": true,
-      "managers": [
+      "matchManagers": [
         "dockerfile",
         "docker-compose"
       ],
-      "paths": [
+      "matchFileNames": [
         "/"
       ],
       "groupName": "docker dependencies",
       "schedule": [
         "every weekend"
       ],
-      "automerge": true
+      "automerge": true,
+      "matchPackageNames": [
+        "*"
+      ]
     },
     {
-      "packagePatterns": [
-        "*"
-      ],
       "enabled": true,
-      "managers": [
+      "matchManagers": [
         "npm"
       ],
-      "paths": [
+      "matchFileNames": [
         "/client/"
       ],
       "groupName": "client dependencies",
       "schedule": [
         "every weekend"
       ],
-      "automerge": true
+      "automerge": true,
+      "matchPackageNames": [
+        "*"
+      ]
     }
   ]
 }
