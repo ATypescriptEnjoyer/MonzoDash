@@ -17,8 +17,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { DailyReportModule } from '../dailyReport/dailyReport.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '@monzodash/db';
-import { PotPaymentsModule } from '@monzodash/api/potPayments/potPayments.module';
-import * as entities from '@monzodash/api/entities';
+import { PotPaymentsModule } from '../potPayments/potPayments.module';
+import * as entities from '../entities';
 
 const { DEBUG } = process.env;
 

@@ -5,6 +5,7 @@
   "scripts": {
     "create-entities-index": "ts-node --pretty --project=tools/tsconfig.tools.json tools/create-entities-index.ts",
     "web-app:docker": "nx serve web-app --host=0.0.0.0",
+    "lint": "nx run-many -t lint --all",
     "api:docker": "nx serve api --host=0.0.0.0",
     "start:dev": "docker compose --env-file .env -f development/docker-compose.yml up -d",
     "stop:dev": "docker compose --env-file .env -f development/docker-compose.yml down",

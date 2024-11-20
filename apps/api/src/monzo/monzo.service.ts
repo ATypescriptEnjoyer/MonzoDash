@@ -3,13 +3,13 @@ https://docs.nestjs.com/providers#services
 */
 
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { Owner, Account } from '@monzodash/api/monzo/monzo.interfaces';
+import { Owner, Account } from './monzo.interfaces';
 import { AuthService } from '../auth/auth.service';
 import async from 'async';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { LoginService } from '@monzodash/api/login/login.service';
+import { LoginService } from '../login/login.service';
 import { isAxiosError } from 'axios';
 
 export interface MonzoAuthResponse {
@@ -170,7 +170,7 @@ export class MonzoService {
 
     const requestData = {
       source_account_id: accountId,
-      amount: Math.abs(valuePence) as any,
+      amount: Math.abs(valuePence) as unknown as string,
       dedupe_id: uuidv4(),
     };
     const requestDataString = new URLSearchParams(requestData).toString();
@@ -190,7 +190,7 @@ export class MonzoService {
 
     const requestData = {
       destination_account_id: accountId,
-      amount: Math.abs(valuePence) as any,
+      amount: Math.abs(valuePence) as unknown as string,
       dedupe_id: uuidv4(),
     };
     const requestDataString = new URLSearchParams(requestData).toString();
@@ -248,7 +248,7 @@ export class MonzoService {
         await firstValueFrom(this.httpService.post('webhooks', requestDataString, { headers }));
       }
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }

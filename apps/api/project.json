@@ -21,6 +21,14 @@
           "buildTarget": "api:build:production"
         }
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/api/src/**/*.ts"],
+        "fix": true
+      }
     }
   }
 }

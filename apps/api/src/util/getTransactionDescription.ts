@@ -1,8 +1,8 @@
-import { WebhookTransactionData } from '@monzodash/api/monzo/monzo.interfaces';
-import { Pot } from '@monzodash/api/monzo/monzo.service';
+import { WebhookTransactionData } from '../monzo/monzo.interfaces';
+import { Pot } from '../monzo/monzo.service';
 
 export const getTransactionDescription = (transaction: WebhookTransactionData, pots: Pot[]): string => {
-  let description = transaction.merchant?.name || transaction.counterparty?.name;
+  const description = transaction.merchant?.name || transaction.counterparty?.name;
   if (description === 'Flex') {
     return transaction.notes;
   }

@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PotPaymentsController } from './potPayments.controller';
 import { PotPaymentsService } from './potPayments.service';
 import { PotPaymentsSchema } from './schemas/potPayments.schema';
-import { TransactionsModule } from '@monzodash/api/transactions/transactions.module';
+import { TransactionsModule } from '../transactions/transactions.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([PotPaymentsSchema]), TransactionsModule],

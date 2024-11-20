@@ -6,8 +6,8 @@ import { TransactionsModule } from '../transactions/transactions.module';
 import { FinancesModule } from '../finances/finances.module';
 import { EmployerModule } from '../employer/employer.module';
 import { HttpModule } from '@nestjs/axios';
-import { LoginModule } from '@monzodash/api/login/login.module';
-import { PotPaymentsModule } from '@monzodash/api/potPayments/potPayments.module';
+import { LoginModule } from '../login/login.module';
+import { PotPaymentsModule } from '../potPayments/potPayments.module';
 
 @Module({
   imports: [

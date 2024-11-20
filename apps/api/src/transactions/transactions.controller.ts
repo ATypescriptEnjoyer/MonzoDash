@@ -17,7 +17,9 @@ export class TransactionsController {
     const [transactions, count] = await this.transactionsService.getPage(page, 5);
 
     return {
-      data: transactions.map(({ transaction: json, ...value }) => value),
+      // Removing transaction JSON from response
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      data: transactions.map(({ transaction, ...value }) => value),
       pagination: {
         page,
         count,

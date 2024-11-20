@@ -4,7 +4,7 @@ https://docs.nestjs.com/controllers#controllers
 
 import { Body, Controller, Delete, Get, NotFoundException, Param, Put } from '@nestjs/common';
 import { PotPaymentsService } from './potPayments.service';
-import { TransactionsService } from '@monzodash/api/transactions/transactions.service';
+import { TransactionsService } from '../transactions/transactions.service';
 
 interface PotPaymentDto {
   transactionId: string;
