@@ -11,6 +11,9 @@ RUN VITE_APP_NAME=MonzoDash \
     VITE_API_URL=/api \
     yarn nx run-many --target=build --all
 
+# Attempt to shrink docker image size
+RUN yarn install --production
+
 FROM node:lts-slim AS final
 
 RUN yarn global add typeorm
