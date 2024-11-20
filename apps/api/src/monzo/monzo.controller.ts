@@ -43,7 +43,8 @@ export class MonzoController {
       if (transaction.type !== 'transaction.created' || transaction.data.amount === 0) {
         return;
       }
-      const description = getTransactionDescription(transaction.data, await this.monzoService.getPots());
+      const pots = await this.monzoService.getPots();
+      const description = getTransactionDescription(transaction.data, pots);
       const finances = await this.financesService.getAll();
       const salary = finances.find((finance) => finance.id === '0').amount ?? 99999;
       const amount = Math.abs(transaction.data.amount) / 100;
@@ -79,7 +80,14 @@ export class MonzoController {
       const potPayments = await this.potPaymentsService.getAll();
       const payPot = potPayments.find((potPayment) => potPayment.groupId === transaction.data.merchant.group_id);
       if (payPot) {
-        await this.monzoService.withdrawFromPot(payPot.potId, transaction.data.amount, transaction.data.account_id);
+        if (pots.find((pot) => pot.id === payPot.potId).balance >= transaction.data.amount) {
+          await this.monzoService.withdrawFromPot(payPot.potId, transaction.data.amount, transaction.data.account_id);
+          return;
+        }
+        await this.monzoService.sendNotification(
+          'Failed to pay from pot',
+          `Not enough in payment pot to cover ${description} transaction`,
+        );
       }
     } catch (error) {
       //Writes the error, but prevents Monzo from calling over and over
