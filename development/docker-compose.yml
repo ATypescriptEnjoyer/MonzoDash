@@ -24,8 +24,8 @@ services:
       sh -c "yarn web-app:docker"
     environment:
       - VITE_API_URL=/api
-      - VITE_APP_VERSION=1
-      - VITE_APP_NAME=test
+      - VITE_APP_VERSION=Development
+      - VITE_APP_NAME=MonzoDash
 
   nginx:
     image: nginx
