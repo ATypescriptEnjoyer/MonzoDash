@@ -5,6 +5,7 @@
 <p align="center">MonzoDash is a dockerised web app for monitoring and managing your Monzo bank account.</p>
 
 ## V3 UPGRADE SWITCHES FROM MONGODB TO SQLITE3.
+
 If you've been using this thusfar, please pin to v2 to continue using MongoDB. If you have the know how you can migrate data to SQLite, but i've found its easier just to start over
 
 ## Features
