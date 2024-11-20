@@ -54,6 +54,16 @@ export class MonzoService {
     @Inject(forwardRef(() => AuthService)) private readonly authService: AuthService,
   ) {}
 
+  private async getHeaders(): Promise<Record<string, string> | undefined> {
+    const authToken = (await this.authService.getToken())?.authToken;
+
+    if (authToken) {
+      return {
+        authorization: `Bearer ${authToken}`,
+      };
+    }
+  }
+
   async usingAuthCode({ authCode }: AuthRequest): Promise<AuthResponse> {
     const { MONZO_CLIENT_ID: clientId, MONZO_CLIENT_SECRET: clientSecret, MONZODASH_DOMAIN } = process.env;
 
@@ -99,11 +109,7 @@ export class MonzoService {
   }
 
   async getAccountId(): Promise<string> {
-    const authToken = (await this.authService.getToken()).authToken;
-
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
+    const headers = await this.getHeaders();
 
     const { data } = await firstValueFrom(
       this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
@@ -114,11 +120,7 @@ export class MonzoService {
   }
 
   async getUserInfo(): Promise<Owner> {
-    const authToken = (await this.authService.getToken()).authToken;
-
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
+    const headers = await this.getHeaders();
 
     const { data } = await firstValueFrom(
       this.httpService.get<{ accounts: Account[] }>('accounts?account_type=uk_retail', {
@@ -129,11 +131,7 @@ export class MonzoService {
   }
 
   async getBalance(): Promise<number> {
-    const authToken = (await this.authService.getToken()).authToken;
-
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
+    const headers = await this.getHeaders();
 
     const accountId = await this.getAccountId();
 
@@ -144,14 +142,10 @@ export class MonzoService {
   }
 
   async getPots(): Promise<Pot[]> {
-    const authToken = (await this.authService.getToken())?.authToken;
-    if (!authToken) {
+    const headers = await this.getHeaders();
+    if (!headers) {
       return [];
     }
-
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
 
     const accountId = await this.getAccountId();
 
@@ -162,11 +156,7 @@ export class MonzoService {
   }
 
   async depositToPot(potId: string, valuePence: number, accountId: string): Promise<Pot> {
-    const authToken = (await this.authService.getToken()).authToken;
-
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
+    const headers = await this.getHeaders();
 
     const requestData = {
       source_account_id: accountId,
@@ -182,11 +172,7 @@ export class MonzoService {
   }
 
   async withdrawFromPot(potId: string, valuePence: number, accountId: string): Promise<Pot> {
-    const authToken = (await this.authService.getToken()).authToken;
-
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
+    const headers = await this.getHeaders();
 
     const requestData = {
       destination_account_id: accountId,
@@ -202,11 +188,7 @@ export class MonzoService {
   }
 
   async sendNotification(title: string, message: string): Promise<void> {
-    const authToken = (await this.authService.getToken()).authToken;
-
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
+    const headers = await this.getHeaders();
 
     const accountId = await this.getAccountId();
 
@@ -225,11 +207,7 @@ export class MonzoService {
   }
 
   async configureWebhooks({ accountId, webhookUrl }: { accountId: string; webhookUrl: string }): Promise<boolean> {
-    const authToken = (await this.authService.getToken()).authToken;
-
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
+    const headers = await this.getHeaders();
 
     try {
       const { data } = await firstValueFrom(this.httpService.get(`webhooks?account_id=${accountId}`, { headers }));
@@ -254,16 +232,13 @@ export class MonzoService {
   }
 
   async isAuthenticated() {
-    const authToken = (await this.authService.getToken())?.authToken;
-    if (!authToken) {
+    const headers = await this.getHeaders();
+    if (!headers) {
       return {
         status: false,
         error: 'Auth Token not present',
       };
     }
-    const headers = {
-      Authorization: `Bearer ${authToken}`,
-    };
 
     const { data } = await firstValueFrom(this.httpService.get<{ authenticated: boolean }>('ping/whoami', { headers }));
     if (!data.authenticated) {
