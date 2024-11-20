@@ -1,36 +1,27 @@
-FROM node:lts-slim AS api
-
-COPY api /app/api
-COPY shared /app/shared
-WORKDIR /app/api
-RUN apt update && \
-    apt install python3 make g++ -y && \
-    yarn install && \
-    yarn build && \
-    rm -rf shared && \
-    yarn install --production
-
-FROM node:lts-alpine AS client
-
-COPY client /app/client
-COPY shared /app/shared
-WORKDIR /app/client
-COPY package.json rootpackage.json
-RUN \
-    yarn install && \
-    export VITE_APP_VERSION=$(node -pe "require('./rootpackage.json').version") && \
-    export VITE_APP_NAME=$(node -pe "require('./rootpackage.json').name") && \
-    VITE_API_URL=/api yarn build && \
-    rm rootpackage.json
-
 FROM node:lts-slim AS build
 
+COPY . /app
+WORKDIR /app
+
+RUN apt-get update && apt-get install python3 make g++ -y
+RUN yarn install
+
+RUN VITE_APP_NAME=MonzoDash \
+    VITE_APP_VERSION=$(node -pe "require('./package.json').version") \
+    VITE_API_URL=/api \
+    yarn nx run-many --target=build --all
+
+# Attempt to shrink docker image size
+RUN yarn install --production
+
+FROM node:lts-slim AS final
+
 RUN yarn global add typeorm
-COPY --from=api /app/api/dist/ /app/dist
-COPY --from=api /app/api/node_modules/ /app/node_modules
-COPY --from=api /app/api/package.json /app/package.json
-COPY --from=client /app/client/dist /app/dist/api/src/client
+
+COPY --from=build /app/dist/apps/api/ /app/dist
+COPY --from=build /app/dist/libs/db/ /app/db
+COPY --from=build /app/node_modules /app/node_modules
 EXPOSE 5000
 WORKDIR /app
 
-CMD [ "/bin/sh", "-c", "yarn start:prod" ]
+CMD ["/bin/sh", "-c", "typeorm migration:run -d db/src/index.js && node dist/main"]

@@ -1,0 +1,41 @@
+services:
+  api:
+    extends:
+      file: docker-compose.base.yml
+      service: nx-app-base
+    command: >
+      sh -c "yarn api:docker"
+    ports:
+      - 5000:5000
+    volumes:
+      - ../data:/data
+    environment:
+      - TZ=Europe/London
+      - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
+      - MONZO_CLIENT_SECRET=${MONZO_CLIENT_SECRET}
+      - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
+      - DEBUG=true
+
+  client:
+    extends:
+      file: docker-compose.base.yml
+      service: nx-app-base
+    command: >
+      sh -c "yarn web-app:docker"
+    environment:
+      - VITE_API_URL=/api
+      - VITE_APP_VERSION=Development
+      - VITE_APP_NAME=MonzoDash
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    ports:
+      - "80:80"
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+
+volumes:
+  mono-node-modules: null
