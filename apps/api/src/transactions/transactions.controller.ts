@@ -14,12 +14,19 @@ export class TransactionsController {
   async getTransactions(
     @Query('page') page: number,
   ): Promise<{ data: Transactions[]; pagination: { page: number; count: number } }> {
-    const [transactions, count] = await this.transactionsService.getPage(page, 5);
+    const [transactions, count] = await this.transactionsService.getPage(page, 5, [
+      'amount',
+      'created',
+      'description',
+      'groupId',
+      'id',
+      'internal',
+      'logoUrl',
+      'type',
+    ]);
 
     return {
-      // Removing transaction JSON from response
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      data: transactions.map(({ transaction, ...value }) => value),
+      data: transactions,
       pagination: {
         page,
         count,

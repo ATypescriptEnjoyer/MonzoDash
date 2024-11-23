@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, Menu as MenuIcon } from '@mui/icons-material';
 import {
   Avatar,
+  Button,
   IconButton,
   Stack,
   Table,
@@ -87,9 +88,10 @@ export const Transactions = (props: Props) => {
   return (
     <Stack flex={1} sx={{ height: '1px' }}>
       <Stack direction="row" alignItems="center" gap={2}>
-        <Typography variant="h5" width="100%">
-          Transactions
-        </Typography>
+        <Stack flex={1} direction="row" gap={2}>
+          <Typography variant="h5">Transactions</Typography>
+          <Button variant="outlined">Export</Button>
+        </Stack>
         <IconButton disabled={page === 1} onClick={() => onPageChange(page - 1)}>
           <ChevronLeft />
         </IconButton>
@@ -151,7 +153,7 @@ export const Transactions = (props: Props) => {
                           ))}
                         </SubMenu>
                         {transaction.potPaymentId && (
-                          <MenuItem onClick={() => handleDeletePotPayment(transaction.potPaymentId!)}>
+                          <MenuItem onClick={() => handleDeletePotPayment(transaction.potPaymentId as string)}>
                             Stop paying from pot
                           </MenuItem>
                         )}

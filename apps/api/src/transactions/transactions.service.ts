@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Transactions } from './schemas/transactions.schema';
 import { StorageService } from '../storageService';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsSelect, Repository } from 'typeorm';
 
 @Injectable()
 export class TransactionsService extends StorageService<Transactions> {
@@ -17,7 +17,11 @@ export class TransactionsService extends StorageService<Transactions> {
     return this.repository.findOneBy({ id });
   };
 
-  getPage = async (page: number, count: number): Promise<[Transactions[], number]> => {
+  getPage = async (
+    page: number,
+    count: number,
+    columns?: (keyof Transactions)[],
+  ): Promise<[Transactions[], number]> => {
     return this.repository.findAndCount({
       take: count,
       skip: (page - 1) * count,
@@ -26,6 +30,10 @@ export class TransactionsService extends StorageService<Transactions> {
           direction: 'DESC',
         },
       },
+      select: columns?.reduce(
+        (obj, column) => ({ ...obj, [column]: true }),
+        Map<string, boolean>,
+      ) as FindOptionsSelect<Transactions>,
     });
   };
 }
