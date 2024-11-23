@@ -1,7 +1,7 @@
 export interface Transaction {
   id: string;
   created: Date;
-  logoUrl?: string;
+  logoUrl: string;
   amount: number;
   type: 'incoming' | 'outgoing';
   description: string;

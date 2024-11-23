@@ -54,6 +54,11 @@ export const Transactions = (props: Props) => {
   const createPotPayment = useMutation<PotPayment, PotPaymentRequest>('potpayments', { method: 'PUT' });
   const deletePotPayment = useMutation<boolean, string>('potpayments', { method: 'DELETE', dataIsParam: true });
 
+  const exportTransactions = useMutation<Transaction[], string>('transactions/export', {
+    method: 'POST',
+    dataIsParam: true,
+  });
+
   const handlePayFromPot = (transactionId: string, potId: string) => {
     createPotPayment.mutate(
       { transactionId, potId },
@@ -69,6 +74,25 @@ export const Transactions = (props: Props) => {
     deletePotPayment.mutate(id, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['potpayments'] });
+      },
+    });
+  };
+
+  const handleExport = () => {
+    const from = moment().startOf('month').format('YYYY-MM-DD');
+    const to = moment().format('YYYY-MM-DD');
+    const fileName = `monzodash-export-${from}-${to}`;
+
+    exportTransactions.mutate(`${from}/${to}`, {
+      onSuccess: (response) => {
+        const jsonData = new Blob([JSON.stringify(response)], { type: 'application/json' });
+        const jsonURL = URL.createObjectURL(jsonData);
+        const link = document.createElement('a');
+        link.href = jsonURL;
+        link.download = `${fileName}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       },
     });
   };
@@ -90,7 +114,9 @@ export const Transactions = (props: Props) => {
       <Stack direction="row" alignItems="center" gap={2}>
         <Stack flex={1} direction="row" gap={2}>
           <Typography variant="h5">Transactions</Typography>
-          <Button variant="outlined">Export</Button>
+          <Button variant="outlined" onClick={handleExport}>
+            Export
+          </Button>
         </Stack>
         <IconButton disabled={page === 1} onClick={() => onPageChange(page - 1)}>
           <ChevronLeft />
