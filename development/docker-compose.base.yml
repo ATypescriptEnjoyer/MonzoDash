@@ -9,3 +9,4 @@ services:
     volumes:
       - ../:/app
       - mono-node-modules:/app/node_modules
+      - ../data:/data

@@ -60,7 +60,7 @@ export class MonzoController {
         id: transaction.data.id,
         amount,
         created: transaction.data.created,
-        type: amount > 0 ? 'incoming' : 'outgoing',
+        type: transaction.data.amount > 0 ? 'incoming' : 'outgoing',
         logoUrl: transaction.data.merchant?.logo,
         description: description.trim(),
         transaction: transaction.data,

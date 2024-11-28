@@ -4,11 +4,9 @@ services:
       file: docker-compose.base.yml
       service: nx-app-base
     command: >
-      sh -c "yarn api:docker"
+      sh -c "yarn install && yarn api:docker"
     ports:
       - 5000:5000
-    volumes:
-      - ../data:/data
     environment:
       - TZ=Europe/London
       - MONZO_CLIENT_ID=${MONZO_CLIENT_ID}
@@ -20,6 +18,8 @@ services:
     extends:
       file: docker-compose.base.yml
       service: nx-app-base
+    depends_on:
+      - api
     command: >
       sh -c "yarn web-app:docker"
     environment:
