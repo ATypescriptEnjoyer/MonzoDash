@@ -56,7 +56,7 @@ export class MonzoController {
         employer.name = description;
         await this.employerService.save(employer);
       }
-      await this.transactionService.save({
+      const savedTransaction = await this.transactionService.save({
         id: transaction.data.id,
         amount,
         created: transaction.data.created,
@@ -77,32 +77,36 @@ export class MonzoController {
         );
         return;
       }
+      if (savedTransaction.type === 'incoming' || savedTransaction.internal) {
+        return;
+      }
       const potPayments = await this.potPaymentsService.getAll();
-      const payPot = potPayments.find((potPayment) => potPayment.groupId === transaction.data.merchant.group_id);
-      if (payPot) {
-        const pot = pots.find((pot) => pot.id === payPot.potId);
-        if (!pot) {
-          return;
-        }
-        if (pot.balance === 0) {
-          await this.monzoService.sendNotification(
-            'Failed to pay from pot',
-            `No money left in pot to pay for ${description}`,
-          );
-          return;
-        }
-        if (pot.balance < transaction.data.amount) {
-          await this.monzoService.withdrawFromPot(payPot.potId, pot.balance, transaction.data.account_id);
-          await this.monzoService.sendNotification(
-            'Partially paid for ${description}',
-            `There wasn't enough money to pay for ${description}. Withdrew remaining £${Math.abs(pot.balance) / 100}.`,
-          );
-          return;
-        }
-        if (pots.find((pot) => pot.id === payPot.potId).balance >= transaction.data.amount) {
-          await this.monzoService.withdrawFromPot(payPot.potId, transaction.data.amount, transaction.data.account_id);
-          return;
-        }
+      const payPot = potPayments.find((potPayment) => potPayment.groupId === savedTransaction.groupId);
+      if (!payPot) {
+        return;
+      }
+      const pot = pots.find((pot) => pot.id === payPot.potId);
+      if (!pot) {
+        return;
+      }
+      if (pot.balance === 0) {
+        await this.monzoService.sendNotification(
+          'Failed to pay from pot',
+          `No money left in pot to pay for ${description}`,
+        );
+        return;
+      }
+      if (pot.balance < transaction.data.amount) {
+        await this.monzoService.withdrawFromPot(payPot.potId, pot.balance, transaction.data.account_id);
+        await this.monzoService.sendNotification(
+          'Partially paid for ${description}',
+          `There wasn't enough money to pay for ${description}. Withdrew remaining £${Math.abs(pot.balance) / 100}.`,
+        );
+        return;
+      }
+      if (pots.find((pot) => pot.id === payPot.potId).balance >= transaction.data.amount) {
+        await this.monzoService.withdrawFromPot(payPot.potId, transaction.data.amount, transaction.data.account_id);
+        return;
       }
     } catch (error) {
       //Writes the error, but prevents Monzo from calling over and over
