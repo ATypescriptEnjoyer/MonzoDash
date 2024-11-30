@@ -13,7 +13,7 @@ export const calculatePayDay = async (
 ): Promise<Date> => {
   if (paidLastWorkingDay) {
     const possibleLastDay = getLastNonWeekend(moment().endOf('month')).toDate();
-    if (possibleLastDay.getDate() === moment().date()) {
+    if (possibleLastDay.getDate() <= moment().date()) {
       return getLastNonWeekend(moment().set('date', 1).add('1', 'month').endOf('month')).toDate();
     }
   }
