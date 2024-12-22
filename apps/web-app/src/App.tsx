@@ -11,11 +11,11 @@ function App(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
 
-  if (isAuthed.data?.status === true && !code && location.pathname != '/app-login') {
+  if (isAuthed.data?.status === true && !code && location.pathname !== '/app-login') {
     navigate('/app-login');
   }
 
-  if (isAuthed.data?.error === '2FA Pending' && location.pathname != '/login/verify') {
+  if (isAuthed.data?.error === '2FA Pending' && location.pathname !== '/login/verify') {
     navigate('/login/verify');
   }
   return (
