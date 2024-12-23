@@ -19,11 +19,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { getConfig } from '@monzodash/db';
 import { PotPaymentsModule } from '../potPayments/potPayments.module';
 import * as entities from '../entities';
+import { SentryModule, SentryGlobalFilter } from '@sentry/nestjs/setup';
+import { APP_FILTER } from '@nestjs/core';
 
 const { DEBUG } = process.env;
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRoot({ ...getConfig(), entities }),
     ...(!DEBUG
@@ -43,7 +46,7 @@ const { DEBUG } = process.env;
     DailyReportModule,
     PotPaymentsModule,
   ],
-  providers: [HolidaysModule],
+  providers: [{ provide: APP_FILTER, useClass: SentryGlobalFilter }, HolidaysModule],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

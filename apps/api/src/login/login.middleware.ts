@@ -5,9 +5,15 @@ import { LoginService } from './login.service';
 
 @Injectable()
 export class LoginMiddleware implements NestMiddleware {
-  constructor(private readonly loginService: LoginService, private readonly authService: AuthService) {}
+  constructor(
+    private readonly loginService: LoginService,
+    private readonly authService: AuthService,
+  ) {}
 
   async use(req: Request, _: Response, next: NextFunction): Promise<void> {
+    if (!req.headers.authorization) {
+      throw new HttpException('Header "Authoriation" is required.', HttpStatus.UNAUTHORIZED);
+    }
     const latestToken = await this.authService.getToken();
     if (latestToken) {
       const authIsValid =
