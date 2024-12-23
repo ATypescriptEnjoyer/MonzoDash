@@ -17,7 +17,7 @@ export class LoginMiddleware implements NestMiddleware {
     const latestToken = await this.authService.getToken();
     if (latestToken) {
       const authIsValid =
-        req.headers.authorization || (await this.loginService.validateCode(req.headers.authorization, false));
+        req.headers.authorization && (await this.loginService.validateCode(req.headers.authorization, false));
       if (!authIsValid) {
         throw new HttpException('Login Required', HttpStatus.UNAUTHORIZED);
       }
