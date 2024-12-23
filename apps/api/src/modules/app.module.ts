@@ -21,6 +21,9 @@ import { PotPaymentsModule } from '../potPayments/potPayments.module';
 import * as entities from '../entities';
 import { SentryModule, SentryGlobalFilter } from '@sentry/nestjs/setup';
 import { APP_FILTER } from '@nestjs/core';
+import { TransactionsController } from '../transactions/transactions.controller';
+import { DailyReportController } from '../dailyReport/dailyReport.controller';
+import { PotPaymentsController } from '../potPayments/potPayments.controller';
 
 const { DEBUG } = process.env;
 
@@ -61,6 +64,14 @@ export class AppModule implements NestModule {
           method: RequestMethod.POST,
         },
       )
-      .forRoutes(AuthController, EmployerController, FinancesController, MonzoController, TransactionsModule);
+      .forRoutes(
+        AuthController,
+        EmployerController,
+        FinancesController,
+        MonzoController,
+        TransactionsController,
+        DailyReportController,
+        PotPaymentsController,
+      );
   }
 }
