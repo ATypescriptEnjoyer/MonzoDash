@@ -24,7 +24,8 @@ export const useQuery = <TResponse, TRequest = object>(
       const response = await axios<TResponse>(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
         method,
         headers: {
-          Authorization: localStorage.getItem('auth-code') ?? '',
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          Authorization: localStorage.getItem('auth-code') && JSON.parse(localStorage.getItem('auth-code')!),
         },
         data,
       });
@@ -50,7 +51,8 @@ export const useMutation = <TResponse, TRequest = object>(
       const response = await axios<TResponse>(`${import.meta.env.VITE_API_URL}/${endpoint}${urlData}`, {
         method,
         headers: {
-          Authorization: localStorage.getItem('auth-code') ?? '',
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          Authorization: localStorage.getItem('auth-code') && JSON.parse(localStorage.getItem('auth-code')!),
         },
         data: dataIsParam ? undefined : data,
       });

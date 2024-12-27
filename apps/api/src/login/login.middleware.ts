@@ -12,12 +12,11 @@ export class LoginMiddleware implements NestMiddleware {
 
   async use(req: Request, _: Response, next: NextFunction): Promise<void> {
     if (!req.headers.authorization) {
-      throw new HttpException('Header "Authoriation" is required.', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Header "Authoriation" is required.', HttpStatus.FORBIDDEN);
     }
     const latestToken = await this.authService.getToken();
     if (latestToken) {
-      const authIsValid =
-        req.headers.authorization && (await this.loginService.validateCode(req.headers.authorization, false));
+      const authIsValid = await this.loginService.validateCode(req.headers.authorization, false);
       if (!authIsValid) {
         throw new HttpException('Login Required', HttpStatus.UNAUTHORIZED);
       }

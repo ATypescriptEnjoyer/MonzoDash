@@ -4,7 +4,7 @@ import { useQuery } from './api';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { Stack } from '@mui/material';
 
-function App(): JSX.Element {
+function App() {
   const isAuthed = useQuery<{ status: boolean; error: string }>('auth/isauthed');
   const [code] = useLocalStorage<string>('auth-code');
   const routing = useRoutes(routes(isAuthed.data?.status === true && !!code));

@@ -44,14 +44,12 @@ export class LoginService extends StorageService<Login> {
   async validateCode(codeString: string, onlyUnused: boolean): Promise<boolean> {
     const codeHash = sha512.crypt(codeString, process.env.CRYPT_SALT || 'monzodash');
     const codes = await this.getAll();
-    const code = codes.find(
-      (code) => code.code === codeHash && new Date(code.expiresAt).getTime() > new Date().getTime(),
-    );
+    const code = codes.find((code) => code.code === codeHash && code.expiresAt.getTime() > new Date().getTime());
     if (onlyUnused && code?.used) {
       return false;
     }
     const codeExists = !!code;
-    if (codeExists) {
+    if (codeExists && !code.used) {
       code.used = true;
       await this.save(code);
     }

@@ -2,7 +2,7 @@ import { Button, Stack, TextField, Typography, useTheme } from '@mui/material';
 import { useMutation } from '../api';
 import { useLocalStorage } from '@uidotdev/usehooks';
 
-export const AppLogin = (): JSX.Element => {
+export const AppLogin = () => {
   const theme = useTheme();
   const sendAuthCodeMutation = useMutation<boolean>('login/auth-code', { method: 'POST' });
   const submitAuthCodeMutation = useMutation<boolean, { code: string }>('login/auth-code');

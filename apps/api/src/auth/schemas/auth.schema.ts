@@ -1,9 +1,5 @@
+import { dateTransformer } from '../../transformers/dateTransformer';
 import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
-
-const dateTransformer = {
-  from: (value: string) => new Date(value),
-  to: (value: Date) => value.toISOString(),
-};
 
 @Entity()
 export class Auth {

@@ -1,3 +1,4 @@
+import { dateTransformer } from '../../transformers/dateTransformer';
 import { Entity, Column, EntitySchema, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -8,11 +9,11 @@ export class Login {
   @Column()
   code: string;
 
-  @Column()
-  createdAt: string;
+  @Column({ transformer: dateTransformer })
+  createdAt: Date;
 
-  @Column()
-  expiresAt: string;
+  @Column({ transformer: dateTransformer })
+  expiresAt: Date;
 
   @Column()
   used: boolean;
