@@ -51,11 +51,18 @@ export const Chart = (props: Props) => {
           <ChevronRight />
         </IconButton>
       </Stack>
-      <Box height={450}>
+      <Box height={450} maxWidth={1920}>
         <LineChart
           loading={isLoading}
-          series={[{ data: mapData.reduce((prev, curr) => [...prev, curr.y], [] as number[]), color: colours.pink }]}
-          xAxis={[{ data: mapData.reduce((prev, curr) => [...prev, curr.x], [] as number[]) }]}
+          series={[
+            {
+              data: mapData.reduce((prev, curr) => [...prev, curr.y], [] as number[]),
+              color: colours.pink,
+              connectNulls: true,
+              valueFormatter: (value) => (value ? `£${value}` : null),
+            },
+          ]}
+          xAxis={[{ data: mapData.reduce((prev, curr) => [...prev, `${curr.x}`], [] as string[]), scaleType: 'point' }]}
         />
       </Box>
     </Stack>

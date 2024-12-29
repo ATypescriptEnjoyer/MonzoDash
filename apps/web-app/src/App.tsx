@@ -18,6 +18,7 @@ function App() {
   if (isAuthed.data?.error === '2FA Pending' && location.pathname !== '/login/verify') {
     navigate('/login/verify');
   }
+
   return (
     <Stack height="100vh" width="100vw" className="App">
       {isAuthed.isFetched ? routing : null}
