@@ -83,7 +83,7 @@
     "@types/async": "^3.2.24",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "22.10.2",
+    "@types/node": "22.10.5",
     "@types/react": "19.0.2",
     "@types/react-dom": "19.0.2",
     "@types/react-is": "19.0.0",
