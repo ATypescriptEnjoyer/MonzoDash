@@ -92,7 +92,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          add-hosts: git.sashie.me:192.168.1.17
+          add-hosts: ${{ vars.ADD_HOSTS }}
 
       - name: Delete PR image
         if: github.event_name == 'pull_request'
