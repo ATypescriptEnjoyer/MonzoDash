@@ -16,6 +16,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@gitea/serve-static": "5.0.2",
     "@mui/icons-material": "^6.1.6",
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^6.1.6",
@@ -26,7 +27,6 @@
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/schedule": "^5.0.0",
-    "@nestjs/serve-static": "^4.0.2",
     "@nestjs/typeorm": "^11.0.0",
     "@sentry/nestjs": "^8.47.0",
     "@sentry/profiling-node": "^8.47.0",
