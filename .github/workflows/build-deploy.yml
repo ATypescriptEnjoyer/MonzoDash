@@ -75,7 +75,6 @@ jobs:
           driver-opts: |
             image=moby/buildkit:master
             network=host
-            add-host=git.sashie.me:192.168.1.17
 
       - name: Log in to the Container registry
         if: github.event_name != 'pull_request'
@@ -93,6 +92,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          add-hosts: git.sashie.me:192.168.1.17
 
       - name: Delete PR image
         if: github.event_name == 'pull_request'
