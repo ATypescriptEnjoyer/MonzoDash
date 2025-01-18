@@ -36,6 +36,7 @@ const { DEBUG } = process.env;
       ? [
           ServeStaticModule.forRoot({
             rootPath: join(__dirname, 'client'),
+            renderPath: '(.*)',
           }),
         ]
       : []),
