@@ -93,6 +93,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           add-hosts: ${{ vars.ADD_HOSTS }}
+          no-cache: true
 
       - name: Delete PR image
         if: github.event_name == 'pull_request'
