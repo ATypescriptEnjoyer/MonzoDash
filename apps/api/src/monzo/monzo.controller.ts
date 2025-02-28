@@ -70,11 +70,13 @@ export class MonzoController {
         return;
       }
       if (isPaymentFromEmployer && isSalaryPayment) {
-        async.eachSeries(
-          finances.filter((finance) => finance.id !== '0' && finance.amount > 0),
-          (potInfo: Finances) =>
-            this.monzoService.depositToPot(potInfo.id, Math.trunc(potInfo.amount * 100), transaction.data.account_id),
-        );
+        for (const potInfo of finances.filter((finance) => finance.id !== '0' && finance.amount > 0)) {
+          await this.monzoService.depositToPot(
+            potInfo.id,
+            Math.trunc(potInfo.amount * 100),
+            transaction.data.account_id,
+          );
+        }
         return;
       }
       if (savedTransaction.type === 'incoming' || savedTransaction.internal) {
@@ -99,7 +101,7 @@ export class MonzoController {
       if (pot.balance < transaction.data.amount) {
         await this.monzoService.withdrawFromPot(payPot.potId, pot.balance, transaction.data.account_id);
         await this.monzoService.sendNotification(
-          'Partially paid for ${description}',
+          `Partially paid for ${description}`,
           `There wasn't enough money to pay for ${description}. Withdrew remaining £${Math.abs(pot.balance) / 100}.`,
         );
         return;
