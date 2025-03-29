@@ -5,7 +5,6 @@ https://docs.nestjs.com/providers#services
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Owner, Account } from './monzo.interfaces';
 import { AuthService } from '../auth/auth.service';
-import async from 'async';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
@@ -213,13 +212,13 @@ export class MonzoService {
       const { data } = await firstValueFrom(this.httpService.get(`webhooks?account_id=${accountId}`, { headers }));
       const hooks: { webhooks: { id: string; url: string }[] } = data;
       let hookExists = false;
-      await async.eachSeries(hooks.webhooks, async (hook) => {
+      for (const hook of hooks.webhooks) {
         if (hook.url === webhookUrl) {
           hookExists = true;
         } else {
           await firstValueFrom(this.httpService.delete(`webhooks/${hook.id}`, { headers }));
         }
-      });
+      }
       if (!hookExists) {
         const requestData = { account_id: accountId, url: webhookUrl };
         const requestDataString = new URLSearchParams(requestData).toString();
