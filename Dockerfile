@@ -16,12 +16,10 @@ RUN yarn install --production
 
 FROM node:lts-slim AS final
 
-RUN yarn global add typeorm
-
 COPY --from=build /app/dist/apps/api/ /app/dist
 COPY --from=build /app/dist/libs/db/ /app/db
 COPY --from=build /app/node_modules /app/node_modules
 EXPOSE 5000
 WORKDIR /app
 
-CMD ["/bin/sh", "-c", "typeorm migration:run -d db/src/index.js && node dist/main"]
+CMD ["/bin/sh", "-c", "./node_modules/typeorm/cli.js migration:run -d db/src/index.js && node dist/main"]
