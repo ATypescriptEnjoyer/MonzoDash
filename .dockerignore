@@ -22,6 +22,7 @@ nodemon.json
 #Dev files
 data
 nginx
+.nx
 .github
 .vscode
 workspace-data
