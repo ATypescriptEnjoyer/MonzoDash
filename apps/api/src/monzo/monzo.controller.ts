@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, UnprocessableEntityException } from '@nestjs/common';
 import { EmployerService } from '../employer/employer.service';
 import { FinancesService } from '../finances/finances.service';
 import { TransactionsService } from '../transactions/transactions.service';
@@ -37,78 +37,70 @@ export class MonzoController {
 
   @Post('webhook')
   async webhook(@Body() transaction: WebhookTransaction): Promise<void> {
-    try {
-      if (!isValidTransaction(transaction)) {
-        return;
+    console.log(isValidTransaction(transaction));
+    if (!transaction || !isValidTransaction(transaction)) {
+      throw new UnprocessableEntityException();
+    }
+
+    const pots = await this.monzoService.getPots();
+    const finances = await this.financesService.getAll();
+    const description = getTransactionDescription(transaction.data, pots);
+    const salary = finances.find((finance) => finance.id === '0').amount ?? 99999;
+    const amount = Math.abs(transaction.data.amount) / 100;
+
+    const isSalaryPayment = amount >= salary - salary / 20;
+    const employer = (await this.employerService.getAll())[0];
+    const employerName = employer ? employer.name : '';
+    const isPaymentFromEmployer = employerName === description || isSalaryPayment;
+
+    if (employerName === '' && isSalaryPayment) {
+      await this.employerService.save({ ...employer, name: description });
+    }
+
+    const savedTransaction = await this.transactionService.save({
+      id: transaction.data.id,
+      amount,
+      created: transaction.data.created,
+      type: transaction.data.amount > 0 ? 'incoming' : 'outgoing',
+      logoUrl: transaction.data.merchant?.logo,
+      description: description.trim(),
+      transaction: transaction.data,
+      groupId: transaction.data.merchant?.group_id,
+    } as Transactions);
+
+    if (transaction.ignoreProcessing) {
+      return;
+    }
+
+    if (isPaymentFromEmployer && isSalaryPayment) {
+      for (const potInfo of finances.filter((finance) => finance.id !== '0' && finance.amount > 0)) {
+        await this.monzoService.depositToPot(potInfo.id, Math.trunc(potInfo.amount * 100), transaction.data.account_id);
       }
+      return;
+    }
 
-      const pots = await this.monzoService.getPots();
-      const description = getTransactionDescription(transaction.data, pots);
-      const finances = await this.financesService.getAll();
-      const salary = finances.find((finance) => finance.id === '0').amount ?? 99999;
-      const amount = Math.abs(transaction.data.amount) / 100;
+    if (savedTransaction.type === 'incoming' || savedTransaction.internal) {
+      return;
+    }
 
-      const isSalaryPayment = amount >= salary - salary / 20;
-      const employer = (await this.employerService.getAll())[0];
-      const employerName = employer ? employer.name : '';
+    const potPayments = await this.potPaymentsService.getAll();
+    const { potId } = potPayments.find((potPayment) => potPayment.groupId === savedTransaction.groupId) ?? {};
+    const pot = pots.find((pot) => pot.id === potId);
+    if (!pot || pot.balance === 0) {
+      return;
+    }
 
-      const isPaymentFromEmployer = employerName === '' ? isSalaryPayment : employerName === description;
+    if (pot.balance < transaction.data.amount) {
+      await this.monzoService.withdrawFromPot(potId, pot.balance, transaction.data.account_id);
+      await this.monzoService.sendNotification(
+        `Partially paid for ${description}`,
+        `There wasn't enough money to pay for ${description}. Withdrew remaining £${Math.abs(pot.balance) / 100}.`,
+      );
+      return;
+    }
 
-      if (employerName === '' && isSalaryPayment) {
-        employer.name = description;
-        await this.employerService.save(employer);
-      }
-
-      const savedTransaction = await this.transactionService.save({
-        id: transaction.data.id,
-        amount,
-        created: transaction.data.created,
-        type: transaction.data.amount > 0 ? 'incoming' : 'outgoing',
-        logoUrl: transaction.data.merchant?.logo,
-        description: description.trim(),
-        transaction: transaction.data,
-        groupId: transaction.data.merchant?.group_id,
-      } as Transactions);
-
-      if (transaction.ignoreProcessing) {
-        return;
-      }
-
-      if (isPaymentFromEmployer && isSalaryPayment) {
-        for (const potInfo of finances.filter((finance) => finance.id !== '0' && finance.amount > 0)) {
-          await this.monzoService.depositToPot(
-            potInfo.id,
-            Math.trunc(potInfo.amount * 100),
-            transaction.data.account_id,
-          );
-        }
-        return;
-      }
-      if (savedTransaction.type === 'incoming' || savedTransaction.internal) {
-        return;
-      }
-      const potPayments = await this.potPaymentsService.getAll();
-      const { potId } = potPayments.find((potPayment) => potPayment.groupId === savedTransaction.groupId) ?? {};
-      const pot = pots.find((pot) => pot.id === potId);
-      if (!pot || pot.balance === 0) {
-        return;
-      }
-
-      if (pot.balance < transaction.data.amount) {
-        await this.monzoService.withdrawFromPot(potId, pot.balance, transaction.data.account_id);
-        await this.monzoService.sendNotification(
-          `Partially paid for ${description}`,
-          `There wasn't enough money to pay for ${description}. Withdrew remaining £${Math.abs(pot.balance) / 100}.`,
-        );
-        return;
-      }
-
-      if (pot.balance >= transaction.data.amount) {
-        await this.monzoService.withdrawFromPot(potId, transaction.data.amount, transaction.data.account_id);
-      }
-    } catch (error) {
-      //Writes the error, but prevents Monzo from calling over and over
-      console.error(error);
+    if (pot.balance >= transaction.data.amount) {
+      await this.monzoService.withdrawFromPot(potId, transaction.data.amount, transaction.data.account_id);
     }
   }
 }
