@@ -1,8 +1,10 @@
 import {
   useQuery as useBaseQuery,
   useMutation as useBaseMutation,
+  useInfiniteQuery as useBaseInfinityQuery,
   UseQueryResult,
   UseMutationResult,
+  UseInfiniteQueryResult,
 } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -32,6 +34,32 @@ export const useQuery = <TResponse, TRequest = object>(
       return response.data;
     },
     refetchInterval,
+  });
+
+export const useInfiniteQuery = <TResponse>(
+  endpoint: string,
+  {
+    getNextPageParam,
+    getPreviousPageParam,
+  }: {
+    getNextPageParam: (firstPage: TResponse, pages: TResponse[]) => number | undefined;
+    getPreviousPageParam: (lastPage: TResponse, pages: TResponse[]) => number | undefined;
+  },
+) =>
+  useBaseInfinityQuery<TResponse, Error>({
+    queryKey: [endpoint],
+    queryFn: async ({ pageParam }) => {
+      const response = await axios.get<TResponse>(`${import.meta.env.VITE_API_URL}/${endpoint}?page=${pageParam}`, {
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          Authorization: localStorage.getItem('auth-code') && JSON.parse(localStorage.getItem('auth-code')!),
+        },
+      });
+      return response.data;
+    },
+    initialPageParam: 1,
+    getNextPageParam,
+    getPreviousPageParam,
   });
 
 export const useMutation = <TResponse, TRequest = object>(

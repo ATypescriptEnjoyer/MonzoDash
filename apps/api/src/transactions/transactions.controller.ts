@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transactions } from './schemas/transactions.schema';
 import { Between } from 'typeorm';
@@ -14,9 +14,9 @@ export class TransactionsController {
 
   @Get()
   async getTransactions(
-    @Query('page') page: number,
+    @Query('page', ParseIntPipe) page: number,
   ): Promise<{ data: Transactions[]; pagination: { page: number; count: number } }> {
-    const [transactions, count] = await this.transactionsService.getPage(page, 5, [
+    const [transactions, count] = await this.transactionsService.getPage(page, 20, [
       'amount',
       'created',
       'description',

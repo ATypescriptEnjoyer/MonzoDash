@@ -1,8 +1,7 @@
 import { Stack } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { JSX, useState } from 'react';
 import { DedicatedFinance } from '@monzodash/api/finances/finances.interfaces';
-import { Transaction } from '@monzodash/api/transactions/transactions.interfaces';
 import { useMutation, useQuery } from '../api';
 import { AppBar } from '../components/AppBar';
 import { Chart } from '../components/Chart';
@@ -30,18 +29,13 @@ export const Dashboard = (): JSX.Element => {
     `daily-report/by-date/${chartDate.year}/${chartDate.month}`,
   );
 
-  const [page, setPage] = useState(1);
-  const transactions = useQuery<{ data: Transaction[]; pagination: { page: number; count: number } }>(
-    `transactions?page=${page}`,
-  );
-
   return (
     <Stack height="100vh" padding={(theme) => ({ xs: theme.spacing(0, 1), md: theme.spacing(0, 4) })}>
       <AppBar
         onShowDedicatedSpending={() => setShowSpendingModal(true)}
         onShowSalary={() => setShowSalaryModal(true)}
       />
-      <Stack direction="column" height="calc(100vh - 95px)">
+      <Stack height="calc(100vh - 95px)" gap={4} padding={(theme) => theme.spacing(2, 0)}>
         <SalaryModal
           isLoading={employer.isLoading}
           data={employer.data}
@@ -70,18 +64,19 @@ export const Dashboard = (): JSX.Element => {
             })
           }
         />
-        <Chart
-          isLoading={chart.isLoading}
-          onChangeDate={(month, year) => setChartDate({ month, year })}
-          data={chart.data}
-        />
-        <Transactions
-          isLoading={transactions.isLoading}
-          key={page}
-          data={transactions.data}
-          page={page}
-          onPageChange={setPage}
-        />
+        <Stack
+          sx={{ height: { xs: 'initial', md: '100%' }, flexDirection: { xs: 'column-reverse', md: 'row' } }}
+          gap={4}
+        >
+          <Stack sx={{ flex: { xs: 'initial', md: 0.3 } }}>
+            <Transactions />
+          </Stack>
+          <Chart
+            isLoading={chart.isLoading}
+            onChangeDate={(month, year) => setChartDate({ month, year })}
+            data={chart.data}
+          />
+        </Stack>
       </Stack>
     </Stack>
   );
