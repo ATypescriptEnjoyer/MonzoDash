@@ -156,7 +156,7 @@ export const Transactions = () => {
                     <TableCell>
                       {transaction.type === 'incoming' ? '+' : '-'}£{transaction.amount.toFixed(2)}
                     </TableCell>
-                    <TableCell>{dayjs(transaction.created).format('MMM Do YYYY, hh:mm A')}</TableCell>
+                    <TableCell>{dayjs(transaction.created).format('MMM D YYYY, hh:mm A')}</TableCell>
                     <TableCell>
                       {!transaction.internal && pots.data && (
                         <Menu
