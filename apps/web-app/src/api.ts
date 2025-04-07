@@ -4,7 +4,7 @@ import {
   useInfiniteQuery as useBaseInfinityQuery,
   UseQueryResult,
   UseMutationResult,
-  UseInfiniteQueryResult,
+  keepPreviousData as keepPreviousDataFunc,
 } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -14,14 +14,17 @@ export const useQuery = <TResponse, TRequest = object>(
     method = 'GET',
     data,
     refetchInterval,
+    keepPreviousData,
   }: {
     method?: 'GET' | 'POST';
     data?: TRequest;
     refetchInterval?: number;
+    keepPreviousData?: boolean;
   } = {},
 ): UseQueryResult<TResponse, Error> =>
   useBaseQuery<TResponse>({
     queryKey: [endpoint],
+    placeholderData: keepPreviousData ? keepPreviousDataFunc : undefined,
     queryFn: async () => {
       const response = await axios<TResponse>(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
         method,

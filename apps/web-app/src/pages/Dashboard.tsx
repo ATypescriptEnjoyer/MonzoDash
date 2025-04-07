@@ -27,6 +27,9 @@ export const Dashboard = (): JSX.Element => {
   });
   const chart = useQuery<{ month: number; year: number; data: { [k: number]: number } }>(
     `daily-report/by-date/${chartDate.year}/${chartDate.month}`,
+    {
+      keepPreviousData: true,
+    },
   );
 
   return (
