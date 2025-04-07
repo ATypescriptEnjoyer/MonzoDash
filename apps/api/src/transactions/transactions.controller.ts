@@ -6,7 +6,7 @@ import { Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/commo
 import { TransactionsService } from './transactions.service';
 import { Transactions } from './schemas/transactions.schema';
 import { Between } from 'typeorm';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 @Controller('Transactions')
 export class TransactionsController {
@@ -41,8 +41,8 @@ export class TransactionsController {
     const transactions = await this.transactionsService.repository.find({
       where: {
         created: Between(
-          moment(from).startOf('day').format('YYYY-MM-DD HH:MM:SS'),
-          moment(to).endOf('day').format('YYYY-MM-DD HH:MM:SS'),
+          dayjs(from).startOf('day').format('YYYY-MM-DD HH:MM:SS'),
+          dayjs(to).endOf('day').format('YYYY-MM-DD HH:MM:SS'),
         ),
       },
     });

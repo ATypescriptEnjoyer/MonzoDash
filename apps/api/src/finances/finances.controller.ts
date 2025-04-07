@@ -1,5 +1,5 @@
 import { Body, Controller, forwardRef, Get, HttpException, HttpStatus, Inject, Post } from '@nestjs/common';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { CurrentFinances } from './finances.interfaces';
 import { calculatePayDay } from '../util/calculatePayDay';
 import { EmployerService } from '../employer/employer.service';
@@ -70,7 +70,8 @@ export class FinancesController {
         employer.paidOnHolidays,
         employer.paidLastWorkingDay,
       );
-      let daysUntil = moment(payDate).diff(moment(), 'days');
+      let daysUntil = dayjs(payDate).diff(dayjs(), 'days');
+      console.log(daysUntil);
       if (daysUntil === 0) {
         payDate.setDate(employer.payDay);
         const nextPayday = await calculatePayDay(
@@ -80,7 +81,7 @@ export class FinancesController {
           employer.paidOnHolidays,
           employer.paidLastWorkingDay,
         );
-        daysUntil = moment(nextPayday).diff(moment(), 'days');
+        daysUntil = dayjs(nextPayday).diff(dayjs(), 'days');
       }
 
       return {

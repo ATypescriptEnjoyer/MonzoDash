@@ -13,7 +13,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import React, { useMemo } from 'react';
 import { Transaction } from '@monzodash/api/transactions/transactions.interfaces';
 import { Menu, MenuItem, SubMenu } from '@szhsin/react-menu';
@@ -84,8 +84,8 @@ export const Transactions = () => {
   };
 
   const handleExport = () => {
-    const from = moment().startOf('month').format('YYYY-MM-DD');
-    const to = moment().format('YYYY-MM-DD');
+    const from = dayjs().startOf('month').format('YYYY-MM-DD');
+    const to = dayjs().format('YYYY-MM-DD');
     const fileName = `monzodash-export-${from}-${to}`;
 
     exportTransactions.mutate(`${from}/${to}`, {
@@ -156,7 +156,7 @@ export const Transactions = () => {
                     <TableCell>
                       {transaction.type === 'incoming' ? '+' : '-'}£{transaction.amount.toFixed(2)}
                     </TableCell>
-                    <TableCell>{moment(transaction.created).format('MMM Do YYYY, hh:mm A')}</TableCell>
+                    <TableCell>{dayjs(transaction.created).format('MMM Do YYYY, hh:mm A')}</TableCell>
                     <TableCell>
                       {!transaction.internal && pots.data && (
                         <Menu

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Login } from './schemas/login.schema';
 import { StorageService } from '../storageService';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { sha512 } from 'sha512-crypt-ts';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -34,7 +34,7 @@ export class LoginService extends StorageService<Login> {
     await this.save({
       code: codeHash,
       createdAt: new Date(),
-      expiresAt: moment().add('1', 'month').toDate(),
+      expiresAt: dayjs().add(1, 'month').toDate(),
       used: false,
     } as unknown as Login);
 

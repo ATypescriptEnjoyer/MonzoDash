@@ -3,7 +3,7 @@ import { Holiday } from './schemas/holidays.schema';
 import { StorageService } from '../storageService';
 import axios from 'axios';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import async from 'async';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -20,7 +20,7 @@ export class HolidaysService extends StorageService<Holiday> {
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
   async updateStoredHolidays(): Promise<void> {
     const currentStoredHolidays = await this.getAll();
-    const oldHolidays = currentStoredHolidays.filter((holiday) => moment(holiday.date).isBefore(moment()));
+    const oldHolidays = currentStoredHolidays.filter((holiday) => dayjs(holiday.date).isBefore(dayjs()));
     await async.eachSeries(oldHolidays, async (holiday) => await this.delete(holiday));
     console.log(`${oldHolidays.length} old holidays removed.`);
     if (currentStoredHolidays.length - oldHolidays.length !== 0) {
@@ -29,7 +29,7 @@ export class HolidaysService extends StorageService<Holiday> {
     console.log('Holidays need regenerating.');
     const { data } = await axios.get('https://www.gov.uk/bank-holidays.json');
     const holArr: Holiday[] = data['england-and-wales']['events'];
-    const holidays = await this.createBulk(holArr.filter((holiday) => moment(holiday.date).isAfter(moment())));
+    const holidays = await this.createBulk(holArr.filter((holiday) => dayjs(holiday.date).isAfter(dayjs())));
 
     console.log(`${holidays.length} inserted!`);
   }

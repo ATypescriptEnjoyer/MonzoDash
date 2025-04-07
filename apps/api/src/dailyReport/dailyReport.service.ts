@@ -2,7 +2,7 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { DailyReport } from './schemas/dailyReport.schema';
 import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { MonzoService } from '../monzo/monzo.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -20,7 +20,7 @@ export class DailyReportService extends StorageService<DailyReport> {
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async createYesterdaysReport(): Promise<void> {
     const amountInBank = await this.monzoService.getBalance();
-    const yday = moment().subtract('1', 'days');
+    const yday = dayjs().subtract(1, 'day');
     const model: DailyReport = {
       day: yday.date(),
       month: yday.month() + 1,

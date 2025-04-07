@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { colours } from '../theme';
 import { useWindowSize } from '@uidotdev/usehooks';
@@ -15,20 +15,20 @@ interface Props {
 export const Chart = (props: Props) => {
   const { data, isLoading, onChangeDate } = props;
   const chartDate = data ? `${data.year}-${data.month.toString().padStart(2, '0')}` : 'Loading';
-  const momentDate = moment(chartDate);
+  const calculatedChartDate = dayjs(chartDate);
   const { width } = useWindowSize();
 
-  const fwdDisabled = useMemo(() => moment().format('YYYY-MM') === chartDate, [chartDate]);
+  const fwdDisabled = useMemo(() => dayjs().format('YYYY-MM') === chartDate, [chartDate]);
 
   const mapData = useMemo(
     () =>
       !data || Object.keys(data.data).length === 0
         ? []
-        : [...Array(momentDate.daysInMonth()).keys()].map((index) => ({
+        : [...Array(calculatedChartDate.daysInMonth()).keys()].map((index) => ({
             x: index + 1,
             y: data.data[index + 1] ?? null,
           })),
-    [data, momentDate],
+    [data, calculatedChartDate],
   );
 
   const handleDateChange = (direction: 'f' | 'b') => {
@@ -48,7 +48,7 @@ export const Chart = (props: Props) => {
             <ChevronLeft />
           </IconButton>
           <Typography width="200px" textAlign="center" variant="h5">
-            {momentDate.format('MMMM YYYY')}
+            {calculatedChartDate.format('MMMM YYYY')}
           </Typography>
           <IconButton disabled={fwdDisabled} onClick={() => handleDateChange('f')}>
             <ChevronRight />
