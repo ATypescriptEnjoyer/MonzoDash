@@ -74,7 +74,7 @@ export const Dashboard = (): JSX.Element => {
           <Chart
             isLoading={chart.isLoading}
             onChangeDate={(month, year) => setChartDate({ month, year })}
-            data={chart.data}
+            data={chart.data ?? { data: [], ...chartDate }}
           />
         </Stack>
       </Stack>
