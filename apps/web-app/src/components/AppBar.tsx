@@ -1,6 +1,6 @@
 import { Logout, Menu } from '@mui/icons-material';
 import { Box, Divider, IconButton, Stack, styled, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { JSX, useMemo, useState } from 'react';
 import { CurrentFinances } from '@monzodash/api/finances/finances.interfaces';
 import { useMutation, useQuery } from '../api';
 import { colours } from '../theme';
@@ -58,7 +58,7 @@ export const AppBar = (props: Props): JSX.Element => {
   );
 
   const logoutButton = (
-    <IconButton onClick={() => logoutMutation.mutate({}, { onSuccess: () => (location.href = '/') })}>
+    <IconButton onClick={() => logoutMutation.mutate({}, { onSuccess: () => (window.location.href = '/') })}>
       <Logout />
     </IconButton>
   );
