@@ -71,7 +71,6 @@ export class FinancesController {
         employer.paidLastWorkingDay,
       );
       let daysUntil = dayjs(payDate).diff(dayjs(), 'days');
-      console.log(daysUntil);
       if (daysUntil === 0) {
         payDate.setDate(employer.payDay);
         const nextPayday = await calculatePayDay(
