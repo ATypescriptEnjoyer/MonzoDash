@@ -37,7 +37,6 @@ export class MonzoController {
 
   @Post('webhook')
   async webhook(@Body() transaction: WebhookTransaction): Promise<void> {
-    console.log(isValidTransaction(transaction));
     if (!transaction || !isValidTransaction(transaction)) {
       throw new UnprocessableEntityException();
     }
