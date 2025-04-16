@@ -44,18 +44,24 @@ export const useInfiniteQuery = <TResponse>(
   {
     getNextPageParam,
     getPreviousPageParam,
+    data,
   }: {
     getNextPageParam: (firstPage: TResponse, pages: TResponse[]) => number | undefined;
     getPreviousPageParam: (lastPage: TResponse, pages: TResponse[]) => number | undefined;
+    data?: Record<string, string>;
   },
 ) =>
   useBaseInfinityQuery<TResponse, Error>({
-    queryKey: [endpoint],
+    queryKey: [endpoint, data],
     queryFn: async ({ pageParam }) => {
-      const response = await axios.get<TResponse>(`${import.meta.env.VITE_API_URL}/${endpoint}?page=${pageParam}`, {
+      const response = await axios.get<TResponse>(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
         headers: {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           Authorization: localStorage.getItem('auth-code') && JSON.parse(localStorage.getItem('auth-code')!),
+        },
+        params: {
+          page: pageParam,
+          ...data,
         },
       });
       return response.data;

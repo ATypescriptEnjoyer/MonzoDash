@@ -9,7 +9,7 @@ export const LoadingTransactions = () =>
             <Skeleton />
           </Avatar>
           <Typography variant="body1">
-            <Skeleton width={200} />
+            <Skeleton />
           </Typography>
         </Stack>
       </TableCell>

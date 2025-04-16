@@ -1,9 +1,10 @@
-import { Menu as MenuIcon } from '@mui/icons-material';
+import { Download, Menu as MenuIcon, Search } from '@mui/icons-material';
 import {
   Avatar,
   Button,
   IconButton,
   Paper,
+  Slide,
   Stack,
   Table,
   TableBody,
@@ -12,14 +13,16 @@ import {
   TableHead,
   TableRow,
   Typography,
+  TextField,
 } from '@mui/material';
 import dayjs from 'dayjs';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Transaction } from '@monzodash/api/transactions/transactions.interfaces';
 import { Menu, MenuItem, SubMenu } from '@szhsin/react-menu';
 import { useInfiniteQuery, useMutation, useQuery } from '../../api';
 import { useQueryClient } from '@tanstack/react-query';
 import { LoadingTransactions } from './LoadingTransactions';
+import { useDebounce } from '@uidotdev/usehooks';
 
 interface PotPaymentRequest {
   transactionId: string;
@@ -39,6 +42,10 @@ export const Transactions = () => {
   const createPotPayment = useMutation<PotPayment, PotPaymentRequest>('potpayments', { method: 'PUT' });
   const deletePotPayment = useMutation<boolean, string>('potpayments', { method: 'DELETE', dataIsParam: true });
 
+  const [showSearch, setShowSearch] = useState(false);
+  const [search, setSearch] = useState('');
+  const debounceSearch = useDebounce(search, 300);
+
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery<{
     data: Transaction[];
     pagination: { page: number; count: number };
@@ -46,6 +53,12 @@ export const Transactions = () => {
     getNextPageParam: (firstPage) =>
       firstPage.pagination.page * 20 < firstPage.pagination.count ? firstPage.pagination.page + 1 : undefined,
     getPreviousPageParam: (lastPage) => (lastPage.pagination.page > 1 ? lastPage.pagination.page - 1 : undefined),
+    data:
+      debounceSearch.trim().length > 0
+        ? {
+            search: debounceSearch,
+          }
+        : {},
   });
 
   const onTableScroll = (scroll: React.UIEvent<HTMLDivElement>) => {
@@ -119,11 +132,28 @@ export const Transactions = () => {
   return (
     <Stack height="100%">
       <Paper sx={{ height: '100%' }}>
-        <Stack flex={1} direction="row" gap={2}>
+        <Stack flex={1} direction="row" gap={2} justifyContent="space-between">
           <Typography variant="h5">Transactions</Typography>
-          <Button variant="outlined" onClick={handleExport}>
-            Export
-          </Button>
+          <Stack direction="row" gap={1}>
+            <Button
+              sx={{ minWidth: 0 }}
+              variant="outlined"
+              startIcon={<Search />}
+              onClick={() => setShowSearch((search) => !search)}
+            />
+            {showSearch && (
+              <TextField
+                slotProps={{
+                  input: { sx: { height: '100%' } },
+                  htmlInput: { sx: { padding: (theme) => theme.spacing(0, 0, 0, 2), height: '100%' } },
+                }}
+                placeholder="Search"
+                value={search}
+                onChange={(event) => setSearch(event.currentTarget.value)}
+              />
+            )}
+            <Button sx={{ minWidth: 0 }} variant="outlined" startIcon={<Download />} onClick={handleExport} />
+          </Stack>
         </Stack>
         <TableContainer
           sx={{ height: { xs: 600, md: 'calc(100% - 60px)' }, overflowX: { xs: 'auto', md: 'auto' } }}

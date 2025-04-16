@@ -5,7 +5,7 @@ https://docs.nestjs.com/controllers#controllers
 import { Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transactions } from './schemas/transactions.schema';
-import { Between } from 'typeorm';
+import { Between, ILike } from 'typeorm';
 import dayjs from 'dayjs';
 
 @Controller('Transactions')
@@ -15,17 +15,14 @@ export class TransactionsController {
   @Get()
   async getTransactions(
     @Query('page', ParseIntPipe) page: number,
+    @Query('search') search: string,
   ): Promise<{ data: Transactions[]; pagination: { page: number; count: number } }> {
-    const [transactions, count] = await this.transactionsService.getPage(page, 20, [
-      'amount',
-      'created',
-      'description',
-      'groupId',
-      'id',
-      'internal',
-      'logoUrl',
-      'type',
-    ]);
+    const [transactions, count] = await this.transactionsService.getPage(
+      page,
+      20,
+      ['amount', 'created', 'description', 'groupId', 'id', 'internal', 'logoUrl', 'type'],
+      { description: ILike(search) },
+    );
 
     return {
       data: transactions,

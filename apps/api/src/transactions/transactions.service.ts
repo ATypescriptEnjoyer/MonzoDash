@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Transactions } from './schemas/transactions.schema';
 import { StorageService } from '../storageService';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsSelect, Repository } from 'typeorm';
+import { FindOptionsSelect, FindOptionsWhere, Repository } from 'typeorm';
 
 @Injectable()
 export class TransactionsService extends StorageService<Transactions> {
@@ -21,10 +21,12 @@ export class TransactionsService extends StorageService<Transactions> {
     page: number,
     count: number,
     columns?: (keyof Transactions)[],
+    where?: FindOptionsWhere<Transactions> | FindOptionsWhere<Transactions>[],
   ): Promise<[Transactions[], number]> => {
     return this.repository.findAndCount({
       take: count,
       skip: (page - 1) * count,
+      where: where,
       order: {
         created: {
           direction: 'DESC',

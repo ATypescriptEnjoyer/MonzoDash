@@ -33,6 +33,9 @@ export const theme = createTheme({
 
     MuiButton: {
       styleOverrides: {
+        startIcon: {
+          margin: 0,
+        },
         root: {
           borderColor: colours.pink,
           color: colours.white,
