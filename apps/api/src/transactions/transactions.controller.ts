@@ -15,13 +15,13 @@ export class TransactionsController {
   @Get()
   async getTransactions(
     @Query('page', ParseIntPipe) page: number,
-    @Query('search') search: string,
+    @Query('search') search?: string,
   ): Promise<{ data: Transactions[]; pagination: { page: number; count: number } }> {
     const [transactions, count] = await this.transactionsService.getPage(
       page,
       20,
       ['amount', 'created', 'description', 'groupId', 'id', 'internal', 'logoUrl', 'type'],
-      { description: ILike(search) },
+      { description: search ? ILike(`%${search}%`) : undefined },
     );
 
     return {
