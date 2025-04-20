@@ -12,7 +12,7 @@ export interface SalaryData {
   paidOnHolidays: boolean;
   paidLastWorkingDay: boolean;
   moveRemaining: boolean;
-  remainderPotId?: string;
+  remainderPotId?: string | null;
 }
 
 interface Props {
@@ -30,7 +30,7 @@ export const SalaryModal = (props: Props) => {
     values: data,
   });
   const pots = useQuery<Record<string, string>>('monzo/pots');
-  const [showRemainderSelect, setShowRemainderSelect] = useState(false);
+  const [showRemainderSelect, setShowRemainderSelect] = useState(!!data?.remainderPotId);
   const remainderPotId = watch('remainderPotId');
 
   const potsOptions = useMemo(
