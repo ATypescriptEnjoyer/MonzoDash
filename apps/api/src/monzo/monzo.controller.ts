@@ -72,6 +72,11 @@ export class MonzoController {
     }
 
     if (isPaymentFromEmployer && isSalaryPayment) {
+      if(employer.remainderPotId) {
+        const balance = await this.monzoService.getBalance();
+        const remainder = balance - transaction.data.amount;
+        await this.monzoService.depositToPot(employer.remainderPotId, remainder, transaction.data.account_id);
+      }
       for (const potInfo of finances.filter((finance) => finance.id !== '0' && finance.amount > 0)) {
         await this.monzoService.depositToPot(potInfo.id, Math.trunc(potInfo.amount * 100), transaction.data.account_id);
       }

@@ -21,6 +21,27 @@
       "options": {
         "command": "typeorm migration:run -d  dist/libs/db/src/index.js"
       }
+    },
+    "migration:create": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register --project libs/db/tsconfig.json ./node_modules/.bin/typeorm migration:create"
+        
+      }
+    },
+    "migration:up": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register --project libs/db/tsconfig.json ./node_modules/.bin/typeorm migration:run -d libs/db/src/lib/db.ts"
+        
+      }
+    },
+    "migration:down-last": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "ts-node -r tsconfig-paths/register --project libs/db/tsconfig.json ./node_modules/.bin/typeorm migration:revert -d libs/db/src/lib/db.ts"
+        
+      }
     }
   }
 }

@@ -16,6 +16,9 @@ export class Employer {
 
   @Column()
   paidLastWorkingDay: boolean;
+
+  @Column()
+  remainderPotId: string;
 }
 
 export const EmployerSchema = new EntitySchema<Employer>({
@@ -39,5 +42,8 @@ export const EmployerSchema = new EntitySchema<Employer>({
     paidLastWorkingDay: {
       type: Boolean,
     },
+    remainderPotId: {
+      type: String
+    }
   },
 });
