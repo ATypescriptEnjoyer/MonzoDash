@@ -1,7 +1,9 @@
-import { Checkbox, FormControlLabel, Stack, TextField } from '@mui/material';
+import { Autocomplete, Checkbox, FormControlLabel, Stack, TextField } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { Modal } from './Modal';
 import { Loader } from './Loader';
+import { useMemo, useState } from 'react';
+import { useQuery } from '../api';
 
 export interface SalaryData {
   id: string;
@@ -9,6 +11,8 @@ export interface SalaryData {
   payDay: number;
   paidOnHolidays: boolean;
   paidLastWorkingDay: boolean;
+  moveRemaining: boolean;
+  remainderPotId?: string;
 }
 
 interface Props {
@@ -22,10 +26,28 @@ interface Props {
 export const SalaryModal = (props: Props) => {
   const { onClose, onSubmit, open, data, isLoading } = props;
 
-  const { control, handleSubmit } = useForm({ values: data });
+  const { control, handleSubmit, watch } = useForm({
+    values: data,
+  });
+  const pots = useQuery<Record<string, string>>('monzo/pots');
+  const [showRemainderSelect, setShowRemainderSelect] = useState(false);
+  const remainderPotId = watch('remainderPotId');
+
+  const potsOptions = useMemo(
+    () => pots.data && Object.keys(pots.data).map((potId) => ({ id: potId, label: pots.data[potId] })),
+    [pots],
+  );
+  const selectedPot = potsOptions?.find((pots) => pots.id === remainderPotId);
 
   return (
-    <Modal open={open} onSubmit={handleSubmit(onSubmit)} onClose={onClose} title="Update Salary Details">
+    <Modal
+      open={open}
+      onSubmit={handleSubmit((data) =>
+        onSubmit({ ...data, remainderPotId: showRemainderSelect ? data.remainderPotId : null }),
+      )}
+      onClose={onClose}
+      title="Update Salary Details"
+    >
       {isLoading && <Loader />}
       {!isLoading && (
         <Stack
@@ -70,6 +92,28 @@ export const SalaryModal = (props: Props) => {
               />
             )}
           />
+          <FormControlLabel
+            label="Move remaining funds to pot"
+            control={
+              <Checkbox checked={showRemainderSelect} onChange={() => setShowRemainderSelect(!showRemainderSelect)} />
+            }
+          />
+          {potsOptions && (
+            <Controller
+              control={control}
+              name="remainderPotId"
+              render={({ field: { onChange } }) => (
+                <Autocomplete
+                  hidden={!showRemainderSelect}
+                  onChange={(_, value) => onChange(value?.id)}
+                  value={selectedPot ?? potsOptions?.[0]}
+                  disablePortal
+                  options={potsOptions ?? []}
+                  renderInput={(params) => <TextField {...params} label="Pots" />}
+                />
+              )}
+            />
+          )}
         </Stack>
       )}
     </Modal>

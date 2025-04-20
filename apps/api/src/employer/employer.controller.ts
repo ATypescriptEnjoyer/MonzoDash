@@ -11,6 +11,7 @@ const defaultEmployer: Employer = {
   paidLastWorkingDay: false,
   paidOnHolidays: false,
   payDay: 1,
+  remainderPotId: ''
 };
 
 @Controller('Employer')
