@@ -21,7 +21,7 @@ export class MonzoController {
     private readonly financesService: FinancesService,
     private readonly employerService: EmployerService,
     private readonly potPaymentsService: PotPaymentsService,
-  ) {}
+  ) { }
 
   @Get('getUser')
   async getUser(): Promise<Owner> {
@@ -72,7 +72,7 @@ export class MonzoController {
     }
 
     if (isPaymentFromEmployer && isSalaryPayment) {
-      if(employer.remainderPotId) {
+      if (employer.remainderPotId) {
         const balance = await this.monzoService.getBalance();
         const remainder = balance - transaction.data.amount;
         await this.monzoService.depositToPot(employer.remainderPotId, remainder, transaction.data.account_id);

@@ -40,6 +40,7 @@ export const Dashboard = (): JSX.Element => {
       />
       <Stack height="calc(100vh - 95px)" gap={4} padding={(theme) => theme.spacing(2, 0)}>
         <SalaryModal
+          key={employer.data?.id}
           isLoading={employer.isLoading}
           data={employer.data}
           onClose={() => setShowSalaryModal(false)}
