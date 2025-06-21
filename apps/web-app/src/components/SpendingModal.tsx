@@ -5,6 +5,10 @@ import { FrontendFinance } from '@monzodash/api/finances/finances.interfaces';
 import { Modal } from './Modal';
 import { SpendingBox } from './SpendingBox';
 import { Loader } from './Loader';
+import { pieArcLabelClasses, PieChart, PieValueType } from '@mui/x-charts';
+import { MakeOptional } from '@mui/x-charts/internals';
+
+type PieItem = (MakeOptional<PieValueType, "id"> & { amount: number });
 
 interface Props {
   open: boolean;
@@ -14,15 +18,6 @@ interface Props {
   isLoading: boolean;
   salary: number;
 }
-
-const TooltipTitle = (name: string, salaryPercent: number) => {
-  return (
-    <Stack>
-      <Typography>{name}</Typography>
-      <Typography>{salaryPercent.toFixed(2)}%</Typography>
-    </Stack>
-  );
-};
 
 export const SpendingModal = (props: Props) => {
   const { data, onClose, onSubmit, open, isLoading, salary } = props;
@@ -44,9 +39,9 @@ export const SpendingModal = (props: Props) => {
     );
   }, [formWatch, salary]);
 
-  const spendingBar = useMemo(() => {
+  const PieChartData: PieItem[] = useMemo(() => {
     if (!formWatch) {
-      return null;
+      return [];
     }
 
     let potPayments = 0;
@@ -57,29 +52,24 @@ export const SpendingModal = (props: Props) => {
         const percent = (value.items.reduce((prev, curr) => prev + +curr.amount, 0) / salary) * 100;
         potPayments += percent;
         return (
-          <Tooltip title={TooltipTitle(value.name, percent)} placement="right" key={value.id}>
-            <Box
-              key={value.id}
-              sx={{
-                height: { xs: '100%', md: `${percent}%` },
-                width: { xs: `${percent}%`, md: '100%' },
-                transition: 'height 0.5s ease-in-out',
-                backgroundColor: value.colour,
-                overflowY: 'hidden',
-              }}
-            >
-            </Box>
-          </Tooltip>
+          {
+            amount: value.items.reduce((prev, curr) => prev + +curr.amount, 0),
+            value: percent,
+            label: value.name,
+            color: value.colour,
+          }
         );
       });
 
     const salaryPercent = 100 - potPayments;
 
     return [
-      <Tooltip title={TooltipTitle('Salary', salaryPercent)} placement="right" key="salary">
-        <Box key="salary" sx={{ height: { xs: '100%', md: `${salaryPercent}%` }, width: '100%', backgroundColor: 'green' }}>
-        </Box>
-      </Tooltip>,
+      {
+        amount: salary,
+        value: salaryPercent,
+        label: 'Salary',
+        color: 'green',
+      },
       ...spendingBarData,
     ];
   }, [formWatch, salary]);
@@ -107,15 +97,39 @@ export const SpendingModal = (props: Props) => {
             alignItems="center"
             justifyContent="space-evenly"
           >
-            <Stack
-              sx={{
-                flexDirection: { xs: 'row', md: 'column' },
-                height: { xs: '50px', md: '75%' },
-                width: { xs: '100%', md: '60px' },
-              }}
-            >
-              {spendingBar}
-            </Stack>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+              <PieChart
+                sx={{
+                  "& .MuiPieArc-root": { stroke: 'none' }, [`& .${pieArcLabelClasses.root}`]: {
+                    fontWeight: 'bold',
+                  },
+                }}
+                slotProps={{
+                  legend: {
+                    position: { vertical: 'top', horizontal: 'middle' },
+                    direction: 'row',
+                  },
+                }}
+                margin={{ right: 0 }}
+
+                series={[
+                  {
+                    highlightScope: { fade: 'global', highlight: 'item' },
+                    valueFormatter: (value) => `£${(value as PieItem).amount.toFixed(2)} (${(value as PieItem).value.toFixed(2)}%)`,
+                    arcLabel: (item) => `${(item as unknown as PieItem).value.toFixed(2)}%`,
+                    arcLabelMinAngle: 25,
+                    data: PieChartData,
+
+                    innerRadius: 60,
+                    outerRadius: 200,
+                    paddingAngle: 5,
+                    cornerRadius: 5,
+
+                  }
+
+                ]}
+              />
+            </Box>
             {leftoverText}
           </Stack>
         </Stack>
