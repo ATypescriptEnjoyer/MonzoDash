@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Tooltip, Typography } from '@mui/material';
 import { useMemo } from 'react';
 import { useFieldArray, useForm, useWatch } from 'react-hook-form';
 import { FrontendFinance } from '@monzodash/api/finances/finances.interfaces';
@@ -14,6 +14,15 @@ interface Props {
   isLoading: boolean;
   salary: number;
 }
+
+const TooltipTitle = (name: string, salaryPercent: number) => {
+  return (
+    <Stack>
+      <Typography>{name}</Typography>
+      <Typography>{salaryPercent.toFixed(2)}%</Typography>
+    </Stack>
+  );
+};
 
 export const SpendingModal = (props: Props) => {
   const { data, onClose, onSubmit, open, isLoading, salary } = props;
@@ -48,24 +57,31 @@ export const SpendingModal = (props: Props) => {
         const percent = (value.items.reduce((prev, curr) => prev + +curr.amount, 0) / salary) * 100;
         potPayments += percent;
         return (
-          <Box
-            key={value.id}
-            sx={{
-              height: { xs: '100%', md: `${percent}%` },
-              width: { xs: `${percent}%`, md: '100%' },
-              transition: 'height 0.5s ease-in-out',
-              backgroundColor: value.colour,
-              overflowY: 'hidden',
-            }}
-          >
-            {percent}%
-          </Box>
+          <Tooltip title={TooltipTitle(value.name, percent)} placement="right" key={value.id}>
+            <Box
+              key={value.id}
+              sx={{
+                height: { xs: '100%', md: `${percent}%` },
+                width: { xs: `${percent}%`, md: '100%' },
+                transition: 'height 0.5s ease-in-out',
+                backgroundColor: value.colour,
+                overflowY: 'hidden',
+              }}
+            >
+            </Box>
+          </Tooltip>
         );
       });
 
     const salaryPercent = 100 - potPayments;
 
-    return [<Box key="salary" sx={{ height: { xs: '100%', md: `${salaryPercent}%` }, width: '100%', backgroundColor: 'green' }}>{salaryPercent}%</Box>, ...spendingBarData];
+    return [
+      <Tooltip title={TooltipTitle('Salary', salaryPercent)} placement="right" key="salary">
+        <Box key="salary" sx={{ height: { xs: '100%', md: `${salaryPercent}%` }, width: '100%', backgroundColor: 'green' }}>
+        </Box>
+      </Tooltip>,
+      ...spendingBarData,
+    ];
   }, [formWatch, salary]);
 
   return (
