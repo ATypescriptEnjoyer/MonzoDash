@@ -13,6 +13,7 @@ export interface SalaryData {
   paidLastWorkingDay: boolean;
   moveRemaining: boolean;
   remainderPotId?: string | null;
+  salary: number;
 }
 
 interface Props {
@@ -61,6 +62,13 @@ export const SalaryModal = (props: Props) => {
             name="name"
             render={({ field: { onChange, value } }) => (
               <TextField label="Employer Name" value={value} onChange={onChange} />
+            )}
+          />
+          <Controller
+            control={control}
+            name="salary"
+            render={({ field: { onChange, value } }) => (
+              <TextField label="Salary" value={value} type="number" onChange={(e) => onChange(e.target.value.length > 0 ? +e.target.value.replace(/[^0-9.]/g, '') : '')} />
             )}
           />
           <Controller

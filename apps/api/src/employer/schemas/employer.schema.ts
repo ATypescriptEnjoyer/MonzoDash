@@ -19,6 +19,9 @@ export class Employer {
 
   @Column()
   remainderPotId: string;
+
+  @Column()
+  salary: number;
 }
 
 export const EmployerSchema = new EntitySchema<Employer>({
@@ -44,6 +47,9 @@ export const EmployerSchema = new EntitySchema<Employer>({
     },
     remainderPotId: {
       type: String
+    },
+    salary: {
+      type: Number,
     }
   },
 });

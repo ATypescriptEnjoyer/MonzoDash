@@ -1,55 +1,52 @@
 import { Box, Stack, Typography } from '@mui/material';
 import { useMemo } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
-import { DedicatedFinance } from '@monzodash/api/finances/finances.interfaces';
+import { useFieldArray, useForm, useWatch } from 'react-hook-form';
+import { FrontendFinance } from '@monzodash/api/finances/finances.interfaces';
 import { Modal } from './Modal';
 import { SpendingBox } from './SpendingBox';
 import { Loader } from './Loader';
 
 interface Props {
   open: boolean;
-  onSubmit: (data: DedicatedFinance[]) => void;
+  onSubmit: (data: FrontendFinance[]) => void;
   onClose: () => void;
-  data?: DedicatedFinance[];
+  data?: FrontendFinance[];
   isLoading: boolean;
+  salary: number;
 }
 
 export const SpendingModal = (props: Props) => {
-  const { data, onClose, onSubmit, open, isLoading } = props;
+  const { data, onClose, onSubmit, open, isLoading, salary } = props;
   const { control, handleSubmit, getValues, watch } = useForm({ values: { data: data ?? [] } });
   const { fields } = useFieldArray({
     control,
     name: 'data' as never,
   });
-  const formWatch = watch();
+  const formWatch = useWatch({ control, name: 'data' });
 
   const leftoverText = useMemo(() => {
-    const salary = formWatch.data?.find((val) => val.id === '0');
     const potPayments =
-      formWatch.data?.filter((val) => val.id !== '0').reduce((prev, curr) => prev + curr.amount, 0) || 0;
-    const color = salary?.colour ?? 'green';
-    const leftover = (salary?.amount ?? 0) - potPayments;
+      formWatch?.reduce((prev, curr) => prev + curr.items.reduce((prev, curr) => prev + +curr.amount, 0), 0) || 0;
+    const leftover = salary - potPayments;
     return (
-      <Typography textAlign="center" sx={{ color }}>
+      <Typography textAlign="center" sx={{ color: 'green' }}>
         {`You'll have £${leftover.toFixed(2)} leftover in your current account!`}
       </Typography>
     );
-  }, [formWatch]);
+  }, [formWatch, salary]);
 
   const spendingBar = useMemo(() => {
-    if (!formWatch.data) {
+    if (!formWatch) {
       return null;
     }
-    const salary = formWatch.data.find((val) => val.id === '0');
-    const restSum = formWatch.data.filter((val) => val.id !== '0').reduce((prev, curr) => prev + curr.amount, 0);
 
-    const spendingBarData = formWatch.data
-      .filter((value) => value.amount !== 0)
+    let potPayments = 0;
+
+    const spendingBarData = formWatch
+      .filter((value) => value.items.reduce((prev, curr) => prev + +curr.amount, 0) !== 0)
       .map((value) => {
-        const percent =
-          value.id === '0'
-            ? ((value.amount - restSum) / value.amount) * 100
-            : (value.amount / (salary?.amount ?? 1)) * 100;
+        const percent = (value.items.reduce((prev, curr) => prev + +curr.amount, 0) / salary) * 100;
+        potPayments += percent;
         return (
           <Box
             key={value.id}
@@ -61,13 +58,15 @@ export const SpendingModal = (props: Props) => {
               overflowY: 'hidden',
             }}
           >
-            {percent.toFixed(2)}%
+            {percent}%
           </Box>
         );
       });
 
-    return spendingBarData;
-  }, [formWatch]);
+    const salaryPercent = 100 - potPayments;
+
+    return [<Box key="salary" sx={{ height: { xs: '100%', md: `${salaryPercent}%` }, width: '100%', backgroundColor: 'green' }}>{salaryPercent}%</Box>, ...spendingBarData];
+  }, [formWatch, salary]);
 
   return (
     <Modal

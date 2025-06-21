@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material';
 import { useQueryClient } from '@tanstack/react-query';
 import { JSX, useState } from 'react';
-import { DedicatedFinance } from '@monzodash/api/finances/finances.interfaces';
+import { Finance } from '@monzodash/api/finances/finances.interfaces';
 import { useMutation, useQuery } from '../api';
 import { AppBar } from '../components/AppBar';
 import { Chart } from '../components/Chart';
@@ -18,8 +18,8 @@ export const Dashboard = (): JSX.Element => {
   const employer = useQuery<SalaryData>('employer');
   const mutateEmployer = useMutation<SalaryData, SalaryData>('employer');
 
-  const finance = useQuery<DedicatedFinance[]>('finances');
-  const mutateFinance = useMutation<DedicatedFinance[], DedicatedFinance[]>('finances', { method: 'POST' });
+  const finance = useQuery<Finance[]>('finances');
+  const mutateFinance = useMutation<Finance[], Finance[]>('finances', { method: 'POST' });
 
   const [chartDate, setChartDate] = useState<{ month: number; year: number }>({
     year: new Date().getFullYear(),
@@ -42,11 +42,11 @@ export const Dashboard = (): JSX.Element => {
         <SalaryModal
           key={employer.data?.id}
           isLoading={employer.isLoading}
-          data={employer.data}
+          data={employer.data ? { ...employer.data, salary: employer.data.salary / 100 } : undefined}
           onClose={() => setShowSalaryModal(false)}
           open={showSalaryModal}
           onSubmit={(data) =>
-            mutateEmployer.mutate(data, {
+            mutateEmployer.mutate({ ...data, salary: data.salary * 100 }, {
               onSuccess: () => {
                 setShowSalaryModal(false);
                 queryClient.invalidateQueries({ queryKey: ['employer'] });
@@ -55,12 +55,13 @@ export const Dashboard = (): JSX.Element => {
           }
         />
         <SpendingModal
+          salary={employer.data?.salary ? employer.data.salary / 100 : 0}
           open={showSpendingModal}
           isLoading={finance.isLoading}
           onClose={() => setShowSpendingModal(false)}
-          data={finance.data}
+          data={finance.data?.map((finance) => ({ ...finance, items: finance.items.map((item) => ({ ...item, amount: (item.amount / 100).toFixed(2) })) }))}
           onSubmit={(data) =>
-            mutateFinance.mutate(data, {
+            mutateFinance.mutate(data.map((finance) => ({ ...finance, items: finance.items.map((item) => ({ ...item, amount: (+item.amount * 100) })) })), {
               onSuccess: () => {
                 setShowSpendingModal(false);
                 queryClient.invalidateQueries({ queryKey: ['finances'] });

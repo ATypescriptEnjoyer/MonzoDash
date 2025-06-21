@@ -17,31 +17,27 @@ export class FinancesController {
     private readonly employerService: EmployerService,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
     private readonly holidaysService: HolidaysService,
-  ) {}
+  ) { }
 
   @Get()
-  async dedicatedFinances(): Promise<Finances[]> {
+  async Finances(): Promise<Finances[]> {
     const dedicated = await this.financesService.getOrderedFinances();
     if (dedicated.length > 0) {
       return dedicated;
     }
     const monzoPots = await this.monzoService.getPots();
-    return [
-      ...dedicated,
-      ...monzoPots.map(({ id, name }) => ({ id, name, amount: 0, colour: '#FFFFFF', dynamicPot: false })),
-    ];
+    return monzoPots.map(({ id, name }) => ({ id, name, colour: '#FFFFFF', dynamicPot: false, items: [] }));
   }
 
   @Post()
-  async postDedicatedFinances(@Body() dedicatedDto: Finances[]): Promise<{ status: boolean; data: Finances[] }> {
-    const financePromises = dedicatedDto.map(async (value: Finances) => {
-      return this.financesService.save(value);
-    });
-    const finances = await Promise.all(financePromises);
+  async postFinances(@Body() dedicatedDto: Finances[]): Promise<{ status: boolean; data: Finances[] }> {
+    const financeItems = dedicatedDto.flatMap(({ id, items }) => items.map((item) => ({ ...item, financeId: id })));
+    await this.financesService.repository.save(dedicatedDto);
+    await this.financesService.saveFinanceItems(financeItems);
 
     return {
       status: true,
-      data: finances,
+      data: dedicatedDto,
     };
   }
 

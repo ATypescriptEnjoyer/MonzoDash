@@ -11,12 +11,13 @@ const defaultEmployer: Employer = {
   paidLastWorkingDay: false,
   paidOnHolidays: false,
   payDay: 1,
-  remainderPotId: ''
+  remainderPotId: '',
+  salary: 0,
 };
 
 @Controller('Employer')
 export class EmployerController {
-  constructor(private readonly employerService: EmployerService) {}
+  constructor(private readonly employerService: EmployerService) { }
 
   @Get()
   async getEmployer(): Promise<Employer> {
@@ -26,11 +27,13 @@ export class EmployerController {
 
   @Put()
   async putEmployer(@Body() employerDto: Employer): Promise<Employer> {
+    console.log(employerDto);
     const body: Employer = {
       ...employerDto,
       paidOnHolidays: employerDto.paidOnHolidays || false,
       payDay: employerDto.payDay || 31,
       paidLastWorkingDay: employerDto.paidLastWorkingDay || false,
+      salary: employerDto.salary || 0,
     };
     const employer = await this.employerService.save(body);
     return employer;
