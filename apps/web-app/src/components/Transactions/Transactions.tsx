@@ -4,7 +4,6 @@ import {
   Button,
   IconButton,
   Paper,
-  Slide,
   Stack,
   Table,
   TableBody,
@@ -56,8 +55,8 @@ export const Transactions = () => {
     data:
       debounceSearch.trim().length > 0
         ? {
-            search: debounceSearch,
-          }
+          search: debounceSearch,
+        }
         : {},
   });
 

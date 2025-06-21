@@ -17,7 +17,7 @@ interface Props {
 
 export const SpendingModal = (props: Props) => {
   const { data, onClose, onSubmit, open, isLoading, salary } = props;
-  const { control, handleSubmit, getValues, watch } = useForm({ values: { data: data ?? [] } });
+  const { control, handleSubmit, getValues } = useForm({ values: { data: data ?? [] } });
   const { fields } = useFieldArray({
     control,
     name: 'data' as never,
