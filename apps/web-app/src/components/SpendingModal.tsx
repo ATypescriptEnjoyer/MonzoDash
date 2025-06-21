@@ -119,7 +119,6 @@ export const SpendingModal = (props: Props) => {
                     arcLabel: (item) => `${(item as unknown as PieItem).value.toFixed(2)}%`,
                     arcLabelMinAngle: 25,
                     data: PieChartData,
-
                     innerRadius: 60,
                     outerRadius: 200,
                     paddingAngle: 5,
