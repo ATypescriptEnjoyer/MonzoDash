@@ -4,7 +4,8 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket } from 'socket.io';
 import { LoginService } from '../login/login.service';
 import { v4 as uuidv4 } from 'uuid';
-import { LessThan } from 'typeorm';
+import { MoreThan } from 'typeorm';
+import dayjs from 'dayjs';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -45,7 +46,10 @@ export class ChatGateway implements OnGatewayConnection {
     const transactions = await this.transactionsService.repository.find({
       select: ['amount', 'created', 'description'],
       where: {
-        type: 'outgoing'
+        type: 'outgoing',
+        created: MoreThan(
+          dayjs().subtract(1, 'month').format('YYYY-MM-DD HH:MM:SS'),
+        ),
       }
     });
     const stream = await this.chatService.chat(payload, transactions);

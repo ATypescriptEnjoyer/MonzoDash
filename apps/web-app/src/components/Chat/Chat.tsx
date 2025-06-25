@@ -1,5 +1,4 @@
-import { Button, Paper, Stack, TextField } from "@mui/material";
-import { Typography } from "@mui/material";
+import { Button, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useWebsockets } from "../../hooks/useWebsockets/useWebsockets";
 import { useState } from "react";
 import { UserMessage } from "./UserMessage";
@@ -53,7 +52,7 @@ export const Chat = () => {
   return (
     <Paper sx={{ display: { xs: 'none', md: 'block' }, height: '100%', width: { xs: '100%', xl: '30%' }, overflow: 'hidden' }}>
       <Stack gap={2} height="100%" width="100%">
-        <Typography variant="h6">Virtual Accountant</Typography>
+        <Typography variant="h5">Virtual Accountant</Typography>
         {!isConnected ? <Stack height="100%" width="100%" justifyContent="center" alignItems="center">
           <Loader />
         </Stack> :

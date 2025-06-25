@@ -40,6 +40,7 @@ export const Transactions = () => {
   const potPayments = useQuery<PotPayment[]>('potpayments');
   const createPotPayment = useMutation<PotPayment, PotPaymentRequest>('potpayments', { method: 'PUT' });
   const deletePotPayment = useMutation<boolean, string>('potpayments', { method: 'DELETE', dataIsParam: true });
+  const deleteTransaction = useMutation<boolean, string>('transactions', { method: 'DELETE', dataIsParam: true });
 
   const [showSearch, setShowSearch] = useState(false);
   const [search, setSearch] = useState('');
@@ -91,6 +92,15 @@ export const Transactions = () => {
     deletePotPayment.mutate(id, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['potpayments'] });
+      },
+    });
+  };
+
+  const handleDeleteTransaction = (id: string) => {
+
+    deleteTransaction.mutate(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['transactions'] });
       },
     });
   };
@@ -187,29 +197,31 @@ export const Transactions = () => {
                     </TableCell>
                     <TableCell>{dayjs(transaction.created).format('MMM D YYYY, hh:mm A')}</TableCell>
                     <TableCell>
-                      {!transaction.internal && pots.data && (
-                        <Menu
-                          theming="dark"
-                          menuButton={
-                            <IconButton>
-                              <MenuIcon />
-                            </IconButton>
-                          }
-                        >
+                      <Menu
+                        theming="dark"
+                        menuButton={
+                          <IconButton>
+                            <MenuIcon />
+                          </IconButton>
+                        }
+                      >
+                        {pots.data &&
                           <SubMenu label="Pay Future Payments From Pot">
                             {Object.keys(pots.data).map((pot) => (
                               <MenuItem key={pot} onClick={() => handlePayFromPot(transaction.id, pot)}>
                                 {pots.data[pot]}
                               </MenuItem>
                             ))}
-                          </SubMenu>
-                          {transaction.potPaymentId && (
-                            <MenuItem onClick={() => handleDeletePotPayment(transaction.potPaymentId as string)}>
-                              Stop paying from pot
-                            </MenuItem>
-                          )}
-                        </Menu>
-                      )}
+                          </SubMenu>}
+                        <MenuItem onClick={() => handleDeleteTransaction(transaction.id)}>
+                          Delete
+                        </MenuItem>
+                        {transaction.potPaymentId && (
+                          <MenuItem onClick={() => handleDeletePotPayment(transaction.potPaymentId as string)}>
+                            Stop paying from pot
+                          </MenuItem>
+                        )}
+                      </Menu>
                     </TableCell>
                   </TableRow>
                 ))

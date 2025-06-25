@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transactions } from './schemas/transactions.schema';
 import { Between, ILike } from 'typeorm';
@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 
 @Controller('Transactions')
 export class TransactionsController {
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(private readonly transactionsService: TransactionsService) { }
 
   @Get()
   async getTransactions(
@@ -44,5 +44,10 @@ export class TransactionsController {
       },
     });
     return transactions;
+  }
+
+  @Delete(':id')
+  async deleteTransaction(@Param('id') id: string) {
+    await this.transactionsService.deleteWhere({ id });
   }
 }
