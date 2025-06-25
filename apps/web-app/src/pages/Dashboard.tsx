@@ -8,6 +8,7 @@ import { Chart } from '../components/Chart';
 import { SalaryData, SalaryModal } from '../components/SalaryModal';
 import { SpendingModal } from '../components/SpendingModal';
 import { Transactions } from '../components/Transactions/Transactions';
+import { Chat } from '../components/Chat/Chat';
 
 export const Dashboard = (): JSX.Element => {
   const queryClient = useQueryClient();
@@ -76,11 +77,14 @@ export const Dashboard = (): JSX.Element => {
           <Stack sx={{ flex: { xs: 'initial', md: 0.3 } }}>
             <Transactions />
           </Stack>
-          <Chart
-            isLoading={chart.isLoading}
-            onChangeDate={(month, year) => setChartDate({ month, year })}
-            data={chart.data ?? { data: [], ...chartDate }}
-          />
+          <Stack sx={{ flex: { xs: 'initial', md: 0.7 } }} gap={4}>
+            <Chart
+              isLoading={chart.isLoading}
+              onChangeDate={(month, year) => setChartDate({ month, year })}
+              data={chart.data ?? { data: [], ...chartDate }}
+            />
+            <Chat />
+          </Stack>
         </Stack>
       </Stack>
     </Stack>

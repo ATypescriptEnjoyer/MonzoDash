@@ -8,7 +8,10 @@
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": ["build", "db:migrate"],
+      "dependsOn": [
+        "build",
+        "db:migrate"
+      ],
       "options": {
         "buildTarget": "api:build",
         "runBuildTargetDependencies": false
@@ -24,10 +27,21 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/api/src/**/*.ts"],
+        "lintFilePatterns": [
+          "apps/api/src/**/*.ts"
+        ],
         "fix": true
+      }
+    },
+    "plop": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "plop",
+        "cwd": "apps/api"
       }
     }
   }

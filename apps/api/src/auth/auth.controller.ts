@@ -17,7 +17,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly loginService: LoginService,
     @Inject(forwardRef(() => MonzoService)) private readonly monzoService: MonzoService,
-  ) {}
+  ) { }
 
   @Get('redirectUri')
   getRedirectUri(): string {
@@ -54,9 +54,11 @@ export class AuthController {
 
   @Post('signout')
   async signOut(): Promise<void> {
-    await this.authService.deleteAll();
-    await this.loginService.deleteAll();
-    await this.monzoService.signOut();
+    await Promise.all([
+      this.authService.deleteAll(),
+      this.loginService.deleteAll(),
+      this.monzoService.signOut(),
+    ]);
   }
 
   @Get('verified')

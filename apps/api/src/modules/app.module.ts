@@ -24,6 +24,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { TransactionsController } from '../transactions/transactions.controller';
 import { DailyReportController } from '../dailyReport/dailyReport.controller';
 import { PotPaymentsController } from '../potPayments/potPayments.controller';
+import { ChatModule } from '../chat/chat.module';
 
 const { DEBUG } = process.env;
 
@@ -34,13 +35,14 @@ const { DEBUG } = process.env;
     TypeOrmModule.forRoot({ ...getConfig(), entities }),
     ...(!DEBUG
       ? [
-          ServeStaticModule.forRoot({
-            rootPath: join(__dirname, 'client'),
-            renderPath: '*splat',
-          }),
-        ]
+        ServeStaticModule.forRoot({
+          rootPath: join(__dirname, 'client'),
+          renderPath: '*splat',
+        }),
+      ]
       : []),
     AuthModule,
+    ChatModule,
     MonzoModule,
     EmployerModule,
     FinancesModule,
