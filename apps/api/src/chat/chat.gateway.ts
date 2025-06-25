@@ -4,6 +4,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket } from 'socket.io';
 import { LoginService } from '../login/login.service';
 import { v4 as uuidv4 } from 'uuid';
+import { LessThan } from 'typeorm';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -41,7 +42,12 @@ export class ChatGateway implements OnGatewayConnection {
     const messageId = uuidv4();
     let thinking = true;
     client.emit('chat', { id: messageId, chunk: "", done: false, thinking });
-    const transactions = await this.transactionsService.repository.find({ select: ['id', 'amount', 'created', 'type', 'description'] });
+    const transactions = await this.transactionsService.repository.find({
+      select: ['amount', 'created', 'description'],
+      where: {
+        type: 'outgoing'
+      }
+    });
     const stream = await this.chatService.chat(payload, transactions);
     for await (const chunk of stream) {
       if (chunk === "</think>") {

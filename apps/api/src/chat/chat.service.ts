@@ -17,7 +17,7 @@ export class ChatService {
 
   async chat(prompt: string, transactions: Transactions[]): Promise<AsyncGenerator<string>> {
     const docs = transactions.map(tx =>
-      `Merchant: ${tx.description} - Amount: ${tx.amount} - Date: ${tx.created} - Type: ${tx.type}`
+      `£${tx.amount.toFixed(2)} at ${tx.description} on ${tx.created}`
     );
 
     const systemPrompt = `
@@ -27,7 +27,6 @@ export class ChatService {
       You can use **bold** markdown to format your responses, but no other formatting.
       You MUST keep your responses to 30 words or less.
       Do not mention any "based on the data" or "based on the transactions" in your responses.
-      All transactions are in GBP.
       `;
 
     return this.llm.stream([
