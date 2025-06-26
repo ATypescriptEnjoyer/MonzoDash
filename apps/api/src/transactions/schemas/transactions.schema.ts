@@ -29,6 +29,9 @@ export class Transactions {
 
   @Column({ type: 'json' })
   transaction?: WebhookTransactionData;
+
+  @Column()
+  category: string | null;
 }
 
 export const TransactionsSchema = new EntitySchema<Transactions>({
@@ -67,6 +70,11 @@ export const TransactionsSchema = new EntitySchema<Transactions>({
     },
     transaction: {
       type: 'json',
+    },
+    category: {
+      type: String,
+      nullable: true,
+      default: null,
     },
   },
 });

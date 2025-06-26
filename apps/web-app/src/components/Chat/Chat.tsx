@@ -9,9 +9,7 @@ import { Send } from '@mui/icons-material';
 
 interface ChatMessage {
   id: string;
-  chunk: string;
-  done: boolean;
-  thinking: boolean;
+  response: string;
 }
 
 export const Chat = () => {
@@ -19,21 +17,16 @@ export const Chat = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Record<string, { message: string, type: 'user' | 'assistant' }>>({});
   const [canMessage, setCanMessage] = useState(true);
-  const [thinking, setThinking] = useState(false);
+  const [inProgress, setInProgress] = useState(false);
 
   const { isConnected, emit, enabled } = useWebsockets([
     {
       event: 'chat',
       callback: (data: ChatMessage): void => {
-        const { id, chunk, done, thinking } = data;
-        setThinking(thinking);
-        if (thinking) {
-          return;
-        }
-        setMessages(messages => ({ ...messages, [id]: { message: (messages[id]?.message ?? '') + chunk, type: 'assistant' } }));
-        if (done) {
-          setCanMessage(true);
-        }
+        const { id, response } = data;
+        setMessages(messages => ({ ...messages, [id]: { message: response, type: 'assistant' } }));
+        setCanMessage(true);
+        setInProgress(false);
       },
     },
   ]);
@@ -41,6 +34,7 @@ export const Chat = () => {
   const handleSend = () => {
     emit('chat', message);
     setCanMessage(false);
+    setInProgress(true);
     setMessages(messages => ({ ...messages, [uuidv4()]: { message, type: 'user' } }));
     setMessage('');
   }
@@ -61,7 +55,7 @@ export const Chat = () => {
               {Object.entries(messages).map(([key, { message, type }]) => (
                 type === 'user' ? <UserMessage key={key} message={message} /> : <AssistantMessage key={key} message={message} thinking={false} />
               ))}
-              {thinking && <AssistantMessage key="thinking" message={"Thinking..."} thinking={true} />}
+              {inProgress && <AssistantMessage key="thinking" message="" thinking={true} />}
             </Stack>
             <Stack direction="row" gap={2}>
               <TextField

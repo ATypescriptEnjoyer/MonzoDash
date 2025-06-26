@@ -4,7 +4,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket } from 'socket.io';
 import { LoginService } from '../login/login.service';
 import { v4 as uuidv4 } from 'uuid';
-import { MoreThan } from 'typeorm';
+import { IsNull, MoreThan, Not } from 'typeorm';
 import dayjs from 'dayjs';
 
 @WebSocketGateway({
@@ -41,27 +41,17 @@ export class ChatGateway implements OnGatewayConnection {
   @SubscribeMessage('chat')
   async handleEvent(@MessageBody() payload: string, @ConnectedSocket() client: Socket): Promise<void> {
     const messageId = uuidv4();
-    let thinking = true;
-    client.emit('chat', { id: messageId, chunk: "", done: false, thinking });
     const transactions = await this.transactionsService.repository.find({
-      select: ['amount', 'created', 'description'],
+      select: ['amount', 'created', 'description', 'category'],
       where: {
         type: 'outgoing',
+        category: Not(IsNull()),
         created: MoreThan(
           dayjs().subtract(1, 'month').format('YYYY-MM-DD HH:MM:SS'),
         ),
       }
     });
-    const stream = await this.chatService.chat(payload, transactions);
-    for await (const chunk of stream) {
-      if (chunk === "</think>") {
-        thinking = false;
-      }
-      if (thinking || chunk === "</think>") {
-        continue;
-      }
-      client.emit('chat', { id: messageId, chunk, done: false, thinking });
-    }
-    client.emit('chat', { id: messageId, chunk: "", done: true, thinking });
+    const { response } = await this.chatService.chat(payload, transactions);
+    client.emit('chat', { id: messageId, response });
   }
 }

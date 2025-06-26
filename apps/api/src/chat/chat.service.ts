@@ -1,37 +1,62 @@
 import { Injectable } from '@nestjs/common';
 import { Ollama } from "@langchain/ollama";
 import { Transactions } from '../transactions/schemas/transactions.schema';
+import { AnswerSystemPrompt, ChatSystemPrompt } from './prompts';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class ChatService {
-  private readonly llm: Ollama;
+  private readonly answerModel: Ollama;
+  private readonly chatModel: Ollama;
+
+  private readonly answerModelName = "phi4-mini-reasoning:latest";
+  private readonly chatModelName = "gemma3:4b";
 
   constructor() {
-    this.llm = new Ollama({
-      model: "deepseek-r1:1.5b",
+    this.answerModel = new Ollama({
+      model: this.answerModelName,
+      temperature: 0,
+      maxRetries: 2,
+      baseUrl: process.env.OLLAMA_BASE_URL,
+    });
+    this.chatModel = new Ollama({
+      model: this.chatModelName,
       temperature: 0,
       maxRetries: 2,
       baseUrl: process.env.OLLAMA_BASE_URL,
     });
   }
 
-  async chat(prompt: string, transactions: Transactions[]): Promise<AsyncGenerator<string>> {
+  async chat(prompt: string, transactions: Transactions[]): Promise<{ response: string }> {
     const docs = transactions.map(tx =>
-      `£${tx.amount.toFixed(2)} at ${tx.description} on ${tx.created}`
-    );
+      `£${tx.amount.toFixed(2)} at ${tx.description} (${tx.category}) on ${dayjs(tx.created).format('YYYY-MM-DD')}`
+    ).join('\n');
 
-    const systemPrompt = `
-      You are a helpful financial live chat assistant.
-      You can analyze transaction data and provide insights about spending patterns, budgeting advice, and financial recommendations. 
-      Always be concise and practical in your responses. Keep your response short and to the point.
-      You can use **bold** markdown to format your responses, but no other formatting.
-      You MUST keep your responses to 30 words or less.
-      Do not mention any "based on the data" or "based on the transactions" in your responses.
-      `;
+    console.log("Sending prompt to answer model");
 
-    return this.llm.stream([
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: `User Transaction History:\n ${docs.join('\n')}\n\nUser Question: ${prompt}` }
-    ], {});
+    const answer = await this.answerModel.invoke([
+      { role: 'system', content: AnswerSystemPrompt },
+      { role: 'user', content: `${docs}\n\nUser Question:\n\n${prompt}` }
+    ]);
+
+    //Support for thinking in the answer model
+    const answerThinkSplit = answer.split("</think>");
+
+    console.log("Sending prompt to chat model");
+
+    const chatPrompt = `
+    The user asked: ${prompt}, and the maths LLM answered ${answerThinkSplit[answerThinkSplit.length - 1]}. Rewrite this answer in a way that will present well in a chat interface.`;
+
+    const chatResponse = await this.chatModel.invoke([
+      { role: 'system', content: ChatSystemPrompt },
+      { role: 'user', content: chatPrompt }
+    ])
+
+    //Support for thinking in the chat model
+    const chatThinkSplit = chatResponse.split("</think>");
+
+    return {
+      response: chatThinkSplit[chatThinkSplit.length - 1],
+    };
   }
 }
