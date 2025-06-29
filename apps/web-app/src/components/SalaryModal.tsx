@@ -1,5 +1,5 @@
-import { Autocomplete, Checkbox, FormControlLabel, Stack, TextField } from '@mui/material';
-import { Controller, useForm } from 'react-hook-form';
+import { Autocomplete, Checkbox, FormControlLabel, Stack, TextField, Typography } from '@mui/material';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Modal } from './Modal';
 import { Loader } from './Loader';
 import { useMemo, useState } from 'react';
@@ -27,12 +27,13 @@ interface Props {
 export const SalaryModal = (props: Props) => {
   const { onClose, onSubmit, open, data, isLoading } = props;
 
-  const { control, handleSubmit, watch } = useForm({
+  const { control, handleSubmit } = useForm({
     values: data,
   });
   const pots = useQuery<Record<string, string>>('monzo/pots');
   const [showRemainderSelect, setShowRemainderSelect] = useState(!!data?.remainderPotId);
-  const remainderPotId = watch('remainderPotId');
+  const remainderPotId = useWatch({ control, name: 'remainderPotId' });
+  const paidLastWorkingDay = useWatch({ control, name: 'paidLastWorkingDay' });
 
   const potsOptions = useMemo(
     () => pots.data && Object.keys(pots.data).map((potId) => ({ id: potId, label: pots.data[potId] })),
@@ -68,14 +69,7 @@ export const SalaryModal = (props: Props) => {
             control={control}
             name="salary"
             render={({ field: { onChange, value } }) => (
-              <TextField label="Salary" value={value} type="number" onChange={(e) => onChange(e.target.value.length > 0 ? +e.target.value.replace(/[^0-9.]/g, '') : '')} />
-            )}
-          />
-          <Controller
-            control={control}
-            name="payDay"
-            render={({ field: { onChange, value } }) => (
-              <TextField label="Payday" value={value} type="number" onChange={onChange} />
+              <TextField slotProps={{ input: { startAdornment: <Typography marginRight={0.5} variant="body1">£</Typography> } }} label="Salary" value={value} type="number" onChange={(e) => onChange(e.target.value.length > 0 ? +e.target.value.replace(/[^0-9.]/g, '') : '')} />
             )}
           />
           <Controller
@@ -83,23 +77,32 @@ export const SalaryModal = (props: Props) => {
             name="paidOnHolidays"
             render={({ field: { onChange, value } }) => (
               <FormControlLabel
-                hidden={data?.paidLastWorkingDay}
                 label="Paid on holidays/weekends"
                 control={<Checkbox checked={value} onChange={onChange} />}
               />
             )}
           />
+
+          {/* Paid last working day */}
           <Controller
             control={control}
             name="paidLastWorkingDay"
             render={({ field: { onChange, value } }) => (
               <FormControlLabel
-                hidden={data?.paidOnHolidays}
                 label="Paid Last working day"
                 control={<Checkbox checked={value} onChange={onChange} />}
               />
             )}
           />
+          {!paidLastWorkingDay && <Controller
+            control={control}
+            name="payDay"
+            render={({ field: { onChange, value } }) => (
+              <TextField label="Payday" value={value} type="number" onChange={onChange} />
+            )}
+          />}
+          {/* End of Paid last working day */}
+
           <FormControlLabel
             label="Move remaining funds to pot"
             control={

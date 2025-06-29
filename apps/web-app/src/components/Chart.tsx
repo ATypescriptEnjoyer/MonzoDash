@@ -25,9 +25,9 @@ export const Chart = (props: Props) => {
       !data || Object.keys(data.data).length === 0
         ? []
         : [...Array(calculatedChartDate.daysInMonth()).keys()].map((index) => ({
-            x: index + 1,
-            y: data.data[index + 1] ?? null,
-          })),
+          x: index + 1,
+          y: data.data[index + 1] ?? null,
+        })),
     [data, calculatedChartDate],
   );
 

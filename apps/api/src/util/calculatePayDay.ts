@@ -3,8 +3,8 @@ import { Holiday } from '../holidays/schemas/holidays.schema';
 
 const getLastNonWeekend = (date: dayjs.Dayjs): dayjs.Dayjs => {
   const day = date.day();
-  if (day > 1 && day <= 5) return date;
-  return date.subtract(date.day() === 0 ? 2 : 1, 'day');
+  if (![0, 6].includes(day)) return date;
+  return date.subtract(day === 0 ? 2 : 1, 'day');
 };
 
 const getLastWorkingDayPaydayDate = () => {
