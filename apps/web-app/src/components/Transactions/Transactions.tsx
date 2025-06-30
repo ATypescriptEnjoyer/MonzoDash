@@ -1,4 +1,4 @@
-import { Download, Menu as MenuIcon, Search } from '@mui/icons-material';
+import { Close, Download, Menu as MenuIcon, Search } from '@mui/icons-material';
 import {
   Avatar,
   Button,
@@ -159,7 +159,10 @@ export const Transactions = () => {
               <TextField
                 autoFocus
                 slotProps={{
-                  input: { sx: { height: '100%' } },
+                  input: {
+                    endAdornment: search.length > 0 ? <IconButton sx={{ padding: 0 }} onClick={() => setSearch('')}><Close /></IconButton> : undefined,
+                    sx: { height: '100%' }
+                  },
                   htmlInput: { sx: { padding: (theme) => theme.spacing(0, 0, 0, 2), height: '100%' } },
                 }}
                 placeholder="Search"
@@ -191,7 +194,10 @@ export const Transactions = () => {
                       <Stack direction="row" alignItems="center" gap={4}>
                         <Avatar src={transaction.logoUrl || '/icon-192x192.png'} />
                         <Stack>
-                          <Typography variant="body1">{transaction.description}</Typography>
+                          <Typography variant="body1" sx={{ cursor: 'pointer' }} onClick={() => {
+                            setSearch(transaction.description);
+                            setShowSearch(true);
+                          }}>{transaction.description}</Typography>
                           {transaction.potName && (
                             <Typography variant="caption">Being paid from {transaction.potName}</Typography>
                           )}
