@@ -27,7 +27,6 @@ export class EmployerController {
 
   @Put()
   async putEmployer(@Body() employerDto: Employer): Promise<Employer> {
-    console.log(employerDto);
     const body: Employer = {
       ...employerDto,
       paidOnHolidays: employerDto.paidOnHolidays || false,

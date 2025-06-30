@@ -44,7 +44,7 @@ export class MonzoController {
     const pots = await this.monzoService.getPots();
     const finances = await this.financesService.getFinancesWithAmounts();
     const description = getTransactionDescription(transaction.data, pots);
-    const amount = Math.abs(transaction.data.amount) / 100;
+    const amount = transaction.data.amount;
 
     const employer = (await this.employerService.getAll())[0];
     const employerName = employer ? employer.name : '';
@@ -60,7 +60,7 @@ export class MonzoController {
 
     const savedTransaction = await this.transactionService.save({
       id: transaction.data.id,
-      amount,
+      amount: Math.abs(amount) / 100,
       created: transaction.data.created,
       type: transaction.data.amount > 0 ? 'incoming' : 'outgoing',
       logoUrl: transaction.data.merchant?.logo,
@@ -76,7 +76,7 @@ export class MonzoController {
     if (isPaymentFromEmployer && isSalaryPayment) {
       if (employer.remainderPotId) {
         const balance = await this.monzoService.getBalance();
-        const remainder = balance - transaction.data.amount;
+        const remainder = balance - amount;
         await this.monzoService.depositToPot(employer.remainderPotId, remainder, transaction.data.account_id);
       }
       for (const potInfo of finances.filter((finance) => finance.amountPence > 0)) {
