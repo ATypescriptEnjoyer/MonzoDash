@@ -2,7 +2,7 @@
 https://docs.nestjs.com/controllers#controllers
 */
 
-import { Controller, Delete, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transactions } from './schemas/transactions.schema';
 import { Between, ILike } from 'typeorm';
@@ -16,12 +16,13 @@ export class TransactionsController {
   async getTransactions(
     @Query('page', ParseIntPipe) page: number,
     @Query('search') search?: string,
+    @Query('withInternal', ParseBoolPipe) withInternal = false,
   ): Promise<{ data: Transactions[]; pagination: { page: number; count: number } }> {
     const [transactions, count] = await this.transactionsService.getPage(
       page,
       20,
       ['amount', 'created', 'description', 'groupId', 'id', 'internal', 'logoUrl', 'type'],
-      { description: search ? ILike(`%${search}%`) : undefined },
+      { ...(search ? { description: ILike(`%${search}%`) } : {}), ...(withInternal ? {} : { internal: false }) },
     );
 
     return {

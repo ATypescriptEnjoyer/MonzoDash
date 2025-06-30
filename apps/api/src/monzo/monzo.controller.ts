@@ -43,7 +43,7 @@ export class MonzoController {
 
     const pots = await this.monzoService.getPots();
     const finances = await this.financesService.getFinancesWithAmounts();
-    const description = getTransactionDescription(transaction.data, pots);
+    const { description, internal } = getTransactionDescription(transaction.data, pots);
     const amount = transaction.data.amount;
 
     const employer = (await this.employerService.getAll())[0];
@@ -67,6 +67,7 @@ export class MonzoController {
       description: description.trim(),
       transaction: transaction.data,
       groupId: transaction.data.merchant?.group_id,
+      internal,
     } as Transactions);
 
     if (transaction.ignoreProcessing) {

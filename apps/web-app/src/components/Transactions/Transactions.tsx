@@ -13,6 +13,8 @@ import {
   TableRow,
   Typography,
   TextField,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useMemo, useState } from 'react';
@@ -45,6 +47,7 @@ export const Transactions = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [search, setSearch] = useState('');
   const debounceSearch = useDebounce(search, 300);
+  const [internal, setInternal] = useState(false);
 
   const { data, isLoading, isFetching, fetchNextPage, hasNextPage } = useInfiniteQuery<{
     data: Transaction[];
@@ -57,8 +60,9 @@ export const Transactions = () => {
       debounceSearch.trim().length > 0
         ? {
           search: debounceSearch,
+          withInternal: internal.toString(),
         }
-        : {},
+        : { withInternal: internal.toString() },
   });
 
   const onTableScroll = (scroll: React.UIEvent<HTMLDivElement>) => {
@@ -141,8 +145,9 @@ export const Transactions = () => {
   return (
     <Stack height="100%">
       <Paper sx={{ height: '100%' }}>
-        <Stack flex={1} direction="row" gap={2} justifyContent="space-between">
-          <Typography variant="h5">Transactions</Typography>
+        <Typography variant="h5">Transactions</Typography>
+        <Stack flex={1} direction="row" gap={2} justifyContent="space-between" alignItems="center">
+          <FormControlLabel control={<Checkbox checked={internal} onChange={(event) => setInternal(event.target.checked)} />} label="Show Internal Transactions" />
           <Stack direction="row" gap={1}>
             <Button
               sx={{ minWidth: 0 }}
@@ -152,6 +157,7 @@ export const Transactions = () => {
             />
             {showSearch && (
               <TextField
+                autoFocus
                 slotProps={{
                   input: { sx: { height: '100%' } },
                   htmlInput: { sx: { padding: (theme) => theme.spacing(0, 0, 0, 2), height: '100%' } },
