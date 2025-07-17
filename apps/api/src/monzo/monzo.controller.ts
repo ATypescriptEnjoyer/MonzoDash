@@ -52,7 +52,7 @@ export class MonzoController {
     const salary = employer?.salary ?? 99999;
     const isSalaryPayment = amount >= salary - salary / 20;
 
-    const isPaymentFromEmployer = employerName === description || isSalaryPayment;
+    const isPaymentFromEmployer = employerName === description || (employerName === '' && isSalaryPayment);
 
     if (employerName === '' && isSalaryPayment) {
       await this.employerService.save({ ...employer, name: description });
