@@ -29,7 +29,7 @@ export class ChatService {
 
   async chat(prompt: string, transactions: Transactions[]): Promise<{ response: string }> {
     const docs = transactions.map(tx =>
-      `£${tx.amount.toFixed(2)} at ${tx.description} (${tx.category}) on ${dayjs(tx.created).format('YYYY-MM-DD')}`
+      `Id = ${tx.id}, Merchant = ${tx.description}, Amount = ${tx.amount.toFixed(2)}, Category = ${tx.category}, Date = ${dayjs(tx.created).format('YYYY-MM-DD')}`
     ).join('\n');
 
     console.log("Sending prompt to answer model");

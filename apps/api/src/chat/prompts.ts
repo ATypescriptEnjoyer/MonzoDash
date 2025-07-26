@@ -7,12 +7,6 @@ export const AnswerSystemPrompt = `
       You will recieve user transaction history and a user question.
       You will then provide a response to the user question based on the transaction history.
       You will not mention any "based on the data" or "based on the transactions" in your responses.
-      The transaction history is in the format of:
-      £{cost} at {description} ({category}) on {date (YYYY-MM-DD)}
-      an example of a transaction history is:
-      £500.00 at Morrisons (Groceries) on 2025-01-05
-      £600.00 at Riot Games (Entertainment) on 2025-01-06
-      £700.00 at Amazon (Shopping) on 2025-01-07
 `;
 
 export const ChatSystemPrompt = `

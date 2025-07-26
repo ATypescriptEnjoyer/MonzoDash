@@ -42,7 +42,7 @@ export class ChatGateway implements OnGatewayConnection {
   async handleEvent(@MessageBody() payload: string, @ConnectedSocket() client: Socket): Promise<void> {
     const messageId = uuidv4();
     const transactions = await this.transactionsService.repository.find({
-      select: ['amount', 'created', 'description', 'category'],
+      select: ['id', 'amount', 'created', 'description', 'category'],
       where: {
         type: 'outgoing',
         category: Not(IsNull()),
