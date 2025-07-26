@@ -15,14 +15,14 @@ export class AuthService extends StorageService<Auth> {
     super(authRepository);
   }
 
-  async createToken(response: AuthResponse): Promise<Auth> {
+  async createToken(response: AuthResponse, fromRefresh = false): Promise<Auth> {
     await this.deleteAll();
     const token: Auth = {
       authToken: response.accessToken,
       refreshToken: response.refreshToken,
       createdAt: new Date(),
       expiresIn: new Date(Date.now() + response.expiresIn * 1000),
-      twoFactored: false,
+      twoFactored: fromRefresh,
     };
     return this.authRepository.save(token);
   }
@@ -36,6 +36,6 @@ export class AuthService extends StorageService<Auth> {
       return token;
     }
     const refreshedToken = await this.monzoService.refreshToken({ refreshToken: token.refreshToken });
-    return this.createToken(refreshedToken);
+    return this.createToken(refreshedToken, true);
   }
 }
