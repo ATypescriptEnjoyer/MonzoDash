@@ -56,7 +56,7 @@ export class ChatService {
     const chatThinkSplit = chatResponse.split("</think>");
 
     return {
-      response: chatThinkSplit[chatThinkSplit.length - 1].replace("$", "£"), // The model won't use £, so we need to replace it
+      response: chatThinkSplit[chatThinkSplit.length - 1].replaceAll("$", "£"), // The model won't use £, so we need to replace it
     };
   }
 }
