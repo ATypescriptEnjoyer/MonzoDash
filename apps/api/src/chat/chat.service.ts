@@ -1,62 +1,141 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Ollama } from "@langchain/ollama";
 import { Transactions } from '../transactions/schemas/transactions.schema';
-import { AnswerSystemPrompt, ChatSystemPrompt } from './prompts';
+import { AIOSystemPrompt, AnswerSystemPrompt, ChatSystemPrompt } from './prompts';
 import dayjs from 'dayjs';
+
+const { OLLAMA_BASE_URL, USE_AIO_MODEL } = process.env;
+
+interface ChatResponse {
+  response: string;
+}
+
+interface ModelConfig {
+  temperature: number;
+  maxRetries: number;
+  baseUrl: string;
+}
 
 @Injectable()
 export class ChatService {
+  private readonly logger = new Logger(ChatService.name);
   private readonly answerModel: Ollama;
   private readonly chatModel: Ollama;
+  private readonly aioModel: Ollama;
 
-  private readonly answerModelName = "phi4-mini-reasoning:latest";
+  private readonly answerModelName = "qwen3:4b";
   private readonly chatModelName = "gemma3:4b";
+  private readonly aioModelName = "qwen2.5:32b-instruct-q2_K";
+
+  private readonly baseConfig: ModelConfig = {
+    temperature: 0,
+    maxRetries: 2,
+    baseUrl: OLLAMA_BASE_URL,
+  };
 
   constructor() {
     this.answerModel = new Ollama({
       model: this.answerModelName,
-      temperature: 0,
-      maxRetries: 2,
-      baseUrl: process.env.OLLAMA_BASE_URL,
+      ...this.baseConfig
     });
     this.chatModel = new Ollama({
       model: this.chatModelName,
-      temperature: 0,
-      maxRetries: 2,
-      baseUrl: process.env.OLLAMA_BASE_URL,
+      ...this.baseConfig
+    });
+    this.aioModel = new Ollama({
+      model: this.aioModelName,
+      ...this.baseConfig
     });
   }
 
-  async chat(prompt: string, transactions: Transactions[]): Promise<{ response: string }> {
-    const docs = transactions.map(tx =>
-      `Id = ${tx.id}, Merchant = ${tx.description}, Amount = ${tx.amount.toFixed(2)}, Category = ${tx.category}, Date = ${dayjs(tx.created).format('YYYY-MM-DD')}`
-    ).join('\n');
+  private formatTransactions(transactions: Transactions[]): string {
+    return transactions
+      .map(tx =>
+        `Id = ${tx.id}, Merchant = ${tx.description}, Amount = ${tx.amount.toFixed(2)}, Category = ${tx.category}, Date = ${dayjs(tx.created).format('YYYY-MM-DD')}`
+      )
+      .join('\n');
+  }
 
-    console.log("Sending prompt to answer model");
+  private async invokeModel(model: Ollama, messages: Array<{ role: string; content: string }>): Promise<string> {
+    try {
+      const response = await model.invoke(messages);
+      return response;
+    } catch (error) {
+      this.logger.error(`Error invoking model: ${error.message}`, error.stack);
+      throw new Error(`Failed to get response from AI model: ${error.message}`);
+    }
+  }
 
-    const answer = await this.answerModel.invoke([
-      { role: 'system', content: AnswerSystemPrompt },
-      { role: 'user', content: `${docs}\n\nUser Question:\n\n${prompt}` }
+  private extractResponseFromThinking(response: string): string {
+    const thinkSplit = response.split("</think>");
+    return thinkSplit[thinkSplit.length - 1] || response;
+  }
+
+  private async handleAioModel(prompt: string, docs: string): Promise<string> {
+    this.logger.log("Using AIO model for chat response");
+
+    const response = await this.invokeModel(this.aioModel, [
+      { role: 'system', content: AIOSystemPrompt },
+      { role: 'user', content: `User Transactions = \n${docs}\n\nUser Question = \n ${prompt}` }
     ]);
 
-    //Support for thinking in the answer model
-    const answerThinkSplit = answer.split("</think>");
+    return this.extractResponseFromThinking(response);
+  }
 
-    console.log("Sending prompt to chat model");
+  private async handleTwoStageModel(prompt: string, docs: string): Promise<string> {
+    this.logger.log("Using two-stage model (answer + chat) for chat response");
+
+    const answer = await this.invokeModel(this.answerModel, [
+      { role: 'system', content: AnswerSystemPrompt },
+      { role: 'user', content: `User Transactions = \n${docs}\n\nUser Question = \n ${prompt}` }
+    ]);
+
+    const answerResponse = this.extractResponseFromThinking(answer);
+    this.logger.debug(`Answer response: ${answerResponse}`);
 
     const chatPrompt = `
-    The user asked: ${prompt}, and the maths LLM answered ${answerThinkSplit[answerThinkSplit.length - 1]}. Rewrite this answer in a way that will present well in a chat interface.`;
+      Rewrite the following response in a concise, natural and human way: ${answerResponse}`;
 
-    const chatResponse = await this.chatModel.invoke([
+    const chatResponse = await this.invokeModel(this.chatModel, [
       { role: 'system', content: ChatSystemPrompt },
       { role: 'user', content: chatPrompt }
-    ])
+    ]);
 
-    //Support for thinking in the chat model
-    const chatThinkSplit = chatResponse.split("</think>");
+    this.logger.debug(`Chat response: ${chatResponse}`);
 
-    return {
-      response: chatThinkSplit[chatThinkSplit.length - 1].replaceAll("$", "£"), // The model won't use £, so we need to replace it
-    };
+    return this.extractResponseFromThinking(chatResponse);
+  }
+
+  async chat(prompt: string, transactions: Transactions[]): Promise<ChatResponse> {
+    if (!prompt?.trim()) {
+      throw new Error('Prompt is required');
+    }
+
+    if (!Array.isArray(transactions)) {
+      throw new Error('Transactions must be an array');
+    }
+
+    if (transactions.length === 0) {
+      return { response: "You haven't had any transactions this month, so I can't answer your question!" };
+    }
+
+    const docs = this.formatTransactions(transactions);
+    let chatResponse: string;
+
+    try {
+      if (USE_AIO_MODEL === "true") {
+        chatResponse = await this.handleAioModel(prompt, docs);
+      } else {
+        chatResponse = await this.handleTwoStageModel(prompt, docs);
+      }
+
+      // Replace $ with £ for proper currency display
+      const formattedResponse = chatResponse.replaceAll("$", "£");
+
+      return { response: formattedResponse };
+    } catch (error) {
+      this.logger.error(`Chat service error: ${error.message}`, error.stack);
+      throw error;
+    }
   }
 }

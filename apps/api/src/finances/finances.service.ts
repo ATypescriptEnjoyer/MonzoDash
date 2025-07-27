@@ -1,4 +1,4 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Inject, Injectable, Logger, forwardRef } from '@nestjs/common';
 import { FinanceItem, Finances } from './schemas/finances.schema';
 import { StorageService } from '../storageService';
 import { Cron, CronExpression } from '@nestjs/schedule';
@@ -10,6 +10,8 @@ import { In, Not, Repository } from 'typeorm';
 
 @Injectable()
 export class FinancesService extends StorageService<Finances> {
+  private readonly logger = new Logger(FinancesService.name);
+
   constructor(
     @InjectRepository(Finances)
     financesRepository: Repository<Finances>,
@@ -42,7 +44,7 @@ export class FinancesService extends StorageService<Finances> {
 
   @Cron(CronExpression.EVERY_HOUR)
   async updatePotNames(): Promise<void> {
-    console.log('Running pot name update cycle');
+    this.logger.log('Running pot name update cycle');
     const existingPots = await this.getAll();
     const newPots = await this.monzoService.getPots();
     await async.forEachSeries(newPots, async (extPot) => {
@@ -63,6 +65,6 @@ export class FinancesService extends StorageService<Finances> {
         });
       }
     });
-    console.log('Finished pot name update cycle');
+    this.logger.log('Finished pot name update cycle');
   }
 }

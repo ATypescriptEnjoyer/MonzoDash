@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Login } from './schemas/login.schema';
 import { StorageService } from '../storageService';
 import dayjs from 'dayjs';
@@ -9,6 +9,8 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class LoginService extends StorageService<Login> {
+  private readonly logger = new Logger(LoginService.name);
+
   constructor(
     @InjectRepository(Login)
     loginRepository: Repository<Login>,
@@ -18,14 +20,14 @@ export class LoginService extends StorageService<Login> {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async clearCodes(): Promise<void> {
-    console.log('Running login code clear cycle');
+    this.logger.log('Running login code clear cycle');
     const deleted = await this.repository
       .createQueryBuilder()
       .delete()
       .where('expiresAt < :currentDate', { currentDate: new Date() })
       .orWhere('used = :used', { used: false })
       .execute();
-    console.log(`${deleted.affected} expired logins deleted.`);
+    this.logger.log(`${deleted.affected} expired logins deleted.`);
   }
 
   async createCode(): Promise<string> {

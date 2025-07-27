@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Holiday } from './schemas/holidays.schema';
 import { StorageService } from '../storageService';
 import axios from 'axios';
@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class HolidaysService extends StorageService<Holiday> {
+  private readonly logger = new Logger(HolidaysService.name);
   constructor(
     @InjectRepository(Holiday)
     holidayRepository: Repository<Holiday>,
@@ -22,16 +23,16 @@ export class HolidaysService extends StorageService<Holiday> {
     const currentStoredHolidays = await this.getAll();
     const oldHolidays = currentStoredHolidays.filter((holiday) => dayjs(holiday.date).isBefore(dayjs()));
     await async.eachSeries(oldHolidays, async (holiday) => await this.delete(holiday));
-    console.log(`${oldHolidays.length} old holidays removed.`);
+    this.logger.log(`${oldHolidays.length} old holidays removed.`);
     if (currentStoredHolidays.length - oldHolidays.length !== 0) {
       return;
     }
-    console.log('Holidays need regenerating.');
+    this.logger.log('Holidays need regenerating.');
     const { data } = await axios.get('https://www.gov.uk/bank-holidays.json');
     const holArr: Holiday[] = data['england-and-wales']['events'];
     const holidays = await this.createBulk(holArr.filter((holiday) => dayjs(holiday.date).isAfter(dayjs())));
 
-    console.log(`${holidays.length} inserted!`);
+    this.logger.log(`${holidays.length} inserted!`);
   }
 
   createBulk = async (obj: Holiday[]): Promise<Holiday[]> => {

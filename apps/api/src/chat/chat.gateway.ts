@@ -4,8 +4,31 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket } from 'socket.io';
 import { LoginService } from '../login/login.service';
 import { v4 as uuidv4 } from 'uuid';
-import { IsNull, MoreThan, Not } from 'typeorm';
+import { FindOperator, In, IsNull, Like, MoreThanOrEqual, Not, Or } from 'typeorm';
 import dayjs from 'dayjs';
+import { TransactionType, TransactionTypes } from '../transactions/transactionTypes';
+
+const parseCategoriesFromPrompt = (prompt: string): TransactionType[] => {
+  const promptToLower = prompt.toLowerCase();
+  const categories = TransactionTypes.filter((category) => promptToLower.includes(category));
+  return categories;
+}
+
+const parseMerchantsFromPrompt = (prompt: string): FindOperator<string>[] => {
+  const promptToLower = prompt.toLowerCase();
+  const words = promptToLower.split(' ');
+  const merchants: FindOperator<string>[] = [];
+  for (let i = 0; i < words.length - 2; i++) {
+    if (words[i] === 'at' || words[i] === 'on') {
+      const merchant = words[i + 1];
+      const cleanedMerchant = merchant.replace(/[^a-zA-Z0-9-\s]/g, '').trim();
+      if (!TransactionTypes.includes(cleanedMerchant as TransactionType)) {
+        merchants.push(Like(`%${cleanedMerchant}%`));
+      }
+    }
+  }
+  return merchants;
+}
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -41,15 +64,23 @@ export class ChatGateway implements OnGatewayConnection {
   @SubscribeMessage('chat')
   async handleEvent(@MessageBody() payload: string, @ConnectedSocket() client: Socket): Promise<void> {
     const messageId = uuidv4();
+    const categories = parseCategoriesFromPrompt(payload);
+    const merchants = parseMerchantsFromPrompt(payload);
+
+
     const transactions = await this.transactionsService.repository.find({
       select: ['id', 'amount', 'created', 'description', 'category'],
       where: {
         type: 'outgoing',
-        category: Not(IsNull()),
-        created: MoreThan(
-          dayjs().subtract(1, 'month').format('YYYY-MM-DD HH:MM:SS'),
+        category: categories.length > 0 ? In(categories) : Not(IsNull()),
+        created: MoreThanOrEqual(
+          dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
         ),
-      }
+        description: merchants.length > 0 ? Or(...merchants) : Not(IsNull()),
+      },
+      order: {
+        created: 'DESC',
+      },
     });
     const { response } = await this.chatService.chat(payload, transactions);
     client.emit('chat', { id: messageId, response });

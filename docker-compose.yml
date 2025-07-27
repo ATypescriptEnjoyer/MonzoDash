@@ -11,6 +11,7 @@ services:
       - MONZODASH_DOMAIN=${MONZODASH_DOMAIN}
       - MONZODASH_WEBHOOK_DOMAIN=${MONZODASH_WEBHOOK_DOMAIN} #Optional: will fall back to MONZODASH_DOMAIN if not added
       - GLITCHTIP_DSN=${GLITCHTIP_DSN}
+      - USE_AIO_MODEL=${USE_AIO_MODEL}
     ports:
       - 5000:5000
 

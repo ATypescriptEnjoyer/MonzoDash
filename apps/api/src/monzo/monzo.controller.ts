@@ -67,6 +67,7 @@ export class MonzoController {
       description: description.trim(),
       transaction: transaction.data,
       groupId: transaction.data.merchant?.group_id,
+      category: transaction.data.category,
       internal,
     } as Transactions);
 
