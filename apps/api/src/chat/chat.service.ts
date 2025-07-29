@@ -75,8 +75,8 @@ export class ChatService {
     this.logger.log("Using AIO model for chat response");
 
     const response = await this.invokeModel(this.aioModel, [
-      { role: 'system', content: AIOSystemPrompt },
-      { role: 'user', content: `User Transactions = \n${docs}\n\nUser Question = \n ${prompt}` }
+      { role: 'system', content: AIOSystemPrompt(docs) },
+      { role: 'user', content: prompt }
     ]);
 
     return this.extractResponseFromThinking(response);
@@ -86,8 +86,8 @@ export class ChatService {
     this.logger.log("Using two-stage model (answer + chat) for chat response");
 
     const answer = await this.invokeModel(this.answerModel, [
-      { role: 'system', content: AnswerSystemPrompt },
-      { role: 'user', content: `User Transactions = \n${docs}\n\nUser Question = \n ${prompt}` }
+      { role: 'system', content: AnswerSystemPrompt(docs) },
+      { role: 'user', content: prompt }
     ]);
 
     const answerResponse = this.extractResponseFromThinking(answer);
