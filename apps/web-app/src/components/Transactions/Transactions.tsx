@@ -15,6 +15,7 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
+  Divider,
 } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useMemo, useState } from 'react';
@@ -101,7 +102,6 @@ export const Transactions = () => {
   };
 
   const handleDeleteTransaction = (id: string) => {
-
     deleteTransaction.mutate(id, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['transactions'] });
@@ -143,107 +143,118 @@ export const Transactions = () => {
   }, [data, potPayments.data, pots.data]);
 
   return (
-    <Stack height="100%">
-      <Paper sx={{ height: '100%' }}>
-        <Typography variant="h5">Transactions</Typography>
-        <Stack flex={1} direction="row" gap={2} justifyContent="space-between" alignItems="center">
-          <FormControlLabel control={<Checkbox checked={internal} onChange={(event) => setInternal(event.target.checked)} />} label="Show Internal Transactions" />
-          <Stack direction="row" gap={1}>
-            <Button
-              sx={{ minWidth: 0 }}
-              variant="outlined"
-              startIcon={<Search />}
-              onClick={() => setShowSearch((search) => !search)}
+    <Stack height="100%" gap={2} width="100%">
+      <Typography variant="h4" fontWeight="bold" sx={{ textAlign: { xs: 'center', md: 'left' } }}>Transactions</Typography>
+      <Stack flex={1} direction="row" gap={2} justifyContent="space-between" alignItems="center">
+        <FormControlLabel
+          control={<Checkbox checked={internal} onChange={(event) => setInternal(event.target.checked)} />}
+          label="Show Internal Transactions"
+        />
+        <Stack direction="row" gap={1}>
+          <Button
+            sx={{ minWidth: 0 }}
+            variant="outlined"
+            startIcon={<Search />}
+            onClick={() => setShowSearch((search) => !search)}
+          />
+          {showSearch && (
+            <TextField
+              autoFocus
+              slotProps={{
+                input: {
+                  endAdornment:
+                    search.length > 0 ? (
+                      <IconButton sx={{ padding: 0 }} onClick={() => setSearch('')}>
+                        <Close />
+                      </IconButton>
+                    ) : undefined,
+                  sx: { height: '100%' },
+                },
+                htmlInput: { sx: { padding: (theme) => theme.spacing(0, 0, 0, 2), height: '100%' } },
+              }}
+              placeholder="Search"
+              value={search}
+              onChange={(event) => setSearch(event.currentTarget.value)}
             />
-            {showSearch && (
-              <TextField
-                autoFocus
-                slotProps={{
-                  input: {
-                    endAdornment: search.length > 0 ? <IconButton sx={{ padding: 0 }} onClick={() => setSearch('')}><Close /></IconButton> : undefined,
-                    sx: { height: '100%' }
-                  },
-                  htmlInput: { sx: { padding: (theme) => theme.spacing(0, 0, 0, 2), height: '100%' } },
-                }}
-                placeholder="Search"
-                value={search}
-                onChange={(event) => setSearch(event.currentTarget.value)}
-              />
-            )}
-            <Button sx={{ minWidth: 0 }} variant="outlined" startIcon={<Download />} onClick={handleExport} />
-          </Stack>
+          )}
+          <Button sx={{ minWidth: 0 }} variant="outlined" startIcon={<Download />} onClick={handleExport} />
         </Stack>
-        <TableContainer
-          sx={{ height: { xs: 600, md: 'calc(100% - 60px)' }, overflowX: { xs: 'auto', md: 'auto' } }}
-          onScroll={onTableScroll}
-        >
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!isLoading ? (
-                detailedTransactions.map((transaction) => (
-                  <TableRow key={transaction.id}>
-                    <TableCell>
-                      <Stack direction="row" alignItems="center" gap={4}>
-                        <Avatar src={transaction.logoUrl || '/icon-192x192.png'} />
-                        <Stack>
-                          <Typography variant="body1" sx={{ cursor: 'pointer' }} onClick={() => {
-                            setSearch(transaction.description);
-                            setShowSearch(true);
-                          }}>{transaction.description}</Typography>
-                          {transaction.potName && (
-                            <Typography variant="caption">Being paid from {transaction.potName}</Typography>
-                          )}
-                        </Stack>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>
-                      {transaction.type === 'incoming' ? '+' : '-'}£{transaction.amount.toFixed(2)}
-                    </TableCell>
-                    <TableCell>{dayjs(transaction.created).format('MMM D YYYY, hh:mm A')}</TableCell>
-                    <TableCell>
-                      <Menu
-                        theming="dark"
-                        menuButton={
-                          <IconButton>
-                            <MenuIcon />
-                          </IconButton>
-                        }
-                      >
-                        {pots.data &&
-                          <SubMenu label="Pay Future Payments From Pot">
-                            {Object.keys(pots.data).map((pot) => (
-                              <MenuItem key={pot} onClick={() => handlePayFromPot(transaction.id, pot)}>
-                                {pots.data[pot]}
-                              </MenuItem>
-                            ))}
-                          </SubMenu>}
-                        <MenuItem onClick={() => handleDeleteTransaction(transaction.id)}>
-                          Delete
-                        </MenuItem>
-                        {transaction.potPaymentId && (
-                          <MenuItem onClick={() => handleDeletePotPayment(transaction.potPaymentId as string)}>
-                            Stop paying from pot
-                          </MenuItem>
-                        )}
-                      </Menu>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <LoadingTransactions />
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
+      </Stack>
+      <Divider flexItem sx={{ background: (theme) => theme.palette.divider, backgroundColor: (theme) => theme.palette.primary.main }} />
+
+      <Stack gap={2} height="100%" alignItems='center' overflow="auto" sx={{ scrollbarWidth: 'none' }} onScroll={onTableScroll}>
+        {!isLoading ? (
+          detailedTransactions.map((transaction) => (
+            <Stack
+              width="100%"
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              key={transaction.id}
+              sx={{
+                border: (theme) => `2px solid ${theme.palette.primary.main}`,
+                borderRadius: (theme) => theme.shape.borderRadius / 2,
+              }}
+              padding={2}
+            >
+              <Stack direction="row" alignItems="center" gap={2} flex={0.5}>
+                <Avatar
+                  variant="rounded"
+                  src={transaction.logoUrl || '/icon-192x192.png'}
+                  sx={{ width: 50, height: 50 }}
+                />
+                <Stack>
+                  <Typography
+                    variant="body1"
+                    sx={{ cursor: 'pointer' }}
+                    onClick={() => {
+                      setSearch(transaction.description);
+                      setShowSearch(true);
+                    }}
+                  >
+                    {transaction.description}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {dayjs(transaction.created).format('MMM D YYYY, hh:mm A')}
+                  </Typography>
+                  {transaction.potName && (
+                    <Typography variant="caption">Being paid from {transaction.potName}</Typography>
+                  )}
+                </Stack>
+              </Stack>
+              <Typography variant="body1" color={transaction.type === 'incoming' ? 'success.main' : 'error.main'}>
+                £{transaction.amount.toFixed(2)}
+              </Typography>
+              <Menu
+                theming="dark"
+                menuButton={
+                  <IconButton>
+                    <MenuIcon />
+                  </IconButton>
+                }
+              >
+                {pots.data && (
+                  <SubMenu label="Pay Future Payments From Pot">
+                    {Object.keys(pots.data).map((pot) => (
+                      <MenuItem key={pot} onClick={() => handlePayFromPot(transaction.id, pot)}>
+                        {pots.data[pot]}
+                      </MenuItem>
+                    ))}
+                  </SubMenu>
+                )}
+                <MenuItem onClick={() => handleDeleteTransaction(transaction.id)}>Delete</MenuItem>
+                {transaction.potPaymentId && (
+                  <MenuItem onClick={() => handleDeletePotPayment(transaction.potPaymentId as string)}>
+                    Stop paying from pot
+                  </MenuItem>
+                )}
+              </Menu>
+            </Stack>
+          ))
+        ) : (
+          <LoadingTransactions />
+        )}
+      </Stack>
     </Stack>
   );
 };

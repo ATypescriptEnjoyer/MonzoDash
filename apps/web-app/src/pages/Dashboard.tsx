@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { JSX, useState } from 'react';
 import { Finance } from '@monzodash/api/finances/finances.interfaces';
 import { useMutation, useQuery } from '../api';
-import { AppBar } from '../components/AppBar';
+import { NavBar } from '../components/NavBar';
 import { Chart } from '../components/Chart';
 import { SalaryData, SalaryModal } from '../components/SalaryModal';
 import { SpendingModal } from '../components/SpendingModal';
@@ -33,13 +33,14 @@ export const Dashboard = (): JSX.Element => {
     },
   );
 
+
   return (
-    <Stack height="100vh" padding={(theme) => ({ xs: theme.spacing(0, 1), md: theme.spacing(0, 4) })}>
-      <AppBar
+    <Stack height="100vh" direction="row" sx={{ marginTop: { xs: 8, md: 0 } }}>
+      <NavBar
         onShowDedicatedSpending={() => setShowSpendingModal(true)}
         onShowSalary={() => setShowSalaryModal(true)}
       />
-      <Stack height="calc(100vh - 95px)" gap={4} padding={(theme) => theme.spacing(2, 0)}>
+      <Stack height="100vh" width="100%" gap={4}>
         <SalaryModal
           key={employer.data?.id}
           isLoading={employer.isLoading}
@@ -71,12 +72,10 @@ export const Dashboard = (): JSX.Element => {
           }
         />
         <Stack
-          sx={{ height: { xs: 'initial', md: '100%' }, flexDirection: { xs: 'column-reverse', md: 'row' } }}
+          sx={{ height: { xs: 'initial', md: '100%' }, flexDirection: { xs: 'column', md: 'row' } }}
           gap={4}
+          padding={2}
         >
-          <Stack sx={{ flex: { xs: 'initial', md: 0.3 } }}>
-            <Transactions />
-          </Stack>
           <Stack sx={{ flex: { xs: 'initial', md: 0.7 } }} gap={4}>
             <Chart
               isLoading={chart.isLoading}
@@ -85,8 +84,12 @@ export const Dashboard = (): JSX.Element => {
             />
             <Chat />
           </Stack>
+          <Stack direction="row" sx={{ flex: { xs: 'initial', md: 0.3 } }} gap={2} alignItems="center" justifyContent="center">
+            <Transactions />
+          </Stack>
+
         </Stack>
-      </Stack>
-    </Stack>
+      </Stack >
+    </Stack >
   );
 };

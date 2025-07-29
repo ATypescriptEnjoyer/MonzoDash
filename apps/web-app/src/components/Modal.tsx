@@ -1,6 +1,5 @@
 import { Close } from '@mui/icons-material';
 import { Box, Button, Dialog, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { colours } from '../theme';
 
 interface Props {
   title: string;
@@ -26,8 +25,8 @@ export const Modal = ({ title, onClose, open, children, saveText, onSubmit }: Pr
         sx: (theme) => ({
           justifyContent: 'space-between',
           gap: theme.spacing(2),
-          backgroundColor: colours.black,
-          border: `2px solid ${colours.pink}`,
+          backgroundColor: theme.palette.background.default,
+          border: `2px solid ${theme.palette.primary.main}`,
           padding: theme.spacing(4),
         }),
       }}

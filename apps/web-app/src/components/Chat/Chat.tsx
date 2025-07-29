@@ -1,4 +1,4 @@
-import { Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import { useWebsockets } from "../../hooks/useWebsockets/useWebsockets";
 import { useState } from "react";
 import { UserMessage } from "./UserMessage";
@@ -32,7 +32,8 @@ export const Chat = () => {
   ]);
 
   const handleSend = () => {
-    emit('chat', message);
+    if (!message.trim()) return;
+    emit('chat', message.trim());
     setCanMessage(false);
     setInProgress(true);
     setMessages(messages => ({ ...messages, [uuidv4()]: { message, type: 'user' } }));
@@ -44,32 +45,27 @@ export const Chat = () => {
   }
 
   return (
-    <Paper sx={{ display: { xs: 'none', md: 'block' }, height: '100%', width: { xs: '100%', xl: '30%' }, overflow: 'hidden' }}>
-      <Stack gap={2} height="100%" width="100%">
-        <Typography variant="h5">Virtual Accountant</Typography>
-        {!isConnected ? <Stack height="100%" width="100%" justifyContent="center" alignItems="center">
-          <Loader />
-        </Stack> :
-          <>
-            <Stack gap={2} height="100%" overflow="auto">
-              {Object.entries(messages).map(([key, { message, type }]) => (
-                type === 'user' ? <UserMessage key={key} message={message} /> : <AssistantMessage key={key} message={message} thinking={false} />
-              ))}
-              {inProgress && <AssistantMessage key="thinking" message="" thinking={true} />}
-            </Stack>
-            <Stack direction="row" gap={2}>
-              <TextField
-                fullWidth
-                value={message}
-                disabled={!canMessage}
-                placeholder="Write your message..."
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              />
-              <Button disabled={!canMessage} onClick={handleSend}><Send /></Button>
-            </Stack>
-          </>}
+    <Stack height="100%" width="100%" gap={2}>
+      <Typography variant="h4" fontWeight="bold" sx={{ textAlign: { xs: 'center', md: 'left' } }}>Virtual Accountant</Typography>
+      <Divider flexItem sx={{ background: (theme) => theme.palette.divider, backgroundColor: (theme) => theme.palette.primary.main }} />
+      {isConnected && <Stack gap={2} height="100%" overflow="auto">
+        {Object.entries(messages).map(([key, { message, type }]) => (
+          type === 'user' ? <UserMessage key={key} message={message} /> : <AssistantMessage key={key} message={message} thinking={false} />
+        ))}
+        {inProgress && <AssistantMessage key="thinking" message="" thinking={true} />}
+      </Stack>}
+      {!isConnected && <Loader />}
+      <Stack direction="row" gap={2}>
+        <TextField
+          fullWidth
+          value={message}
+          disabled={!canMessage || !isConnected}
+          placeholder="Write your message..."
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+        />
+        <Button disabled={!canMessage || !isConnected} onClick={handleSend}><Send /></Button>
       </Stack>
-    </Paper >
+    </Stack>
   )
 }

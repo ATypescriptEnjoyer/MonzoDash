@@ -1,9 +1,8 @@
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import { Box, IconButton, Paper, Stack, Typography } from '@mui/material';
+import { Box, Divider, IconButton, Stack, Typography, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
-import { colours } from '../theme';
 import { useWindowSize } from '@uidotdev/usehooks';
 
 interface Props {
@@ -17,7 +16,7 @@ export const Chart = (props: Props) => {
   const chartDate = data ? `${data.year}-${data.month.toString().padStart(2, '0')}` : 'Loading';
   const calculatedChartDate = dayjs(chartDate);
   const { width } = useWindowSize();
-
+  const theme = useTheme();
   const fwdDisabled = useMemo(() => dayjs().format('YYYY-MM') === chartDate, [chartDate]);
 
   const mapData = useMemo(
@@ -41,36 +40,36 @@ export const Chart = (props: Props) => {
   };
 
   return (
-    <Stack flex={1}>
-      <Paper>
-        <Stack direction="row" alignItems="center" gap={2} sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}>
-          <IconButton disabled={chartDate === '2020-01'} onClick={() => handleDateChange('b')}>
-            <ChevronLeft />
-          </IconButton>
-          <Typography width="200px" textAlign="center" variant="h5">
-            {calculatedChartDate.format('MMMM YYYY')}
-          </Typography>
-          <IconButton disabled={fwdDisabled} onClick={() => handleDateChange('f')}>
-            <ChevronRight />
-          </IconButton>
-        </Stack>
-        <Box height={450} maxWidth={width ?? 1920}>
-          <LineChart
-            loading={isLoading}
-            series={[
-              {
-                data: mapData.reduce((prev, curr) => [...prev, curr.y], [] as number[]),
-                color: colours.pink,
-                connectNulls: true,
-                valueFormatter: (value) => (value ? `£${value}` : null),
-              },
-            ]}
-            xAxis={[
-              { data: mapData.reduce((prev, curr) => [...prev, `${curr.x}`], [] as string[]), scaleType: 'point' },
-            ]}
-          />
-        </Box>
-      </Paper>
+    <Stack flex={1} gap={2}>
+      <Typography variant="h4" fontWeight="bold" sx={{ textAlign: { xs: 'center', md: 'left' } }}>Daily Spending</Typography>
+      <Divider flexItem sx={{ background: (theme) => theme.palette.divider, backgroundColor: (theme) => theme.palette.primary.main }} />
+      <Stack direction="row" alignItems="center" gap={2} sx={{ justifyContent: { xs: 'center', md: 'flex-start' } }}>
+        <IconButton disabled={chartDate === '2020-01'} onClick={() => handleDateChange('b')}>
+          <ChevronLeft />
+        </IconButton>
+        <Typography width="200px" textAlign="center" variant="h5">
+          {calculatedChartDate.format('MMMM YYYY')}
+        </Typography>
+        <IconButton disabled={fwdDisabled} onClick={() => handleDateChange('f')}>
+          <ChevronRight />
+        </IconButton>
+      </Stack>
+      <Box height={450} maxWidth={width ?? 1920}>
+        <LineChart
+          loading={isLoading}
+          series={[
+            {
+              data: mapData.reduce((prev, curr) => [...prev, curr.y], [] as number[]),
+              color: theme.palette.primary.main,
+              connectNulls: true,
+              valueFormatter: (value) => (value ? `£${value}` : null),
+            },
+          ]}
+          xAxis={[
+            { data: mapData.reduce((prev, curr) => [...prev, `${curr.x}`], [] as string[]), scaleType: 'point' },
+          ]}
+        />
+      </Box>
     </Stack>
   );
 };
