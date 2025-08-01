@@ -162,8 +162,8 @@ export const NavBar = (props: Props) => {
         <MuiAppBar
           elevation={0}
           position="fixed"
-          color="transparent"
           sx={{
+            background: theme.palette.background.default,
             "&&": { border: 'none' },
             width: '100vw',
             left: 0,

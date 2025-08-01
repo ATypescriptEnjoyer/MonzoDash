@@ -24,6 +24,7 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^6.1.6",
     "@mui/x-charts": "^7.22.2",
+    "@mui/x-date-pickers": "^8.9.2",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0",

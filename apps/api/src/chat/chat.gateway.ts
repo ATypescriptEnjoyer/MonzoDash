@@ -4,7 +4,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket } from 'socket.io';
 import { LoginService } from '../login/login.service';
 import { v4 as uuidv4 } from 'uuid';
-import { FindOperator, In, IsNull, Like, MoreThanOrEqual, Not, Or } from 'typeorm';
+import { Between, FindOperator, In, IsNull, Like, MoreThanOrEqual, Not, Or } from 'typeorm';
 import dayjs from 'dayjs';
 import { TransactionType, TransactionTypes } from '../transactions/transactionTypes';
 
@@ -62,19 +62,21 @@ export class ChatGateway implements OnGatewayConnection {
   }
 
   @SubscribeMessage('chat')
-  async handleEvent(@MessageBody() payload: string, @ConnectedSocket() client: Socket): Promise<void> {
+  async handleEvent(@MessageBody() { message, startDate, endDate, merchant }: { message: string, startDate: string, endDate: string, merchant: string }, @ConnectedSocket() client: Socket): Promise<void> {
     const messageId = uuidv4();
-    const categories = parseCategoriesFromPrompt(payload);
-    const merchants = parseMerchantsFromPrompt(payload);
-
+    const categories = parseCategoriesFromPrompt(message);
+    const merchants = [...parseMerchantsFromPrompt(message), Like(`%${merchant.toLowerCase()}%`)];
+    const setStartDate = startDate ? dayjs(startDate) : dayjs().subtract(1, 'month');
+    const setEndDate = endDate ? dayjs(endDate) : dayjs();
 
     const transactions = await this.transactionsService.repository.find({
       select: ['id', 'amount', 'created', 'description', 'category'],
       where: {
         type: 'outgoing',
         category: categories.length > 0 ? In(categories) : Not(IsNull()),
-        created: MoreThanOrEqual(
-          dayjs().subtract(1, 'month').format('YYYY-MM-DD'),
+        created: Between(
+          setStartDate.format('YYYY-MM-DD'),
+          setEndDate.format('YYYY-MM-DD'),
         ),
         description: merchants.length > 0 ? Or(...merchants) : Not(IsNull()),
       },
@@ -82,7 +84,8 @@ export class ChatGateway implements OnGatewayConnection {
         created: 'DESC',
       },
     });
-    const { response } = await this.chatService.chat(payload, transactions);
+
+    const { response } = await this.chatService.chat(message, transactions);
     client.emit('chat', { id: messageId, response });
   }
 }

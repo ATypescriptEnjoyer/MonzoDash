@@ -43,6 +43,7 @@ export const SalaryModal = (props: Props) => {
 
   return (
     <Modal
+      maxWidth="sm"
       open={open}
       onSubmit={handleSubmit((data) =>
         onSubmit({ ...data, remainderPotId: showRemainderSelect ? data.remainderPotId : null }),

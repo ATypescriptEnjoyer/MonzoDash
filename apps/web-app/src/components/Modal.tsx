@@ -1,5 +1,5 @@
 import { Close } from '@mui/icons-material';
-import { Box, Button, Dialog, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Breakpoint, Button, Dialog, IconButton, Stack, Typography, useMediaQuery, useTheme } from '@mui/material';
 
 interface Props {
   title: string;
@@ -8,9 +8,10 @@ interface Props {
   saveText?: string;
   onSubmit: () => void;
   children: React.ReactNode;
+  maxWidth?: Breakpoint;
 }
 
-export const Modal = ({ title, onClose, open, children, saveText, onSubmit }: Props) => {
+export const Modal = ({ title, onClose, open, children, saveText, onSubmit, maxWidth = 'lg' }: Props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -19,16 +20,17 @@ export const Modal = ({ title, onClose, open, children, saveText, onSubmit }: Pr
       open={open}
       fullScreen={fullScreen}
       fullWidth
-      maxWidth="lg"
+      maxWidth={maxWidth}
       scroll="paper"
-      PaperProps={{
-        sx: (theme) => ({
-          justifyContent: 'space-between',
-          gap: theme.spacing(2),
-          backgroundColor: theme.palette.background.default,
-          border: `2px solid ${theme.palette.primary.main}`,
-          padding: theme.spacing(4),
-        }),
+      slotProps={{
+        paper: {
+          sx: (theme) => ({
+            justifyContent: 'space-between',
+            gap: theme.spacing(2),
+            border: `2px solid ${theme.palette.primary.main}`,
+            padding: theme.spacing(4),
+          }),
+        },
       }}
     >
       <Stack justifyContent="space-between" direction="row" alignItems="center">

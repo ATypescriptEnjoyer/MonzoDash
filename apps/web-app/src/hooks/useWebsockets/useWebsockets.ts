@@ -50,7 +50,7 @@ export const useWebsockets = <T = unknown>(events: WebsocketEvent<T>[]) => {
     };
   }, [events]);
 
-  const emit = (event: string, data?: string) => {
+  const emit = <T = string>(event: string, data?: T) => {
     socket.emit(event, data);
   }
 

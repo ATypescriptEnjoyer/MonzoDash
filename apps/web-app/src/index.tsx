@@ -9,16 +9,25 @@ import { theme } from './theme';
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/theme-dark.css';
 import QueryClient from './QueryClient';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const root = document.getElementById('root');
-const rootContainer = createRoot(root!);
+
+if (!root) {
+  throw new Error('Root element not found');
+}
+
+const rootContainer = createRoot(root);
 
 rootContainer.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Router>
       <QueryClient>
-        <App />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <App />
+        </LocalizationProvider>
       </QueryClient>
     </Router>
   </ThemeProvider>,

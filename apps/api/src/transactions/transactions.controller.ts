@@ -34,6 +34,16 @@ export class TransactionsController {
     };
   }
 
+  @Get('merchants')
+  async getMerchants(@Query('search') search?: string) {
+    const merchants = await this.transactionsService.repository.createQueryBuilder('transactions')
+      .select(['description'])
+      .where('LOWER(description) LIKE LOWER(:search)', { search: `%${search}%` })
+      .distinct()
+      .getRawMany();
+    return merchants.map((transaction) => transaction.description);
+  }
+
   @Post('export/:from/:to')
   async exportTransactions(@Param('from') from: string, @Param('to') to: string) {
     const transactions = await this.transactionsService.repository.find({

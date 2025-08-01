@@ -15,16 +15,19 @@ export const useQuery = <TResponse, TRequest = object>(
     data,
     refetchInterval,
     keepPreviousData,
+    enabled,
   }: {
     method?: 'GET' | 'POST';
     data?: TRequest;
     refetchInterval?: number;
     keepPreviousData?: boolean;
+    enabled?: boolean;
   } = {},
 ): UseQueryResult<TResponse, Error> =>
   useBaseQuery<TResponse>({
     queryKey: [endpoint],
     placeholderData: keepPreviousData ? keepPreviousDataFunc : undefined,
+    enabled: enabled,
     queryFn: async () => {
       const response = await axios<TResponse>(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
         method,

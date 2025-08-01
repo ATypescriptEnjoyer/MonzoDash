@@ -3,14 +3,7 @@ import {
   Avatar,
   Button,
   IconButton,
-  Paper,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
   TextField,
   Checkbox,
@@ -182,7 +175,7 @@ export const Transactions = () => {
       </Stack>
       <Divider flexItem sx={{ background: (theme) => theme.palette.divider, backgroundColor: (theme) => theme.palette.primary.main }} />
 
-      <Stack gap={2} height="100%" alignItems='center' overflow="auto" sx={{ scrollbarWidth: 'none' }} onScroll={onTableScroll}>
+      <Stack gap={2} height="100%" alignItems='center' overflow="auto" sx={{ scrollbarWidth: 'none', maxHeight: { xs: '500px', md: '100%' } }} onScroll={onTableScroll}>
         {!isLoading ? (
           detailedTransactions.map((transaction) => (
             <Stack
