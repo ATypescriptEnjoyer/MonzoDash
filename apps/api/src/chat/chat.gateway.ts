@@ -4,7 +4,7 @@ import { ConnectedSocket, MessageBody, OnGatewayConnection, SubscribeMessage, We
 import { Socket } from 'socket.io';
 import { LoginService } from '../login/login.service';
 import { v4 as uuidv4 } from 'uuid';
-import { Between, FindOperator, In, IsNull, Like, MoreThanOrEqual, Not, Or } from 'typeorm';
+import { Between, FindOperator, In, IsNull, Like, Not, Or } from 'typeorm';
 import dayjs from 'dayjs';
 import { TransactionType, TransactionTypes } from '../transactions/transactionTypes';
 

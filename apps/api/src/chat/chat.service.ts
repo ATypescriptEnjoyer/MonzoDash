@@ -25,7 +25,7 @@ export class ChatService {
 
   private readonly answerModelName = "qwen3:4b";
   private readonly chatModelName = "gemma3:4b";
-  private readonly aioModelName = "qwen2.5:32b-instruct-q2_K";
+  private readonly aioModelName = "gemma3:12b";
 
   private readonly baseConfig: ModelConfig = {
     temperature: 0,
