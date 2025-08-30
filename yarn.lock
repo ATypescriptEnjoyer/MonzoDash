@@ -7331,7 +7331,7 @@ date-format@^4.0.14:
   integrity sha512-39BOQLs9ZjKh0/patS9nrT8wc3ioX3/eA/zgbKNopnF2wCqJEoxywwwElATYvRsXdnOxA/OQeQoFZ3rFjVajhg==
 
 dayjs@^1.11.13, dayjs@^1.11.9:
-  version "1.11.17"
+  version "1.11.18"
 
 debug@2.6.9:
   version "2.6.9"
