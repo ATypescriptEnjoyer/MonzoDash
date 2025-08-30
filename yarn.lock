@@ -2633,7 +2633,7 @@
     prop-types "^15.8.1"
 
 "@mui/x-date-pickers@^8.9.2":
-  version "8.10.2"
+  version "8.11.0"
   dependencies:
     "@babel/runtime" "^7.28.2"
     "@mui/utils" "^7.2.0"
@@ -7331,9 +7331,7 @@ date-format@^4.0.14:
   integrity sha512-39BOQLs9ZjKh0/patS9nrT8wc3ioX3/eA/zgbKNopnF2wCqJEoxywwwElATYvRsXdnOxA/OQeQoFZ3rFjVajhg==
 
 dayjs@^1.11.13, dayjs@^1.11.9:
-  version "1.11.13"
-  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.13.tgz#92430b0139055c3ebb60150aa13e860a4b5a366c"
-  integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
+  version "1.11.17"
 
 debug@2.6.9:
   version "2.6.9"
@@ -13682,7 +13680,7 @@ sass-loader@^12.2.0:
     neo-async "^2.6.2"
 
 sass@^1.42.1, sass@^1.77.4:
-  version "1.90.0"
+  version "1.91.0"
   dependencies:
     chokidar "^4.0.0"
     immutable "^5.0.2"
@@ -15290,7 +15288,7 @@ typeorm@^0.3.20:
     yargs "^17.6.2"
 
 typescript-eslint@^8.15.0:
-  version "8.40.0"
+  version "8.41.0"
   dependencies:
     "@typescript-eslint/eslint-plugin" "8.24.1"
     "@typescript-eslint/parser" "8.24.1"
