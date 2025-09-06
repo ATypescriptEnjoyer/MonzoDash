@@ -2181,7 +2181,7 @@
   integrity sha512-ojoNsrIuPI9g6o8UxhraZQSyF2ByJanAY4cTFbc8Mf2AXEF4aQRGY1dJxyJpuyav8r9FGflEt/Ff3u5Nt6YMPA==
 
 "@langchain/core@^0.3.61":
-  version "0.3.72"
+  version "0.3.75"
   dependencies:
     "@cfworker/json-schema" "^4.0.2"
     ansi-styles "^5.0.0"
@@ -2197,9 +2197,7 @@
     zod-to-json-schema "^3.22.3"
 
 "@langchain/ollama@^0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@langchain/ollama/-/ollama-0.2.3.tgz#4868e66db4fc480f08c42fc652274abbab0416f0"
-  integrity sha512-1Obe45jgQspqLMBVlayQbGdywFmri8DgmGRdzNu0li56cG5RReYlRCFVDZBRMMvF9JhsP5eXRyfyivtKfITHWQ==
+  version "0.2.4"
   dependencies:
     ollama "^0.5.12"
     uuid "^10.0.0"
@@ -2633,7 +2631,7 @@
     prop-types "^15.8.1"
 
 "@mui/x-date-pickers@^8.9.2":
-  version "8.11.0"
+  version "8.11.1"
   dependencies:
     "@babel/runtime" "^7.28.2"
     "@mui/utils" "^7.2.0"
@@ -4356,7 +4354,7 @@
   integrity sha512-skM/gzNX4shPkqmdTCSoHtJAPMTtmIJNS0hE+xwTTUVYwezArCT34NMermABmBVUg5Ls5aiUXEDXfqwR1oVkcA==
 
 "@tanstack/react-query@^5.59.20":
-  version "5.85.6"
+  version "5.87.1"
   dependencies:
     "@tanstack/query-core" "5.66.4"
 
@@ -8256,7 +8254,7 @@ eslint-visitor-keys@^4.2.0:
   integrity sha512-UyLnSehNt62FFhSwjZlHmeokpRK59rcz29j+F1/aDgbkbRTk7wIc9XzdoasMUbRNKDM0qQt/+BJ4BrpFeABemw==
 
 eslint@^9.8.0:
-  version "9.34.0"
+  version "9.35.0"
   dependencies:
     "@eslint-community/eslint-utils" "^4.2.0"
     "@eslint-community/regexpp" "^4.12.1"
@@ -11044,7 +11042,7 @@ koa@2.15.3:
     vary "^1.1.2"
 
 langchain@^0.3.29:
-  version "0.3.31"
+  version "0.3.33"
   dependencies:
     "@langchain/openai" ">=0.1.0 <0.6.0"
     "@langchain/textsplitters" ">=0.0.0 <0.2.0"
@@ -12581,9 +12579,7 @@ pkg-dir@^7.0.0:
     find-up "^6.3.0"
 
 plop@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/plop/-/plop-4.0.1.tgz#85d8a6e9d6d4dbcb1ec811f0d3220ae869539dd2"
-  integrity sha512-5n8QU93kvL/ObOzBcPAB1siVFtAH1TZM6TntJ3JK5kXT0jIgnQV+j+uaOWWFJlg1cNkzLYm8klgASF65K36q9w==
+  version "4.0.2"
   dependencies:
     "@types/liftoff" "^4.0.3"
     chalk "^5.3.0"
@@ -13680,7 +13676,7 @@ sass-loader@^12.2.0:
     neo-async "^2.6.2"
 
 sass@^1.42.1, sass@^1.77.4:
-  version "1.91.0"
+  version "1.92.1"
   dependencies:
     chokidar "^4.0.0"
     immutable "^5.0.2"
@@ -15288,7 +15284,7 @@ typeorm@^0.3.20:
     yargs "^17.6.2"
 
 typescript-eslint@^8.15.0:
-  version "8.41.0"
+  version "8.42.0"
   dependencies:
     "@typescript-eslint/eslint-plugin" "8.24.1"
     "@typescript-eslint/parser" "8.24.1"
